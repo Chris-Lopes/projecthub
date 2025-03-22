@@ -8,7 +8,6 @@ import { Prisma } from "@/lib/prismaClient";
 import { RoleType } from "@prisma/client";
 
 export const signUpAction = async (formData: FormData) => {
- 
   const email = formData.get("email")?.toString();
   const password = formData.get("password")?.toString();
   const role = formData.get("role")?.toString();
@@ -258,3 +257,210 @@ export const getUser = async () => {
   } = await supabase.auth.getUser();
   return user;
 };
+
+export async function createProject(formData: FormData) {
+  const user = await getUser();
+  if (!user) {
+    return {
+      error: true,
+      message: "Unauthorized",
+    };
+  }
+
+  const userDb = await Prisma.userDB.findUnique({
+    where: { email: user.email },
+  });
+  if (!userDb) {
+    return {
+      error: true,
+      message: "User not found",
+    };
+  }
+
+  const name = formData.get("name")?.toString();
+  const description = formData.get("description")?.toString();
+  const thumbnail_url = formData.get("thumbnail_url")?.toString();
+  const github_url = formData.get("github_url")?.toString();
+
+  if (!name || !description || !thumbnail_url || !github_url) {
+    return {
+      error: true,
+      message: "All fields are required",
+    };
+  }
+
+  try {
+    const project = await Prisma.project.create({
+      data: {
+        name,
+        description,
+        thumbnail_url,
+        github_url,
+        userId: userDb.id,
+      },
+    });
+
+    return {
+      error: false,
+      project,
+    };
+  } catch (error) {
+    console.error("Error creating project:", error);
+    return {
+      error: true,
+      message: "Failed to create project",
+    };
+  }
+}
+
+export async function incrementProjectViews(projectId: string) {
+  try {
+    if (!projectId) {
+      return {
+        error: true,
+        message: "Project ID is required",
+      };
+    }
+
+    // Check if project exists
+    const project = await Prisma.project.findUnique({
+      where: { id: projectId },
+    });
+
+    if (!project) {
+      return {
+        error: true,
+        message: "Project not found",
+      };
+    }
+
+    // Increment view count
+    await Prisma.project.update({
+      where: { id: projectId },
+      data: { views: { increment: 1 } },
+    });
+
+    return {
+      error: false,
+      message: "View count incremented successfully",
+    };
+  } catch (error) {
+    console.error("Error incrementing view count:", error);
+    return {
+      error: true,
+      message: "Failed to increment view count",
+    };
+  }
+}
+
+export async function toggleProjectLike(projectId: string) {
+  const user = await getUser();
+  if (!user) {
+    return {
+      error: true,
+      message: "You must be logged in to like projects",
+    };
+  }
+
+  const userDb = await Prisma.userDB.findUnique({
+    where: { email: user.email },
+  });
+  if (!userDb) {
+    return {
+      error: true,
+      message: "User not found",
+    };
+  }
+
+  try {
+    // Check if user has already liked the project
+    const existingLike = await Prisma.projectLike.findUnique({
+      where: {
+        userId_projectId: {
+          userId: userDb.id,
+          projectId,
+        },
+      },
+    });
+
+    if (existingLike) {
+      // Remove like
+      await Prisma.projectLike.delete({
+        where: {
+          userId_projectId: {
+            userId: userDb.id,
+            projectId,
+          },
+        },
+      });
+
+      // Decrement like count
+      await Prisma.project.update({
+        where: { id: projectId },
+        data: { likes: { decrement: 1 } },
+      });
+
+      return {
+        error: false,
+        liked: false,
+        message: "Project unliked successfully",
+      };
+    }
+
+    // Add new like
+    await Prisma.projectLike.create({
+      data: {
+        userId: userDb.id,
+        projectId,
+      },
+    });
+
+    // Increment like count
+    await Prisma.project.update({
+      where: { id: projectId },
+      data: { likes: { increment: 1 } },
+    });
+
+    return {
+      error: false,
+      liked: true,
+      message: "Project liked successfully",
+    };
+  } catch (error) {
+    console.error("Error toggling project like:", error);
+    return {
+      error: true,
+      message: "Failed to toggle project like",
+    };
+  }
+}
+
+export async function getProjectLikeStatus(projectId: string) {
+  const user = await getUser();
+  if (!user) {
+    return false;
+  }
+
+  const userDb = await Prisma.userDB.findUnique({
+    where: { email: user.email },
+  });
+  if (!userDb) {
+    return false;
+  }
+
+  try {
+    const like = await Prisma.projectLike.findUnique({
+      where: {
+        userId_projectId: {
+          userId: userDb.id,
+          projectId,
+        },
+      },
+    });
+
+    return !!like;
+  } catch (error) {
+    console.error("Error checking like status:", error);
+    return false;
+  }
+}

@@ -23,16 +23,19 @@ enum RoleType {
 }
 
 model UserDB {
-  id        String   @id @default(uuid())
-  name      String
-  email     String   @unique
-  roleType  RoleType
-  viewer    Viewer?
-  student   Student?
-  faculty   Faculty?
-  college   College?
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id           String        @id @default(uuid())
+  name         String
+  email        String        @unique
+  roleType     RoleType
+  viewer       Viewer?
+  student      Student?
+  faculty      Faculty?
+  college      College?
+  projects     Project[]
+  comments     Comment[]
+  projectLikes ProjectLike[]
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
 }
 
 model Viewer {
@@ -66,6 +69,44 @@ model College {
   id        String   @id @default(uuid())
   user      UserDB   @relation(fields: [userId], references: [id])
   userId    String   @unique
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Project {
+  id            String        @id @default(uuid())
+  name          String
+  description   String
+  thumbnail_url String
+  github_url    String
+  views         Int           @default(0)
+  likes         Int           @default(0)
+  user          UserDB        @relation(fields: [userId], references: [id])
+  userId        String
+  comments      Comment[]
+  projectLikes  ProjectLike[]
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+}
+
+model ProjectLike {
+  id        String   @id @default(uuid())
+  user      UserDB   @relation(fields: [userId], references: [id])
+  userId    String
+  project   Project  @relation(fields: [projectId], references: [id])
+  projectId String
+  createdAt DateTime @default(now())
+
+  @@unique([userId, projectId])
+}
+
+model Comment {
+  id        String   @id @default(uuid())
+  content   String
+  user      UserDB   @relation(fields: [userId], references: [id])
+  userId    String
+  project   Project  @relation(fields: [projectId], references: [id])
+  projectId String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }

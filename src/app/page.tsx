@@ -14,7 +14,7 @@ export default async function Home() {
   });
 
   if (UserDB?.roleType === "STUDENT") {
-    return redirect("student");
+    return redirect("/student");
   }
 
   if (UserDB?.roleType === "VIEWER") {
