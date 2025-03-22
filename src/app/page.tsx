@@ -9,12 +9,16 @@ export default async function Home() {
 
   const UserDB = await Prisma.userDB.findUnique({
     where: {
-      id: User.id,
+      email: User.email,
     },
   });
 
   if (UserDB?.roleType === "STUDENT") {
-    return redirect("/");
+    return redirect("student");
+  }
+
+  if (UserDB?.roleType === "VIEWER") {
+    return redirect("/viewer");
   }
 
   if (UserDB?.roleType === "FACULTY") {
