@@ -1,7 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { Eye, Heart, MessageSquare, Pencil } from "lucide-react";
-import { RoleType } from "@prisma/client";
+import { ProjectStatus, RoleType } from "@prisma/client";
 
 interface ProjectCardProps {
   project: {
@@ -12,6 +12,7 @@ interface ProjectCardProps {
     github_url: string;
     views: number;
     likes: number;
+    status: ProjectStatus;
     user: {
       id: string;
       name: string;
@@ -28,12 +29,20 @@ interface ProjectCardProps {
   };
   currentUserId?: string;
   showEditButton?: boolean;
+  showStatus?: boolean;
 }
+
+const statusColors = {
+  [ProjectStatus.PENDING]: "bg-yellow-500",
+  [ProjectStatus.APPROVED]: "bg-green-500",
+  [ProjectStatus.REJECTED]: "bg-red-500",
+};
 
 export function ProjectCard({
   project,
   currentUserId,
   showEditButton,
+  showStatus = false,
 }: ProjectCardProps) {
   const isOwner = currentUserId === project.user.id;
 
@@ -48,6 +57,17 @@ export function ProjectCard({
             className="object-cover"
             sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
           />
+          {showStatus && (
+            <div className="absolute top-2 right-2">
+              <span
+                className={`px-2 py-1 rounded-full text-xs font-medium text-white ${
+                  statusColors[project.status]
+                }`}
+              >
+                {project.status}
+              </span>
+            </div>
+          )}
         </div>
       </Link>
       <div className="p-4">
@@ -92,7 +112,7 @@ export function ProjectCard({
         </div>
 
         <p className="text-gray-400 text-sm line-clamp-2">
-          {project.description}
+          {project.description.slice(0, 50)}...
         </p>
 
         <div className="mt-4 flex items-center justify-between text-sm text-gray-400">

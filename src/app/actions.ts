@@ -5,7 +5,7 @@ import { createClient } from "@/utils/supabase/server";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { Prisma } from "@/lib/prismaClient";
-import { RoleType } from "@prisma/client";
+import { RoleType, NotificationType } from "@prisma/client";
 
 export const signUpAction = async (formData: FormData) => {
   const email = formData.get("email")?.toString();
@@ -466,35 +466,56 @@ export async function getProjectLikeStatus(projectId: string) {
 }
 
 export async function createComment(formData: FormData) {
-  const user = await getUser();
-  if (!user) {
-    return {
-      error: true,
-      message: "You must be logged in to comment",
-    };
-  }
-
-  const userDb = await Prisma.userDB.findUnique({
-    where: { email: user.email },
-  });
-  if (!userDb) {
-    return {
-      error: true,
-      message: "User not found",
-    };
-  }
-
-  const content = formData.get("content")?.toString();
-  const projectId = formData.get("projectId")?.toString();
-
-  if (!content || !projectId) {
-    return {
-      error: true,
-      message: "Content and project ID are required",
-    };
-  }
-
   try {
+    const user = await getUser();
+    if (!user) {
+      return {
+        error: true,
+        message: "You must be logged in to comment",
+      };
+    }
+
+    const userDb = await Prisma.userDB.findUnique({
+      where: { email: user.email },
+    });
+    if (!userDb) {
+      return {
+        error: true,
+        message: "User not found",
+      };
+    }
+
+    const content = formData.get("content")?.toString();
+    const projectId = formData.get("projectId")?.toString();
+
+    if (!content || !projectId) {
+      return {
+        error: true,
+        message: "Content and project ID are required",
+      };
+    }
+
+    // Get the project and its owner
+    const project = await Prisma.project.findUnique({
+      where: { id: projectId },
+      include: {
+        user: true,
+        collaborators: {
+          include: {
+            user: true,
+          },
+        },
+      },
+    });
+
+    if (!project) {
+      return {
+        error: true,
+        message: "Project not found",
+      };
+    }
+
+    // Create the comment
     const comment = await Prisma.comment.create({
       data: {
         content,
@@ -503,12 +524,39 @@ export async function createComment(formData: FormData) {
       },
     });
 
+    // Create notification for project owner if the commenter is not the owner
+    if (project.userId !== userDb.id) {
+      await Prisma.notification.create({
+        data: {
+          type: NotificationType.NEW_COMMENT,
+          message: `${userDb.name} commented on your project "${project.name}"`,
+          userId: project.userId,
+          projectId: project.id,
+        },
+      });
+    }
+
+    // Create notifications for collaborators (except the commenter)
+    const collaboratorNotifications = project.collaborators
+      .filter((collab) => collab.userId !== userDb.id)
+      .map((collab) => ({
+        type: NotificationType.NEW_COMMENT,
+        message: `${userDb.name} commented on "${project.name}"`,
+        userId: collab.userId,
+        projectId: project.id,
+      }));
+
+    if (collaboratorNotifications.length > 0) {
+      await Prisma.notification.createMany({
+        data: collaboratorNotifications,
+      });
+    }
+
     return {
       error: false,
       comment,
     };
   } catch (error) {
-    console.error("Error creating comment:", error);
     return {
       error: true,
       message: "Failed to create comment",
@@ -592,9 +640,12 @@ export async function updateProject(projectId: string, formData: FormData) {
     };
   }
 
-  // Check if project exists and belongs to user
+  // Check if project exists
   const project = await Prisma.project.findUnique({
     where: { id: projectId },
+    include: {
+      collaborators: true,
+    },
   });
 
   if (!project) {
@@ -604,10 +655,16 @@ export async function updateProject(projectId: string, formData: FormData) {
     };
   }
 
-  if (project.userId !== userDb.id) {
+  // Check if user is owner or collaborator
+  const isOwner = project.userId === userDb.id;
+  const isCollaborator = project.collaborators.some(
+    (c) => c.userId === userDb.id
+  );
+
+  if (!isOwner && !isCollaborator) {
     return {
       error: true,
-      message: "You can only edit your own projects",
+      message: "You don't have permission to edit this project",
     };
   }
 
@@ -645,4 +702,344 @@ export async function updateProject(projectId: string, formData: FormData) {
       message: "Failed to update project",
     };
   }
+}
+
+export async function addCollaborator(projectId: string, email: string) {
+  const user = await getUser();
+  if (!user) {
+    return {
+      error: true,
+      message: "You must be logged in to add collaborators",
+    };
+  }
+
+  const userDb = await Prisma.userDB.findUnique({
+    where: { email: user.email },
+  });
+  if (!userDb) {
+    return {
+      error: true,
+      message: "User not found",
+    };
+  }
+
+  // Check if the project exists and the user is the owner
+  const project = await Prisma.project.findUnique({
+    where: { id: projectId },
+  });
+
+  if (!project) {
+    return {
+      error: true,
+      message: "Project not found",
+    };
+  }
+
+  if (project.userId !== userDb.id) {
+    return {
+      error: true,
+      message: "Only the project owner can add collaborators",
+    };
+  }
+
+  // Find the user to be added as collaborator
+  const collaborator = await Prisma.userDB.findUnique({
+    where: { email },
+  });
+
+  if (!collaborator) {
+    return {
+      error: true,
+      message: "Collaborator email not found",
+    };
+  }
+
+  // Check if user is already a collaborator
+  const existingCollaborator = await Prisma.projectCollaborator.findUnique({
+    where: {
+      userId_projectId: {
+        userId: collaborator.id,
+        projectId,
+      },
+    },
+  });
+
+  if (existingCollaborator) {
+    return {
+      error: true,
+      message: "User is already a collaborator",
+    };
+  }
+
+  try {
+    await Prisma.projectCollaborator.create({
+      data: {
+        userId: collaborator.id,
+        projectId,
+      },
+    });
+
+    return {
+      error: false,
+      message: "Collaborator added successfully",
+    };
+  } catch (error) {
+    console.error("Error adding collaborator:", error);
+    return {
+      error: true,
+      message: "Failed to add collaborator",
+    };
+  }
+}
+
+export async function removeCollaborator(
+  projectId: string,
+  collaboratorId: string
+) {
+  const user = await getUser();
+  if (!user) {
+    return {
+      error: true,
+      message: "You must be logged in to remove collaborators",
+    };
+  }
+
+  const userDb = await Prisma.userDB.findUnique({
+    where: { email: user.email },
+  });
+  if (!userDb) {
+    return {
+      error: true,
+      message: "User not found",
+    };
+  }
+
+  // Check if the project exists and the user is the owner
+  const project = await Prisma.project.findUnique({
+    where: { id: projectId },
+  });
+
+  if (!project) {
+    return {
+      error: true,
+      message: "Project not found",
+    };
+  }
+
+  if (project.userId !== userDb.id) {
+    return {
+      error: true,
+      message: "Only the project owner can remove collaborators",
+    };
+  }
+
+  try {
+    await Prisma.projectCollaborator.delete({
+      where: {
+        userId_projectId: {
+          userId: collaboratorId,
+          projectId,
+        },
+      },
+    });
+
+    return {
+      error: false,
+      message: "Collaborator removed successfully",
+    };
+  } catch (error) {
+    console.error("Error removing collaborator:", error);
+    return {
+      error: true,
+      message: "Failed to remove collaborator",
+    };
+  }
+}
+
+export async function getProjectCollaborators(projectId: string) {
+  try {
+    const collaborators = await Prisma.projectCollaborator.findMany({
+      where: { projectId },
+      include: {
+        user: {
+          include: {
+            student: true,
+          },
+        },
+      },
+    });
+
+    return {
+      error: false,
+      collaborators,
+    };
+  } catch (error) {
+    console.error("Error fetching collaborators:", error);
+    return {
+      error: true,
+      message: "Failed to fetch collaborators",
+    };
+  }
+}
+
+export async function approveProject(projectId: string) {
+  const user = await getUser();
+  if (!user?.email || user.email !== process.env.ADMIN_USER_EMAIL) {
+    return {
+      error: true,
+      message: "Unauthorized",
+    };
+  }
+
+  try {
+    const project = await Prisma.project.update({
+      where: { id: projectId },
+      data: { status: "APPROVED" },
+      include: {
+        user: true,
+      },
+    });
+
+    // Create notification for project owner
+    await Prisma.notification.create({
+      data: {
+        type: NotificationType.PROJECT_APPROVED,
+        message: `Your project "${project.name}" has been approved!`,
+        userId: project.userId,
+        projectId: project.id,
+      },
+    });
+
+    return {
+      error: false,
+      project,
+    };
+  } catch (error) {
+    console.error("Error approving project:", error);
+    return {
+      error: true,
+      message: "Failed to approve project",
+    };
+  }
+}
+
+export async function rejectProject(projectId: string) {
+  const user = await getUser();
+  if (!user?.email || user.email !== process.env.ADMIN_USER_EMAIL) {
+    return {
+      error: true,
+      message: "Unauthorized",
+    };
+  }
+
+  try {
+    const project = await Prisma.project.update({
+      where: { id: projectId },
+      data: { status: "REJECTED" },
+      include: {
+        user: true,
+      },
+    });
+
+    // Create notification for project owner
+    await Prisma.notification.create({
+      data: {
+        type: NotificationType.PROJECT_REJECTED,
+        message: `Your project "${project.name}" has been rejected.`,
+        userId: project.userId,
+        projectId: project.id,
+      },
+    });
+
+    return {
+      error: false,
+      project,
+    };
+  } catch (error) {
+    console.error("Error rejecting project:", error);
+    return {
+      error: true,
+      message: "Failed to reject project",
+    };
+  }
+}
+
+export async function getNotifications() {
+  try {
+    const user = await getUser();
+    if (!user) {
+      return { error: "Not authenticated", notifications: [] };
+    }
+
+    const userDb = await Prisma.userDB.findUnique({
+      where: { email: user.email },
+    });
+    if (!userDb) {
+      return { error: "User not found", notifications: [] };
+    }
+
+    const notifications = await Prisma.notification.findMany({
+      where: {
+        userId: userDb.id,
+        read: false, // Only fetch unread notifications
+      },
+      include: {
+        project: {
+          select: {
+            name: true,
+          },
+        },
+      },
+      orderBy: { createdAt: "desc" },
+      take: 10,
+    });
+
+    return { notifications };
+  } catch (error) {
+    console.error("Error fetching notifications:", error);
+    return { error: "Failed to fetch notifications", notifications: [] };
+  }
+}
+
+export async function markNotificationAsRead(notificationId: string) {
+  try {
+    const user = await getUser();
+    if (!user) {
+      return { error: "Not authenticated" };
+    }
+
+    const userDb = await Prisma.userDB.findUnique({
+      where: { email: user.email },
+    });
+    if (!userDb) {
+      return { error: "User not found" };
+    }
+
+    // Verify the notification belongs to the user
+    const notification = await Prisma.notification.findFirst({
+      where: {
+        id: notificationId,
+        userId: userDb.id,
+      },
+    });
+
+    if (!notification) {
+      return { error: "Notification not found" };
+    }
+
+    await Prisma.notification.update({
+      where: { id: notificationId },
+      data: { read: true },
+    });
+
+    return { success: true };
+  } catch (error) {
+    console.error("Error marking notification as read:", error);
+    return { error: "Failed to mark notification as read" };
+  }
+}
+
+export async function checkIsAdmin() {
+  const user = await getUser();
+  return user?.email === process.env.ADMIN_USER_EMAIL;
 }

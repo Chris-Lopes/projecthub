@@ -1,12 +1,19 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { updateProject } from "@/app/actions";
+import {
+  updateProject,
+  addCollaborator,
+  removeCollaborator,
+  getProjectCollaborators,
+} from "@/app/actions";
 import { Project } from "@prisma/client";
+import { UserCircle, X } from "lucide-react";
 
 interface EditProjectFormProps {
   project: Project;
+  isOwner: boolean;
 }
 
 interface EditProjectFormData {
@@ -16,7 +23,24 @@ interface EditProjectFormData {
   github_url: string;
 }
 
-export default function EditProjectForm({ project }: EditProjectFormProps) {
+interface Collaborator {
+  id: string;
+  user: {
+    id: string;
+    name: string;
+    email: string;
+    student: {
+      roll_no: string;
+      class: string;
+      academic_year: number;
+    } | null;
+  };
+}
+
+export default function EditProjectForm({
+  project,
+  isOwner,
+}: EditProjectFormProps) {
   const router = useRouter();
   const [formData, setFormData] = useState<EditProjectFormData>({
     name: project.name,
@@ -27,6 +51,54 @@ export default function EditProjectForm({ project }: EditProjectFormProps) {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [isFetchingReadme, setIsFetchingReadme] = useState(false);
+  const [collaborators, setCollaborators] = useState<Collaborator[]>([]);
+  const [newCollaboratorEmail, setNewCollaboratorEmail] = useState("");
+  const [isAddingCollaborator, setIsAddingCollaborator] = useState(false);
+  const [collaboratorError, setCollaboratorError] = useState<string | null>(
+    null
+  );
+
+  useEffect(() => {
+    loadCollaborators();
+  }, []);
+
+  const loadCollaborators = async () => {
+    const result = await getProjectCollaborators(project.id);
+    if (!result.error && result.collaborators) {
+      setCollaborators(result.collaborators);
+    }
+  };
+
+  const handleAddCollaborator = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsAddingCollaborator(true);
+    setCollaboratorError(null);
+
+    try {
+      const result = await addCollaborator(project.id, newCollaboratorEmail);
+      if (result.error) {
+        setCollaboratorError(result.message);
+      } else {
+        setNewCollaboratorEmail("");
+        await loadCollaborators();
+      }
+    } catch (error) {
+      setCollaboratorError("Failed to add collaborator");
+    } finally {
+      setIsAddingCollaborator(false);
+    }
+  };
+
+  const handleRemoveCollaborator = async (collaboratorId: string) => {
+    try {
+      const result = await removeCollaborator(project.id, collaboratorId);
+      if (!result.error) {
+        await loadCollaborators();
+      }
+    } catch (error) {
+      setCollaboratorError("Failed to remove collaborator");
+    }
+  };
 
   const fetchGithubReadme = async () => {
     try {
@@ -104,119 +176,202 @@ export default function EditProjectForm({ project }: EditProjectFormProps) {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-6">
-      <div>
-        <label
-          htmlFor="name"
-          className="block text-sm font-medium text-gray-300"
-        >
-          Project Name
-        </label>
-        <input
-          type="text"
-          id="name"
-          value={formData.name}
-          onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-          className="mt-1 block w-full rounded-md bg-gray-700 border-gray-600 text-gray-300 shadow-sm focus:border-purple-500 focus:ring-purple-500"
-          required
-          placeholder="Enter project name"
-        />
-      </div>
-
-      <div>
-        <div className="flex items-center justify-between mb-2">
+    <div className="space-y-8">
+      <form onSubmit={handleSubmit} className="space-y-6">
+        <div>
           <label
-            htmlFor="description"
+            htmlFor="name"
             className="block text-sm font-medium text-gray-300"
           >
-            Description
+            Project Name
           </label>
+          <input
+            type="text"
+            id="name"
+            value={formData.name}
+            onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+            className="mt-1 p-2 block w-full rounded-md bg-gray-700 border-gray-600 text-gray-300 shadow-sm focus:border-purple-500 focus:ring-purple-500"
+            required
+            placeholder="Enter project name"
+          />
+        </div>
+
+        <div>
+          <div className="flex items-center justify-between mb-2">
+            <label
+              htmlFor="description"
+              className="block text-sm font-medium text-gray-300"
+            >
+              Description
+            </label>
+            <button
+              type="button"
+              onClick={fetchGithubReadme}
+              disabled={isFetchingReadme || !formData.github_url}
+              className={`text-sm text-purple-400 hover:text-purple-300 ${
+                isFetchingReadme || !formData.github_url
+                  ? "opacity-50 cursor-not-allowed"
+                  : ""
+              }`}
+            >
+              {isFetchingReadme ? "Fetching README..." : "Use GitHub README"}
+            </button>
+          </div>
+          <textarea
+            id="description"
+            value={formData.description}
+            onChange={(e) =>
+              setFormData({ ...formData, description: e.target.value })
+            }
+            rows={4}
+            className="mt-1 p-2  block w-full rounded-md bg-gray-700 border-gray-600 text-gray-300 shadow-sm focus:border-purple-500 focus:ring-purple-500"
+            required
+            placeholder="Describe your project"
+          />
+        </div>
+
+        <div>
+          <label
+            htmlFor="github_url"
+            className="block text-sm font-medium text-gray-300"
+          >
+            GitHub URL
+          </label>
+          <input
+            type="url"
+            id="github_url"
+            value={formData.github_url}
+            onChange={(e) =>
+              setFormData({ ...formData, github_url: e.target.value })
+            }
+            className="mt-1 p-2  block w-full rounded-md bg-gray-700 border-gray-600 text-gray-300 shadow-sm focus:border-purple-500 focus:ring-purple-500"
+            required
+            placeholder="https://github.com/username/repository"
+          />
+        </div>
+
+        <div>
+          <label
+            htmlFor="thumbnail_url"
+            className="block text-sm font-medium text-gray-300"
+          >
+            Thumbnail URL
+          </label>
+          <input
+            type="url"
+            id="thumbnail_url"
+            value={formData.thumbnail_url}
+            onChange={(e) =>
+              setFormData({ ...formData, thumbnail_url: e.target.value })
+            }
+            className="mt-1 p-2  block w-full rounded-md bg-gray-700 border-gray-600 text-gray-300 shadow-sm focus:border-purple-500 focus:ring-purple-500"
+            required
+            placeholder="https://example.com/image.jpg"
+          />
+        </div>
+
+        {error && <p className="text-red-400 text-sm">{error}</p>}
+
+        <div className="flex justify-end gap-4">
           <button
             type="button"
-            onClick={fetchGithubReadme}
-            disabled={isFetchingReadme || !formData.github_url}
-            className={`text-sm text-purple-400 hover:text-purple-300 ${
-              isFetchingReadme || !formData.github_url
-                ? "opacity-50 cursor-not-allowed"
-                : ""
+            onClick={() => router.back()}
+            className="px-4 py-2 text-sm font-medium text-gray-300 bg-gray-700 rounded-md hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-purple-500"
+          >
+            Cancel
+          </button>
+          <button
+            type="submit"
+            disabled={isLoading}
+            className={`px-4 py-2 text-sm font-medium text-white bg-purple-500 rounded-md hover:bg-purple-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-purple-500 ${
+              isLoading ? "opacity-50 cursor-not-allowed" : ""
             }`}
           >
-            {isFetchingReadme ? "Fetching README..." : "Use GitHub README"}
+            {isLoading ? "Saving..." : "Save Changes"}
           </button>
         </div>
-        <textarea
-          id="description"
-          value={formData.description}
-          onChange={(e) =>
-            setFormData({ ...formData, description: e.target.value })
-          }
-          rows={4}
-          className="mt-1 block w-full rounded-md bg-gray-700 border-gray-600 text-gray-300 shadow-sm focus:border-purple-500 focus:ring-purple-500"
-          required
-          placeholder="Describe your project"
-        />
-      </div>
+      </form>
 
-      <div>
-        <label
-          htmlFor="github_url"
-          className="block text-sm font-medium text-gray-300"
-        >
-          GitHub URL
-        </label>
-        <input
-          type="url"
-          id="github_url"
-          value={formData.github_url}
-          onChange={(e) =>
-            setFormData({ ...formData, github_url: e.target.value })
-          }
-          className="mt-1 block w-full rounded-md bg-gray-700 border-gray-600 text-gray-300 shadow-sm focus:border-purple-500 focus:ring-purple-500"
-          required
-          placeholder="https://github.com/username/repository"
-        />
-      </div>
+      {isOwner && (
+        <div className="bg-gray-800 p-6 rounded-lg space-y-4">
+          <h3 className="text-lg font-medium text-purple-400">
+            Project Collaborators
+          </h3>
 
-      <div>
-        <label
-          htmlFor="thumbnail_url"
-          className="block text-sm font-medium text-gray-300"
-        >
-          Thumbnail URL
-        </label>
-        <input
-          type="url"
-          id="thumbnail_url"
-          value={formData.thumbnail_url}
-          onChange={(e) =>
-            setFormData({ ...formData, thumbnail_url: e.target.value })
-          }
-          className="mt-1 block w-full rounded-md bg-gray-700 border-gray-600 text-gray-300 shadow-sm focus:border-purple-500 focus:ring-purple-500"
-          required
-          placeholder="https://example.com/image.jpg"
-        />
-      </div>
+          <form onSubmit={handleAddCollaborator} className="space-y-4">
+            <div>
+              <label
+                htmlFor="collaborator_email"
+                className="block text-sm font-medium text-gray-300"
+              >
+                Add Collaborator by Email
+              </label>
+              <div className="mt-1 flex gap-2">
+                <input
+                  type="email"
+                  id="collaborator_email"
+                  value={newCollaboratorEmail}
+                  onChange={(e) => setNewCollaboratorEmail(e.target.value)}
+                  placeholder="teammate@example.com"
+                  className="flex-1 p-2 rounded-md bg-gray-700 border-gray-600 text-gray-300 shadow-sm focus:border-purple-500 focus:ring-purple-500"
+                  required
+                />
+                <button
+                  type="submit"
+                  disabled={isAddingCollaborator || !newCollaboratorEmail}
+                  className={`px-4 py-2 text-sm font-medium text-white bg-purple-500 rounded-md hover:bg-purple-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-purple-500 ${
+                    isAddingCollaborator || !newCollaboratorEmail
+                      ? "opacity-50 cursor-not-allowed"
+                      : ""
+                  }`}
+                >
+                  {isAddingCollaborator ? "Adding..." : "Add"}
+                </button>
+              </div>
+            </div>
 
-      {error && <p className="text-red-400 text-sm">{error}</p>}
+            {collaboratorError && (
+              <p className="text-red-400 text-sm">{collaboratorError}</p>
+            )}
+          </form>
 
-      <div className="flex justify-end gap-4">
-        <button
-          type="button"
-          onClick={() => router.back()}
-          className="px-4 py-2 text-sm font-medium text-gray-300 bg-gray-700 rounded-md hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-purple-500"
-        >
-          Cancel
-        </button>
-        <button
-          type="submit"
-          disabled={isLoading}
-          className={`px-4 py-2 text-sm font-medium text-white bg-purple-500 rounded-md hover:bg-purple-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-purple-500 ${
-            isLoading ? "opacity-50 cursor-not-allowed" : ""
-          }`}
-        >
-          {isLoading ? "Saving..." : "Save Changes"}
-        </button>
-      </div>
-    </form>
+          <div className="space-y-2">
+            {collaborators.map((collaborator) => (
+              <div
+                key={collaborator.id}
+                className="flex items-center justify-between bg-gray-700 p-3 rounded-md"
+              >
+                <div className="flex items-center gap-3">
+                  <UserCircle className="h-8 w-8 text-gray-400" />
+                  <div>
+                    <p className="text-gray-200">{collaborator.user.name}</p>
+                    <p className="text-sm text-gray-400">
+                      {collaborator.user.email}
+                    </p>
+                    {collaborator.user.student && (
+                      <p className="text-xs text-gray-500">
+                        {collaborator.user.student.roll_no} •{" "}
+                        {collaborator.user.student.class}
+                      </p>
+                    )}
+                  </div>
+                </div>
+                <button
+                  onClick={() => handleRemoveCollaborator(collaborator.user.id)}
+                  className="p-1 text-gray-400 hover:text-red-400 transition-colors"
+                  title="Remove collaborator"
+                >
+                  <X className="h-5 w-5" />
+                </button>
+              </div>
+            ))}
+
+            {collaborators.length === 0 && (
+              <p className="text-gray-400 text-sm">No collaborators yet</p>
+            )}
+          </div>
+        </div>
+      )}
+    </div>
   );
 }

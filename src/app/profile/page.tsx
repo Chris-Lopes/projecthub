@@ -2,7 +2,7 @@ import { getUser } from "@/app/actions";
 import { Prisma } from "@/lib/prismaClient";
 import { ProjectCard } from "@/components/project-card";
 import { redirect } from "next/navigation";
-import { RoleType } from "@prisma/client";
+import { RoleType, ProjectStatus } from "@prisma/client";
 
 type ProjectWithRelations = {
   id: string;
@@ -12,6 +12,7 @@ type ProjectWithRelations = {
   github_url: string;
   views: number;
   likes: number;
+  status: ProjectStatus;
   userId: string;
   createdAt: Date;
   updatedAt: Date;
@@ -79,6 +80,7 @@ export default async function ProfilePage() {
                   project={project}
                   currentUserId={userDb.id}
                   showEditButton={true}
+                  showStatus={true}
                 />
               ))}
             </div>

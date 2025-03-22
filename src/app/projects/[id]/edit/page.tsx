@@ -3,11 +3,13 @@ import { Prisma } from "@/lib/prismaClient";
 import { redirect } from "next/navigation";
 import EditProjectForm from "./edit-form";
 
-export default async function EditProjectPage({
-  params,
-}: {
-  params: { id: string };
-}) {
+interface PageProps {
+  params: Promise<{ id: string }>;
+}
+
+export default async function EditProjectPage({ params }: PageProps) {
+  const { id } = await params;
+
   const user = await getUser();
   if (!user) {
     redirect("/sign-in");
@@ -21,15 +23,31 @@ export default async function EditProjectPage({
   }
 
   const project = await Prisma.project.findUnique({
-    where: { id: params.id },
+    where: { id },
+    include: {
+      collaborators: {
+        include: {
+          user: {
+            include: {
+              student: true,
+            },
+          },
+        },
+      },
+    },
   });
 
   if (!project) {
     redirect("/profile");
   }
 
-  if (project.userId !== userDb.id) {
-    redirect("/projects/" + params.id);
+  const isOwner = project.userId === userDb.id;
+  const isCollaborator = project.collaborators.some(
+    (c) => c.user.id === userDb.id
+  );
+
+  if (!isOwner && !isCollaborator) {
+    redirect("/projects/" + id);
   }
 
   return (
@@ -38,7 +56,7 @@ export default async function EditProjectPage({
         <h1 className="text-3xl font-bold text-purple-400 mb-8">
           Edit Project
         </h1>
-        <EditProjectForm project={project} />
+        <EditProjectForm project={project} isOwner={isOwner} />
       </div>
     </div>
   );
