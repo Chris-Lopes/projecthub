@@ -33,13 +33,22 @@ export default function EditProjectForm({ project }: EditProjectFormProps) {
       setIsFetchingReadme(true);
       setError(null);
 
-      // Extract owner and repo from github_url
-      const url = new URL(formData.github_url);
-      const [, owner, repo] = url.pathname.split("/");
+      // Clean and parse the GitHub URL
+      let cleanUrl = formData.github_url.trim();
+      // Remove .git extension if present
+      cleanUrl = cleanUrl.replace(/\.git$/, "");
+      // Remove trailing slash if present
+      cleanUrl = cleanUrl.replace(/\/$/, "");
 
-      if (!owner || !repo) {
+      const url = new URL(cleanUrl);
+      const parts = url.pathname.split("/").filter(Boolean);
+
+      if (parts.length < 2) {
         throw new Error("Invalid GitHub URL format");
       }
+
+      const owner = parts[0];
+      const repo = parts[1];
 
       // Fetch README content
       const response = await fetch(
@@ -61,6 +70,7 @@ export default function EditProjectForm({ project }: EditProjectFormProps) {
       setError(
         "Failed to fetch README. Please make sure the GitHub URL is correct and the repository is public."
       );
+      console.error("GitHub README fetch error:", error);
     } finally {
       setIsFetchingReadme(false);
     }
@@ -81,8 +91,10 @@ export default function EditProjectForm({ project }: EditProjectFormProps) {
       const result = await updateProject(project.id, form);
       if (result.error) {
         setError(result.message || "Failed to update project");
-      } else {
+      } else if (result.project?.id) {
         router.push(`/projects/${project.id}`);
+      } else {
+        setError("Failed to update project: No project ID returned");
       }
     } catch (error) {
       setError("Failed to update project");
@@ -107,6 +119,7 @@ export default function EditProjectForm({ project }: EditProjectFormProps) {
           onChange={(e) => setFormData({ ...formData, name: e.target.value })}
           className="mt-1 block w-full rounded-md bg-gray-700 border-gray-600 text-gray-300 shadow-sm focus:border-purple-500 focus:ring-purple-500"
           required
+          placeholder="Enter project name"
         />
       </div>
 
@@ -140,6 +153,7 @@ export default function EditProjectForm({ project }: EditProjectFormProps) {
           rows={4}
           className="mt-1 block w-full rounded-md bg-gray-700 border-gray-600 text-gray-300 shadow-sm focus:border-purple-500 focus:ring-purple-500"
           required
+          placeholder="Describe your project"
         />
       </div>
 
@@ -179,6 +193,7 @@ export default function EditProjectForm({ project }: EditProjectFormProps) {
           }
           className="mt-1 block w-full rounded-md bg-gray-700 border-gray-600 text-gray-300 shadow-sm focus:border-purple-500 focus:ring-purple-500"
           required
+          placeholder="https://example.com/image.jpg"
         />
       </div>
 
