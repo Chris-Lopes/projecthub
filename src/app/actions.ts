@@ -4,38 +4,156 @@ import { encodedRedirect } from "@/utils/utils";
 import { createClient } from "@/utils/supabase/server";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
+import { Prisma } from "@/lib/prismaClient";
+import { RoleType } from "@prisma/client";
 
 export const signUpAction = async (formData: FormData) => {
+ 
   const email = formData.get("email")?.toString();
   const password = formData.get("password")?.toString();
+  const role = formData.get("role")?.toString();
+  const name = formData.get("name")?.toString();
   const supabase = await createClient();
   const origin = (await headers()).get("origin");
 
-  if (!email || !password) {
-    return encodedRedirect(
-      "error",
-      "/sign-up",
-      "Email and password are required",
-    );
+  if (!email || !password || !role || !name) {
+    return {
+      error: true,
+      message: "Email, password, name and role are required",
+    };
   }
 
-  const { error } = await supabase.auth.signUp({
-    email,
-    password,
-    options: {
-      emailRedirectTo: `${origin}/auth/callback`,
-    },
-  });
+  // Additional validation for student role
+  if (role.toUpperCase() === "STUDENT") {
+    const roll_no = formData.get("roll_no")?.toString();
+    const class_name = formData.get("class")?.toString();
+    const academic_year = formData.get("academic_year")?.toString();
 
-  if (error) {
-    console.error(error.code + " " + error.message);
-    return encodedRedirect("error", "/sign-up", error.message);
-  } else {
-    return encodedRedirect(
-      "success",
-      "/sign-up",
-      "Thanks for signing up! Please check your email for a verification link.",
-    );
+    if (!roll_no || !class_name || !academic_year) {
+      return {
+        error: true,
+        message:
+          "Roll number, class and academic year are required for students",
+      };
+    }
+
+    // Check if roll number already exists
+    const existingStudent = await Prisma.student.findUnique({
+      where: { roll_no },
+    });
+
+    if (existingStudent) {
+      return {
+        error: true,
+        message: "A student with this roll number already exists",
+      };
+    }
+  }
+
+  try {
+    // Check if user already exists in UserDB
+    const existingUser = await Prisma.userDB.findUnique({
+      where: { email },
+    });
+
+    if (existingUser) {
+      return {
+        error: true,
+        message: "An account with this email already exists",
+      };
+    }
+
+    // First attempt the signup
+    const { error: signUpError, data: authData } = await supabase.auth.signUp({
+      email,
+      password,
+      options: {
+        emailRedirectTo: `${origin}/auth/callback`,
+      },
+    });
+
+    if (signUpError) {
+      console.error(signUpError.code + " " + signUpError.message);
+      return {
+        error: true,
+        message: signUpError.message,
+      };
+    }
+
+    // Create the user in UserDB
+    const roleType = role.toUpperCase() as RoleType;
+    const user = await Prisma.userDB.create({
+      data: {
+        email,
+        name,
+        roleType,
+      },
+    });
+
+    // Create entry in the role-specific table
+    switch (roleType) {
+      case "VIEWER":
+        await Prisma.viewer.create({
+          data: {
+            userId: user.id,
+          },
+        });
+        break;
+      case "STUDENT":
+        const roll_no = formData.get("roll_no")?.toString() || "";
+        const class_name = formData.get("class")?.toString() || "";
+        const academic_year = parseInt(
+          formData.get("academic_year")?.toString() || "0"
+        );
+
+        await Prisma.student.create({
+          data: {
+            userId: user.id,
+            roll_no,
+            class: class_name,
+            academic_year,
+          },
+        });
+        break;
+      case "FACULTY":
+        await Prisma.faculty.create({
+          data: {
+            userId: user.id,
+          },
+        });
+        break;
+      case "COLLEGE":
+        await Prisma.college.create({
+          data: {
+            userId: user.id,
+          },
+        });
+        break;
+    }
+
+    return {
+      error: false,
+      message:
+        "Account created successfully! 🎉 Please check your email for a verification link. You must verify your email before signing in.",
+    };
+  } catch (error) {
+    console.error("Database error:", error);
+    // If database creation fails, we should delete the auth user if it was created
+    try {
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+      if (user?.id) {
+        await supabase.auth.admin.deleteUser(user.id);
+      }
+    } catch (cleanupError) {
+      console.error("Failed to cleanup auth user:", cleanupError);
+    }
+
+    return {
+      error: true,
+      message: "Failed to create user profile. Please try again.",
+    };
   }
 };
 
@@ -53,7 +171,7 @@ export const signInAction = async (formData: FormData) => {
     return encodedRedirect("error", "/sign-in", error.message);
   }
 
-  return redirect("/protected");
+  return redirect("/");
 };
 
 export const forgotPasswordAction = async (formData: FormData) => {
@@ -75,7 +193,7 @@ export const forgotPasswordAction = async (formData: FormData) => {
     return encodedRedirect(
       "error",
       "/forgot-password",
-      "Could not reset password",
+      "Could not reset password"
     );
   }
 
@@ -86,7 +204,7 @@ export const forgotPasswordAction = async (formData: FormData) => {
   return encodedRedirect(
     "success",
     "/forgot-password",
-    "Check your email for a link to reset your password.",
+    "Check your email for a link to reset your password."
   );
 };
 
@@ -100,7 +218,7 @@ export const resetPasswordAction = async (formData: FormData) => {
     encodedRedirect(
       "error",
       "/protected/reset-password",
-      "Password and confirm password are required",
+      "Password and confirm password are required"
     );
   }
 
@@ -108,7 +226,7 @@ export const resetPasswordAction = async (formData: FormData) => {
     encodedRedirect(
       "error",
       "/protected/reset-password",
-      "Passwords do not match",
+      "Passwords do not match"
     );
   }
 
@@ -120,7 +238,7 @@ export const resetPasswordAction = async (formData: FormData) => {
     encodedRedirect(
       "error",
       "/protected/reset-password",
-      "Password update failed",
+      "Password update failed"
     );
   }
 
@@ -131,4 +249,12 @@ export const signOutAction = async () => {
   const supabase = await createClient();
   await supabase.auth.signOut();
   return redirect("/sign-in");
+};
+
+export const getUser = async () => {
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  return user;
 };
