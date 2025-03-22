@@ -5,6 +5,9 @@ import { ProjectImage } from "@/components/project-image";
 import { ViewCounter } from "@/components/view-counter";
 import { LikeButton } from "@/components/like-button";
 import { RoleType } from "@prisma/client";
+import { CommentForm } from "@/components/comment-form";
+import { CommentList } from "@/components/comment-list";
+import { getUser } from "@/app/actions";
 
 type ProjectWithUser = {
   id: string;
@@ -30,6 +33,23 @@ type ProjectWithUser = {
   _count: {
     comments: number;
   };
+  comments: {
+    id: string;
+    content: string;
+    createdAt: Date;
+    updatedAt: Date;
+    user: {
+      id: string;
+      name: string;
+      email: string;
+      roleType: RoleType;
+      student: {
+        roll_no: string;
+        class: string;
+        academic_year: number;
+      } | null;
+    };
+  }[];
 };
 
 async function getProject(id: string): Promise<ProjectWithUser | null> {
@@ -51,6 +71,18 @@ async function getProject(id: string): Promise<ProjectWithUser | null> {
           },
         },
       },
+      comments: {
+        include: {
+          user: {
+            include: {
+              student: true,
+            },
+          },
+        },
+        orderBy: {
+          createdAt: "desc",
+        },
+      },
       _count: {
         select: { comments: true },
       },
@@ -67,6 +99,12 @@ export default async function ProjectPage({ params }: PageProps) {
   // Await the params object
   const { id } = await params;
   const project = await getProject(id);
+  const user = await getUser();
+  const userDb = user
+    ? await Prisma.userDB.findUnique({
+        where: { email: user.email },
+      })
+    : null;
 
   if (!project) {
     notFound();
@@ -153,9 +191,23 @@ export default async function ProjectPage({ params }: PageProps) {
         {/* Comments Section */}
         <div className="mt-8 bg-gray-800 rounded-lg p-6">
           <h2 className="text-xl font-semibold text-purple-400 mb-4">
-            Comments
+            Comments ({project._count.comments})
           </h2>
-          <p className="text-gray-400">Comments coming soon...</p>
+
+          <div className="mb-6">
+            <CommentForm projectId={project.id} />
+          </div>
+
+          {project.comments.length > 0 ? (
+            <CommentList
+              comments={project.comments}
+              currentUserId={userDb?.id}
+            />
+          ) : (
+            <p className="text-gray-400">
+              No comments yet. Be the first to comment!
+            </p>
+          )}
         </div>
       </div>
     </div>

@@ -15,7 +15,7 @@ export function Navbar() {
           <div className="flex">
             <div className="flex-shrink-0 flex items-center">
               <Link href="/" className="text-purple-500 text-xl font-bold">
-                ProjectHub
+                Project<span className="text-white bg-purple-500 px-1.5 py-1 rounded-sm ml-1">Hub</span>
               </Link>
             </div>
             <div className="hidden sm:ml-6 sm:flex sm:space-x-8">

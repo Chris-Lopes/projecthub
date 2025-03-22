@@ -464,3 +464,185 @@ export async function getProjectLikeStatus(projectId: string) {
     return false;
   }
 }
+
+export async function createComment(formData: FormData) {
+  const user = await getUser();
+  if (!user) {
+    return {
+      error: true,
+      message: "You must be logged in to comment",
+    };
+  }
+
+  const userDb = await Prisma.userDB.findUnique({
+    where: { email: user.email },
+  });
+  if (!userDb) {
+    return {
+      error: true,
+      message: "User not found",
+    };
+  }
+
+  const content = formData.get("content")?.toString();
+  const projectId = formData.get("projectId")?.toString();
+
+  if (!content || !projectId) {
+    return {
+      error: true,
+      message: "Content and project ID are required",
+    };
+  }
+
+  try {
+    const comment = await Prisma.comment.create({
+      data: {
+        content,
+        userId: userDb.id,
+        projectId,
+      },
+    });
+
+    return {
+      error: false,
+      comment,
+    };
+  } catch (error) {
+    console.error("Error creating comment:", error);
+    return {
+      error: true,
+      message: "Failed to create comment",
+    };
+  }
+}
+
+export async function deleteComment(commentId: string) {
+  const user = await getUser();
+  if (!user) {
+    return {
+      error: true,
+      message: "You must be logged in to delete comments",
+    };
+  }
+
+  const userDb = await Prisma.userDB.findUnique({
+    where: { email: user.email },
+  });
+  if (!userDb) {
+    return {
+      error: true,
+      message: "User not found",
+    };
+  }
+
+  try {
+    // Check if comment exists and belongs to user
+    const comment = await Prisma.comment.findUnique({
+      where: { id: commentId },
+    });
+
+    if (!comment) {
+      return {
+        error: true,
+        message: "Comment not found",
+      };
+    }
+
+    if (comment.userId !== userDb.id) {
+      return {
+        error: true,
+        message: "You can only delete your own comments",
+      };
+    }
+
+    // Delete the comment
+    await Prisma.comment.delete({
+      where: { id: commentId },
+    });
+
+    return {
+      error: false,
+      message: "Comment deleted successfully",
+    };
+  } catch (error) {
+    console.error("Error deleting comment:", error);
+    return {
+      error: true,
+      message: "Failed to delete comment",
+    };
+  }
+}
+
+export async function updateProject(projectId: string, formData: FormData) {
+  const user = await getUser();
+  if (!user) {
+    return {
+      error: true,
+      message: "You must be logged in to update projects",
+    };
+  }
+
+  const userDb = await Prisma.userDB.findUnique({
+    where: { email: user.email },
+  });
+  if (!userDb) {
+    return {
+      error: true,
+      message: "User not found",
+    };
+  }
+
+  // Check if project exists and belongs to user
+  const project = await Prisma.project.findUnique({
+    where: { id: projectId },
+  });
+
+  if (!project) {
+    return {
+      error: true,
+      message: "Project not found",
+    };
+  }
+
+  if (project.userId !== userDb.id) {
+    return {
+      error: true,
+      message: "You can only edit your own projects",
+    };
+  }
+
+  const name = formData.get("name")?.toString();
+  const description = formData.get("description")?.toString();
+  const thumbnail_url = formData.get("thumbnail_url")?.toString();
+  const github_url = formData.get("github_url")?.toString();
+
+  if (!name || !description || !thumbnail_url || !github_url) {
+    return {
+      error: true,
+      message: "All fields are required",
+    };
+  }
+
+  try {
+    const updatedProject = await Prisma.project.update({
+      where: { id: projectId },
+      data: {
+        name,
+        description,
+        thumbnail_url,
+        github_url,
+      },
+    });
+
+    return {
+      error: false,
+      project: updatedProject,
+    };
+  } catch (error) {
+    console.error("Error updating project:", error);
+    return {
+      error: true,
+      message: "Failed to update project",
+    };
+  }
+}

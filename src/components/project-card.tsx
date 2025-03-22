@@ -1,6 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import { Eye, Heart, MessageSquare, Github } from "lucide-react";
+import { Eye, Heart, MessageSquare, Pencil } from "lucide-react";
 import { RoleType } from "@prisma/client";
 
 interface ProjectCardProps {
@@ -13,6 +13,7 @@ interface ProjectCardProps {
     views: number;
     likes: number;
     user: {
+      id: string;
       name: string;
       roleType: RoleType;
       student: {
@@ -25,9 +26,17 @@ interface ProjectCardProps {
       comments: number;
     };
   };
+  currentUserId?: string;
+  showEditButton?: boolean;
 }
 
-export function ProjectCard({ project }: ProjectCardProps) {
+export function ProjectCard({
+  project,
+  currentUserId,
+  showEditButton,
+}: ProjectCardProps) {
+  const isOwner = currentUserId === project.user.id;
+
   return (
     <div className="bg-gray-800 rounded-lg overflow-hidden shadow-lg transition-transform hover:scale-[1.02]">
       <Link href={`/projects/${project.id}`}>
@@ -42,11 +51,22 @@ export function ProjectCard({ project }: ProjectCardProps) {
         </div>
       </Link>
       <div className="p-4">
-        <Link href={`/projects/${project.id}`}>
-          <h3 className="text-xl font-semibold text-purple-400 mb-2 hover:text-purple-300">
-            {project.name}
-          </h3>
-        </Link>
+        <div className="flex items-center justify-between mb-2">
+          <Link href={`/projects/${project.id}`}>
+            <h3 className="text-xl font-semibold text-purple-400 hover:text-purple-300">
+              {project.name}
+            </h3>
+          </Link>
+          {showEditButton && isOwner && (
+            <Link
+              href={`/projects/${project.id}/edit`}
+              className="p-2 text-gray-400 hover:text-purple-400 transition-colors"
+              title="Edit project"
+            >
+              <Pencil className="w-4 h-4" />
+            </Link>
+          )}
+        </div>
 
         {/* Creator Info */}
         <div className="text-gray-400 text-sm space-y-1.5 mb-3">
