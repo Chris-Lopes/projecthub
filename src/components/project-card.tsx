@@ -77,9 +77,15 @@ export function ProjectCard({ project }: ProjectCardProps) {
 
         <div className="mt-4 flex items-center justify-between text-sm text-gray-400">
           <div className="flex items-center gap-4">
-            <span>{project.views} views</span>
-            <span>{project.likes} likes</span>
-            <span>{project._count.comments} comments</span>
+            <span className="flex items-center gap-1">
+              {project.views} <Eye className="w-4 h-4" />
+            </span>
+            <span className="flex items-center gap-1">
+              {project.likes} <Heart className="w-4 h-4" />
+            </span>
+            <span className="flex items-center gap-1">
+              {project._count.comments} <MessageSquare className="w-4 h-4" />
+            </span>
           </div>
           <Link
             href={project.github_url}

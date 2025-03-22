@@ -52,7 +52,7 @@ export function LikeButton({
     try {
       const result = await toggleProjectLike(projectId);
       if (!result.error) {
-        setLiked(result.liked);
+        setLiked(result.liked ?? false);
         setLikeCount((prev) => (result.liked ? prev + 1 : prev - 1));
         router.refresh(); // Refresh the page to update the server-side count
       } else {
