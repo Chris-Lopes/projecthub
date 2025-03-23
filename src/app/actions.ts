@@ -1106,7 +1106,7 @@ export async function getProject(id: string) {
   }
 }
 
-export async function getProjectsAction() {
+export async function getProjectsAction(page = 1, limit = 9) {
   const user = await getUser();
   const userDb = user
     ? await Prisma.userDB.findUnique({
@@ -1114,45 +1114,84 @@ export async function getProjectsAction() {
       })
     : null;
 
-  const projects = await Prisma.project.findMany({
-    where: {
-      OR: [
-        { status: ProjectStatus.APPROVED },
-        // Show all projects for admin
-        user?.email === process.env.ADMIN_USER_EMAIL
-          ? {}
-          : // Show user's own projects and collaborations
-          userDb
-          ? {
-              OR: [
-                { userId: userDb.id },
-                {
-                  collaborators: {
-                    some: { userId: userDb.id },
-                  },
-                },
-              ],
-            }
-          : undefined,
-      ].filter(
-        (condition): condition is Exclude<typeof condition, null | undefined> =>
-          condition !== null && condition !== undefined
-      ),
-    },
-    include: {
-      user: {
-        include: {
-          student: true,
-        },
-      },
-      _count: {
-        select: {
-          comments: true,
-        },
-      },
-    },
-    orderBy: [{ likes: "desc" }, { views: "desc" }, { createdAt: "desc" }],
-  });
+  const skip = (page - 1) * limit;
 
-  return { projects, currentUserId: userDb?.id };
+  const [projects, totalCount] = await Promise.all([
+    Prisma.project.findMany({
+      where: {
+        OR: [
+          { status: ProjectStatus.APPROVED },
+          user?.email === process.env.ADMIN_USER_EMAIL
+            ? {}
+            : userDb
+            ? {
+                OR: [
+                  { userId: userDb.id },
+                  {
+                    collaborators: {
+                      some: { userId: userDb.id },
+                    },
+                  },
+                ],
+              }
+            : undefined,
+        ].filter(Boolean),
+      },
+      include: {
+        user: {
+          select: {
+            id: true,
+            name: true,
+            roleType: true,
+            student: {
+              select: {
+                roll_no: true,
+                class: true,
+                academic_year: true,
+              },
+            },
+          },
+        },
+        _count: {
+          select: {
+            comments: true,
+          },
+        },
+      },
+      orderBy: [{ likes: "desc" }, { views: "desc" }, { createdAt: "desc" }],
+      take: limit,
+      skip,
+    }),
+    Prisma.project.count({
+      where: {
+        OR: [
+          { status: ProjectStatus.APPROVED },
+          user?.email === process.env.ADMIN_USER_EMAIL
+            ? {}
+            : userDb
+            ? {
+                OR: [
+                  { userId: userDb.id },
+                  {
+                    collaborators: {
+                      some: { userId: userDb.id },
+                    },
+                  },
+                ],
+              }
+            : undefined,
+        ].filter(Boolean),
+      },
+    }),
+  ]);
+
+  return {
+    projects,
+    currentUserId: userDb?.id,
+    pagination: {
+      total: totalCount,
+      pageCount: Math.ceil(totalCount / limit),
+      currentPage: page,
+    },
+  };
 }
