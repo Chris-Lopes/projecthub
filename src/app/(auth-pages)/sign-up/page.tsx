@@ -9,7 +9,7 @@ import { FormEvent } from "react";
 import { redirect } from "next/navigation";
 type ActionResponse = {
   error: boolean;
-  message: string;  
+  message: string;
 };
 
 export default function Signup() {
@@ -36,32 +36,54 @@ export default function Signup() {
             redirect("/sign-in");
           }
         }}
-        className="flex flex-col min-w-64 max-w-md w-full p-6 rounded-lg shadow-sm"
+        className="flex flex-col min-w-64 max-w-md w-full p-6 rounded-lg bg-gray-800/50"
       >
-        <h1 className="text-2xl font-medium mb-2">Sign up</h1>
-        <p className="text-sm text-foreground mb-6">
+        <h1 className="text-2xl font-medium mb-2 text-gray-100">Sign up</h1>
+        <p className="text-sm text-gray-300 mb-6">
           Already have an account?{" "}
-          <Link className="text-primary font-medium underline" href="/sign-in">
+          <Link
+            className="text-purple-400 hover:text-purple-300 font-medium underline"
+            href="/sign-in"
+          >
             Sign in
           </Link>
         </p>
         <div className="flex flex-col gap-2">
-          <Label htmlFor="name">Name</Label>
-          <Input name="name" placeholder="name" required />
-          <Label htmlFor="email">Email</Label>
-          <Input name="email" placeholder="you@example.com" required />
-          <Label htmlFor="password">Password</Label>
+          <Label htmlFor="name" className="text-gray-200">
+            Name
+          </Label>
+          <Input
+            name="name"
+            placeholder="name"
+            required
+            className="bg-gray-700 border-gray-600 text-gray-100 placeholder:text-gray-400"
+          />
+          <Label htmlFor="email" className="text-gray-200">
+            Email
+          </Label>
+          <Input
+            name="email"
+            placeholder="you@example.com"
+            required
+            className="bg-gray-700 border-gray-600 text-gray-100 placeholder:text-gray-400"
+          />
+          <Label htmlFor="password" className="text-gray-200">
+            Password
+          </Label>
           <Input
             type="password"
             name="password"
             placeholder="Your password"
             minLength={6}
             required
+            className="bg-gray-700 border-gray-600 text-gray-100 placeholder:text-gray-400"
           />
-          <Label htmlFor="role">Role</Label>
+          <Label htmlFor="role" className="text-gray-200">
+            Role
+          </Label>
           <select
             name="role"
-            className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+            className="flex h-10 w-full rounded-md border border-gray-600 bg-gray-700 px-3 py-2 text-sm text-gray-100 ring-offset-gray-800 file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-gray-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-purple-500 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
             required
             onChange={(e) => setSelectedRole(e.target.value)}
           >
@@ -73,13 +95,22 @@ export default function Signup() {
 
           {selectedRole === "student" && (
             <>
-              <Label htmlFor="roll_no">Roll Number</Label>
-              <Input name="roll_no" placeholder="Roll Number" required />
+              <Label htmlFor="roll_no" className="text-gray-200">
+                Roll Number
+              </Label>
+              <Input
+                name="roll_no"
+                placeholder="Roll Number"
+                required
+                className="bg-gray-700 border-gray-600 text-gray-100 placeholder:text-gray-400"
+              />
 
-              <Label htmlFor="class">Class</Label>
+              <Label htmlFor="class" className="text-gray-200">
+                Class
+              </Label>
               <select
                 name="class"
-                className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                className="flex h-10 w-full rounded-md border border-gray-600 bg-gray-700 px-3 py-2 text-sm text-gray-100 ring-offset-gray-800 file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-gray-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-purple-500 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                 required
               >
                 <option value="">Select a class</option>
@@ -95,10 +126,12 @@ export default function Signup() {
                 </option>
               </select>
 
-              <Label htmlFor="academic_year">Academic Year</Label>
+              <Label htmlFor="academic_year" className="text-gray-200">
+                Academic Year
+              </Label>
               <select
                 name="academic_year"
-                className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                className="flex h-10 w-full rounded-md border border-gray-600 bg-gray-700 px-3 py-2 text-sm text-gray-100 ring-offset-gray-800 file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-gray-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-purple-500 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                 required
               >
                 <option value="">Select year</option>
@@ -110,7 +143,11 @@ export default function Signup() {
             </>
           )}
 
-          <SubmitButton pendingText="Signing up..." disabled={isLoading}>
+          <SubmitButton
+            pendingText="Signing up..."
+            disabled={isLoading}
+            className="bg-purple-600 hover:bg-purple-700 text-white mt-4"
+          >
             {isLoading ? "Creating account..." : "Sign up"}
           </SubmitButton>
         </div>
