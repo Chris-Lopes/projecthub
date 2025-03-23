@@ -10,6 +10,8 @@ import { Textarea } from "@/components/ui/textarea";
 import { SDGSelect } from "@/components/sdg-select";
 import { SDGGoal } from "@prisma/client";
 import { Badge } from "@/components/ui/badge";
+import Image from "next/image";
+import { imageUpload } from "@/app/actions";
 
 export default function NewProjectPage() {
   const router = useRouter();
@@ -161,25 +163,62 @@ export default function NewProjectPage() {
               onChange={(e) =>
                 setFormData({ ...formData, github_url: e.target.value })
               }
-              placeholder="https://github.com/username/repository"
+              placeholder="https://github.com/username/repository (should be public)"
               className="bg-gray-700 border-gray-600"
             />
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="thumbnail_url">Thumbnail URL</Label>
-            <Input
-              id="thumbnail_url"
-              name="thumbnail_url"
-              type="url"
-              required
-              value={formData.thumbnail_url}
-              onChange={(e) =>
-                setFormData({ ...formData, thumbnail_url: e.target.value })
-              }
-              placeholder="https://example.com/image.jpg"
-              className="bg-gray-700 border-gray-600"
-            />
+            <Label htmlFor="thumbnail">Project Thumbnail</Label>
+            <div className="flex flex-col gap-4">
+              {formData.thumbnail_url && (
+                <div className="relative w-full h-48">
+                  <Image
+                    src={formData.thumbnail_url}
+                    alt="Project thumbnail preview"
+                    fill
+                    className="object-cover rounded-md"
+                  />
+                </div>
+              )}
+              <div className="flex gap-4 items-center">
+                <Input
+                  id="thumbnail"
+                  name="thumbnail"
+                  type="file"
+                  accept="image/*"
+                  onChange={async (e) => {
+                    const file = e.target.files?.[0];
+                    if (file) {
+                      const formData = new FormData();
+                      formData.append("file", file);
+                      const result = await imageUpload(formData);
+                      if (result && "data" in result && result.data) {
+                        setFormData((prev) => ({
+                          ...prev,
+                          thumbnail_url: result.data.publicUrl,
+                        }));
+                      } else if (result && "error" in result) {
+                        console.error("Upload failed:", result.error);
+                      }
+                    }
+                  }}
+                  className="bg-gray-700 border-gray-600"
+                />
+                <span className="text-sm text-gray-400">or</span>
+                <Input
+                  id="thumbnail_url"
+                  name="thumbnail_url"
+                  type="url"
+                  value={formData.thumbnail_url}
+                  onChange={(e) =>
+                    setFormData({ ...formData, thumbnail_url: e.target.value })
+                  }
+                  placeholder="Enter image URL directly"
+                  className="bg-gray-700 border-gray-600"
+                />
+              </div>
+            </div>
           </div>
 
           <div>

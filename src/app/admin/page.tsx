@@ -69,6 +69,7 @@ export default async function AdminPage() {
                     action={async () => {
                       "use server";
                       await approveProject(project.id);
+                      redirect("/admin");
                     }}
                   >
                     <Button
@@ -82,6 +83,7 @@ export default async function AdminPage() {
                     action={async () => {
                       "use server";
                       await rejectProject(project.id);
+                      redirect("/admin");
                     }}
                   >
                     <Button type="submit" variant="destructive">

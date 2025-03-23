@@ -1180,3 +1180,33 @@ export async function getProjectsAction(page = 1, limit = 9) {
     },
   };
 }
+
+export async function imageUpload(formData: FormData) {
+  const supabase = await createClient();
+  const file = formData.get("file") as File;
+  if (!file) return { error: "No file uploaded" };
+
+  const buffer = await file.arrayBuffer();
+
+  // Upload to Supabase Storage
+  const { data, error } = await supabase.storage
+    .from("projecthub-test-bucket") // Bucket name
+    .upload(`projects/thumbnails/${file.name}`, buffer, {
+      contentType: file.type,
+      upsert: true,
+    });
+
+  if (error) {
+    console.error("Supabase Error:", error);
+    return { error: error.message };
+  }
+
+  if (data) {
+    const { data: urlData } = supabase.storage
+      .from("projecthub-test-bucket")
+      .getPublicUrl(`projects/thumbnails/${file.name}`);
+    return { data: urlData };
+  }
+
+  return { error: "Failed to get public URL" };
+}
