@@ -28,7 +28,7 @@ export function CommentForm({ projectId }: CommentFormProps) {
     try {
       const result = await createComment(formData);
       if (result.error) {
-        setError(result.message);
+        setError(result.message || "Failed to create comment");
       } else {
         setContent("");
         router.refresh();
