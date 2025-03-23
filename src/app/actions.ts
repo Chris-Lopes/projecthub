@@ -1116,27 +1116,30 @@ export async function getProjectsAction(page = 1, limit = 9) {
 
   const skip = (page - 1) * limit;
 
-  const [projects, totalCount] = await Promise.all([
-    Prisma.project.findMany({
-      where: {
-        OR: [
-          { status: ProjectStatus.APPROVED },
-          user?.email === process.env.ADMIN_USER_EMAIL
-            ? {}
-            : userDb
-            ? {
+  const whereCondition = {
+    OR: [
+      { status: ProjectStatus.APPROVED },
+      user?.email === process.env.ADMIN_USER_EMAIL
+        ? { status: { not: undefined } }
+        : userDb
+        ? {
+            AND: [
+              { userId: userDb.id },
+              {
                 OR: [
                   { userId: userDb.id },
-                  {
-                    collaborators: {
-                      some: { userId: userDb.id },
-                    },
-                  },
+                  { collaborators: { some: { userId: userDb.id } } },
                 ],
-              }
-            : undefined,
-        ].filter(Boolean),
-      },
+              },
+            ],
+          }
+        : { status: ProjectStatus.APPROVED },
+    ],
+  };
+
+  const [projects, totalCount] = await Promise.all([
+    Prisma.project.findMany({
+      where: whereCondition,
       include: {
         user: {
           select: {
@@ -1163,25 +1166,7 @@ export async function getProjectsAction(page = 1, limit = 9) {
       skip,
     }),
     Prisma.project.count({
-      where: {
-        OR: [
-          { status: ProjectStatus.APPROVED },
-          user?.email === process.env.ADMIN_USER_EMAIL
-            ? {}
-            : userDb
-            ? {
-                OR: [
-                  { userId: userDb.id },
-                  {
-                    collaborators: {
-                      some: { userId: userDb.id },
-                    },
-                  },
-                ],
-              }
-            : undefined,
-        ].filter(Boolean),
-      },
+      where: whereCondition,
     }),
   ]);
 
