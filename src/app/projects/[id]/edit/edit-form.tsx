@@ -10,6 +10,10 @@ import {
 } from "@/app/actions";
 import { Project } from "@prisma/client";
 import { UserCircle, X } from "lucide-react";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { Textarea } from "@/components/ui/textarea";
+import { SDGSelect } from "@/components/sdg-select";
 
 interface EditProjectFormProps {
   project: Project;
@@ -21,6 +25,7 @@ interface EditProjectFormData {
   description: string;
   thumbnail_url: string;
   github_url: string;
+  sdgGoals: string[];
 }
 
 interface Collaborator {
@@ -47,6 +52,7 @@ export default function EditProjectForm({
     description: project.description,
     thumbnail_url: project.thumbnail_url,
     github_url: project.github_url,
+    sdgGoals: project.sdgGoals || [],
   });
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -56,6 +62,9 @@ export default function EditProjectForm({
   const [isAddingCollaborator, setIsAddingCollaborator] = useState(false);
   const [collaboratorError, setCollaboratorError] = useState<string | null>(
     null
+  );
+  const [selectedSDGs, setSelectedSDGs] = useState<string[]>(
+    project.sdgGoals || []
   );
 
   useEffect(() => {
@@ -158,6 +167,9 @@ export default function EditProjectForm({
     form.append("description", formData.description);
     form.append("thumbnail_url", formData.thumbnail_url);
     form.append("github_url", formData.github_url);
+    selectedSDGs.forEach((goal) => {
+      form.append("sdgGoals", goal);
+    });
 
     try {
       const result = await updateProject(project.id, form);
@@ -185,12 +197,13 @@ export default function EditProjectForm({
           >
             Project Name
           </label>
-          <input
+          <Input
             type="text"
             id="name"
+            name="name"
             value={formData.name}
             onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-            className="mt-1 p-2 block w-full rounded-md bg-gray-700 border-gray-600 text-gray-300 shadow-sm focus:border-purple-500 focus:ring-purple-500"
+            className="mt-1 bg-gray-800 text-gray-300 border-gray-700"
             required
             placeholder="Enter project name"
           />
@@ -217,14 +230,15 @@ export default function EditProjectForm({
               {isFetchingReadme ? "Fetching README..." : "Use GitHub README"}
             </button>
           </div>
-          <textarea
+          <Textarea
             id="description"
+            name="description"
             value={formData.description}
             onChange={(e) =>
               setFormData({ ...formData, description: e.target.value })
             }
             rows={4}
-            className="mt-1 p-2  block w-full rounded-md bg-gray-700 border-gray-600 text-gray-300 shadow-sm focus:border-purple-500 focus:ring-purple-500"
+            className="mt-1 bg-gray-800 text-gray-300 border-gray-700"
             required
             placeholder="Describe your project"
           />
@@ -237,14 +251,15 @@ export default function EditProjectForm({
           >
             GitHub URL
           </label>
-          <input
+          <Input
             type="url"
             id="github_url"
+            name="github_url"
             value={formData.github_url}
             onChange={(e) =>
               setFormData({ ...formData, github_url: e.target.value })
             }
-            className="mt-1 p-2  block w-full rounded-md bg-gray-700 border-gray-600 text-gray-300 shadow-sm focus:border-purple-500 focus:ring-purple-500"
+            className="mt-1 bg-gray-800 text-gray-300 border-gray-700"
             required
             placeholder="https://github.com/username/repository"
           />
@@ -257,17 +272,25 @@ export default function EditProjectForm({
           >
             Thumbnail URL
           </label>
-          <input
+          <Input
             type="url"
             id="thumbnail_url"
+            name="thumbnail_url"
             value={formData.thumbnail_url}
             onChange={(e) =>
               setFormData({ ...formData, thumbnail_url: e.target.value })
             }
-            className="mt-1 p-2  block w-full rounded-md bg-gray-700 border-gray-600 text-gray-300 shadow-sm focus:border-purple-500 focus:ring-purple-500"
+            className="mt-1 bg-gray-800 text-gray-300 border-gray-700"
             required
             placeholder="https://example.com/image.jpg"
           />
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium text-gray-300 mb-2">
+            SDG Goals
+          </label>
+          <SDGSelect selected={selectedSDGs} onChange={setSelectedSDGs} />
         </div>
 
         {error && <p className="text-red-400 text-sm">{error}</p>}
@@ -280,7 +303,7 @@ export default function EditProjectForm({
           >
             Cancel
           </button>
-          <button
+          <Button
             type="submit"
             disabled={isLoading}
             className={`px-4 py-2 text-sm font-medium text-white bg-purple-500 rounded-md hover:bg-purple-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-purple-500 ${
@@ -288,7 +311,7 @@ export default function EditProjectForm({
             }`}
           >
             {isLoading ? "Saving..." : "Save Changes"}
-          </button>
+          </Button>
         </div>
       </form>
 

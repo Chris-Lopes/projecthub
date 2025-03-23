@@ -1,7 +1,69 @@
 import Image from "next/image";
 import Link from "next/link";
 import { Eye, Heart, MessageSquare, Pencil } from "lucide-react";
-import { ProjectStatus, RoleType } from "@prisma/client";
+import { ProjectStatus, RoleType, SDGGoal } from "@prisma/client";
+import { Badge } from "@/components/ui/badge";
+
+// Define SDG goals directly in this file for server-side rendering
+const sdgGoals = [
+  { value: SDGGoal.NO_POVERTY, label: "No Poverty", number: 1 },
+  { value: SDGGoal.ZERO_HUNGER, label: "Zero Hunger", number: 2 },
+  {
+    value: SDGGoal.GOOD_HEALTH,
+    label: "Good Health and Well-being",
+    number: 3,
+  },
+  { value: SDGGoal.QUALITY_EDUCATION, label: "Quality Education", number: 4 },
+  { value: SDGGoal.GENDER_EQUALITY, label: "Gender Equality", number: 5 },
+  {
+    value: SDGGoal.CLEAN_WATER,
+    label: "Clean Water and Sanitation",
+    number: 6,
+  },
+  {
+    value: SDGGoal.AFFORDABLE_ENERGY,
+    label: "Affordable and Clean Energy",
+    number: 7,
+  },
+  {
+    value: SDGGoal.DECENT_WORK,
+    label: "Decent Work and Economic Growth",
+    number: 8,
+  },
+  {
+    value: SDGGoal.INDUSTRY_INNOVATION,
+    label: "Industry, Innovation and Infrastructure",
+    number: 9,
+  },
+  {
+    value: SDGGoal.REDUCED_INEQUALITIES,
+    label: "Reduced Inequalities",
+    number: 10,
+  },
+  {
+    value: SDGGoal.SUSTAINABLE_CITIES,
+    label: "Sustainable Cities and Communities",
+    number: 11,
+  },
+  {
+    value: SDGGoal.RESPONSIBLE_CONSUMPTION,
+    label: "Responsible Consumption and Production",
+    number: 12,
+  },
+  { value: SDGGoal.CLIMATE_ACTION, label: "Climate Action", number: 13 },
+  { value: SDGGoal.LIFE_BELOW_WATER, label: "Life Below Water", number: 14 },
+  { value: SDGGoal.LIFE_ON_LAND, label: "Life on Land", number: 15 },
+  {
+    value: SDGGoal.PEACE_JUSTICE,
+    label: "Peace, Justice and Strong Institutions",
+    number: 16,
+  },
+  {
+    value: SDGGoal.PARTNERSHIPS,
+    label: "Partnerships for the Goals",
+    number: 17,
+  },
+] as const;
 
 interface ProjectCardProps {
   project: {
@@ -13,6 +75,7 @@ interface ProjectCardProps {
     views: number;
     likes: number;
     status: ProjectStatus;
+    sdgGoals: SDGGoal[];
     user: {
       id: string;
       name: string;
@@ -111,9 +174,29 @@ export function ProjectCard({
           )}
         </div>
 
-        <p className="text-gray-400 text-sm line-clamp-2">
-          {project.description.slice(0, 50)}...
+        <p className="text-gray-400 text-sm line-clamp-2 mb-3">
+          {project.description}
         </p>
+
+        {/* SDG Goals */}
+        {project.sdgGoals && project.sdgGoals.length > 0 && (
+          <div className="mb-3">
+            <div className="flex flex-wrap gap-1">
+              {project.sdgGoals.map((goal) => {
+                const sdgGoal = sdgGoals.find((g) => g.value === goal);
+                return sdgGoal ? (
+                  <Badge
+                    key={goal}
+                    variant="outline"
+                    className="bg-purple-900/50 text-purple-300 text-xs"
+                  >
+                    {sdgGoal.number}. {sdgGoal.label}
+                  </Badge>
+                ) : null;
+              })}
+            </div>
+          </div>
+        )}
 
         <div className="mt-4 flex items-center justify-between text-sm text-gray-400">
           <div className="flex items-center gap-4">

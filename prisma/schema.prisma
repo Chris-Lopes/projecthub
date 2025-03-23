@@ -34,6 +34,26 @@ enum NotificationType {
   NEW_COMMENT
 }
 
+enum SDGGoal {
+  NO_POVERTY
+  ZERO_HUNGER
+  GOOD_HEALTH
+  QUALITY_EDUCATION
+  GENDER_EQUALITY
+  CLEAN_WATER
+  AFFORDABLE_ENERGY
+  DECENT_WORK
+  INDUSTRY_INNOVATION
+  REDUCED_INEQUALITIES
+  SUSTAINABLE_CITIES
+  RESPONSIBLE_CONSUMPTION
+  CLIMATE_ACTION
+  LIFE_BELOW_WATER
+  LIFE_ON_LAND
+  PEACE_JUSTICE
+  PARTNERSHIPS
+}
+
 model UserDB {
   id                  String                @id @default(uuid())
   name                String
@@ -96,6 +116,7 @@ model Project {
   views         Int                   @default(0)
   likes         Int                   @default(0)
   status        ProjectStatus         @default(PENDING)
+  sdgGoals      SDGGoal[]             @default([])
   user          UserDB                @relation(fields: [userId], references: [id])
   userId        String
   comments      Comment[]

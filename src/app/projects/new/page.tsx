@@ -5,6 +5,11 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Textarea } from "@/components/ui/textarea";
+import { SDGSelect } from "@/components/sdg-select";
+import { SDGGoal } from "@prisma/client";
+import { Badge } from "@/components/ui/badge";
 
 export default function NewProjectPage() {
   const router = useRouter();
@@ -17,6 +22,7 @@ export default function NewProjectPage() {
     thumbnail_url: "",
     github_url: "",
   });
+  const [selectedSDGs, setSelectedSDGs] = useState<SDGGoal[]>([]);
 
   const fetchGithubReadme = async () => {
     try {
@@ -72,6 +78,9 @@ export default function NewProjectPage() {
     setError(null);
 
     const form = new FormData(e.target as HTMLFormElement);
+    selectedSDGs.forEach((goal) => {
+      form.append("sdgGoals", goal);
+    });
 
     try {
       const result = await createProject(form);
@@ -171,6 +180,24 @@ export default function NewProjectPage() {
               placeholder="https://example.com/image.jpg"
               className="bg-gray-700 border-gray-600"
             />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-300 mb-2">
+              SDG Goals
+            </label>
+            <SDGSelect selected={selectedSDGs} onChange={setSelectedSDGs} />
+            <div className="mt-2 flex flex-wrap gap-2">
+              {selectedSDGs.map((goal) => (
+                <Badge
+                  key={goal}
+                  variant="outline"
+                  className="bg-purple-900/50 text-purple-300 text-xs"
+                >
+                  {goal}
+                </Badge>
+              ))}
+            </div>
           </div>
 
           {error && <p className="text-red-400 text-sm">{error}</p>}

@@ -5,7 +5,7 @@ import { createClient } from "@/utils/supabase/server";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { Prisma } from "@/lib/prismaClient";
-import { RoleType, NotificationType } from "@prisma/client";
+import { RoleType, NotificationType, SDGGoal } from "@prisma/client";
 
 export const signUpAction = async (formData: FormData) => {
   const email = formData.get("email")?.toString();
@@ -281,6 +281,9 @@ export async function createProject(formData: FormData) {
   const description = formData.get("description")?.toString();
   const thumbnail_url = formData.get("thumbnail_url")?.toString();
   const github_url = formData.get("github_url")?.toString();
+  const sdgGoals = formData
+    .getAll("sdgGoals")
+    .map((goal) => goal.toString() as SDGGoal);
 
   if (!name || !description || !thumbnail_url || !github_url) {
     return {
@@ -297,6 +300,7 @@ export async function createProject(formData: FormData) {
         thumbnail_url,
         github_url,
         userId: userDb.id,
+        sdgGoals,
       },
     });
 
@@ -672,6 +676,9 @@ export async function updateProject(projectId: string, formData: FormData) {
   const description = formData.get("description")?.toString();
   const thumbnail_url = formData.get("thumbnail_url")?.toString();
   const github_url = formData.get("github_url")?.toString();
+  const sdgGoals = formData
+    .getAll("sdgGoals")
+    .map((goal) => goal.toString() as SDGGoal);
 
   if (!name || !description || !thumbnail_url || !github_url) {
     return {
@@ -688,6 +695,7 @@ export async function updateProject(projectId: string, formData: FormData) {
         description,
         thumbnail_url,
         github_url,
+        sdgGoals,
       },
     });
 
@@ -1042,4 +1050,53 @@ export async function markNotificationAsRead(notificationId: string) {
 export async function checkIsAdmin() {
   const user = await getUser();
   return user?.email === process.env.ADMIN_USER_EMAIL;
+}
+
+export async function getProject(id: string) {
+  try {
+    const project = await Prisma.project.findUnique({
+      where: { id },
+      include: {
+        user: {
+          select: {
+            id: true,
+            name: true,
+            email: true,
+            roleType: true,
+            student: {
+              select: {
+                roll_no: true,
+                class: true,
+                academic_year: true,
+              },
+            },
+          },
+        },
+        comments: {
+          include: {
+            user: {
+              include: {
+                student: true,
+              },
+            },
+          },
+          orderBy: {
+            createdAt: "desc",
+          },
+        },
+        _count: {
+          select: { comments: true },
+        },
+      },
+    });
+
+    if (!project) {
+      return { error: true, message: "Project not found" };
+    }
+
+    return { error: false, project };
+  } catch (error) {
+    console.error("Error fetching project:", error);
+    return { error: true, message: "Failed to fetch project" };
+  }
 }
