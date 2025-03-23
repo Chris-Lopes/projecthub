@@ -8,7 +8,7 @@ import {
   removeCollaborator,
   getProjectCollaborators,
 } from "@/app/actions";
-import { Project } from "@prisma/client";
+import { Project, SDGGoal } from "@prisma/client";
 import { UserCircle, X } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -25,7 +25,7 @@ interface EditProjectFormData {
   description: string;
   thumbnail_url: string;
   github_url: string;
-  sdgGoals: string[];
+  sdgGoals: SDGGoal[];
 }
 
 interface Collaborator {
@@ -63,7 +63,7 @@ export default function EditProjectForm({
   const [collaboratorError, setCollaboratorError] = useState<string | null>(
     null
   );
-  const [selectedSDGs, setSelectedSDGs] = useState<string[]>(
+  const [selectedSDGs, setSelectedSDGs] = useState<SDGGoal[]>(
     project.sdgGoals || []
   );
 
