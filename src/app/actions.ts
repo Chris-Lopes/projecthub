@@ -5,7 +5,12 @@ import { createClient } from "@/utils/supabase/server";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { Prisma } from "@/lib/prismaClient";
-import { RoleType, NotificationType, SDGGoal } from "@prisma/client";
+import {
+  RoleType,
+  NotificationType,
+  SDGGoal,
+  ProjectStatus,
+} from "@prisma/client";
 
 export const signUpAction = async (formData: FormData) => {
   const email = formData.get("email")?.toString();
@@ -1099,4 +1104,55 @@ export async function getProject(id: string) {
     console.error("Error fetching project:", error);
     return { error: true, message: "Failed to fetch project" };
   }
+}
+
+export async function getProjectsAction() {
+  const user = await getUser();
+  const userDb = user
+    ? await Prisma.userDB.findUnique({
+        where: { email: user.email },
+      })
+    : null;
+
+  const projects = await Prisma.project.findMany({
+    where: {
+      OR: [
+        { status: ProjectStatus.APPROVED },
+        // Show all projects for admin
+        user?.email === process.env.ADMIN_USER_EMAIL
+          ? {}
+          : // Show user's own projects and collaborations
+          userDb
+          ? {
+              OR: [
+                { userId: userDb.id },
+                {
+                  collaborators: {
+                    some: { userId: userDb.id },
+                  },
+                },
+              ],
+            }
+          : undefined,
+      ].filter(
+        (condition): condition is Exclude<typeof condition, null | undefined> =>
+          condition !== null && condition !== undefined
+      ),
+    },
+    include: {
+      user: {
+        include: {
+          student: true,
+        },
+      },
+      _count: {
+        select: {
+          comments: true,
+        },
+      },
+    },
+    orderBy: [{ likes: "desc" }, { views: "desc" }, { createdAt: "desc" }],
+  });
+
+  return { projects, currentUserId: userDb?.id };
 }
