@@ -68,11 +68,16 @@ export const signUpAction = async (formData: FormData) => {
     }
 
     // First attempt the signup
+    const roleType = role.toUpperCase() as RoleType;
     const { error: signUpError, data: authData } = await supabase.auth.signUp({
       email,
       password,
       options: {
-        emailRedirectTo: `${origin}/auth/callback`,
+        emailRedirectTo: undefined,
+        data: {
+          name,
+          role: roleType,
+        },
       },
     });
 
@@ -85,7 +90,6 @@ export const signUpAction = async (formData: FormData) => {
     }
 
     // Create the user in UserDB
-    const roleType = role.toUpperCase() as RoleType;
     const user = await Prisma.userDB.create({
       data: {
         email,

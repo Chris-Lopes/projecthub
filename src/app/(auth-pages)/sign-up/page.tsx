@@ -6,10 +6,10 @@ import { Label } from "@/components/ui/label";
 import Link from "next/link";
 import { useState } from "react";
 import { FormEvent } from "react";
-
+import { redirect } from "next/navigation";
 type ActionResponse = {
   error: boolean;
-  message: string;
+  message: string;  
 };
 
 export default function Signup() {
@@ -32,8 +32,8 @@ export default function Signup() {
           } catch (error) {
             console.error(error);
           } finally {
-            alert("Check your email for the verification link");
             setIsLoading(false);
+            redirect("/sign-in");
           }
         }}
         className="flex flex-col min-w-64 max-w-md w-full p-6 rounded-lg shadow-sm"
