@@ -1,5 +1,5 @@
 import { redirect } from "next/navigation";
-import { getUser } from "./actions";
+import { getUser } from "@/app/actions";
 import { Prisma } from "@/lib/prismaClient";
 export default async function Home() {
   const User = await getUser();
