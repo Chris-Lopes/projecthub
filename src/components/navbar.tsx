@@ -2,8 +2,8 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Button } from "./ui/button";
-import { PlusCircle, LogOut } from "lucide-react";
-import { signOutAction, checkIsAdmin } from "@/app/actions";
+import { PlusCircle } from "lucide-react";
+import { checkIsAdmin } from "@/app/actions";
 import { useEffect, useState } from "react";
 import { NotificationDropdown } from "./notification-dropdown";
 
@@ -65,7 +65,6 @@ export function Navbar() {
             </div>
           </div>
           <div className="flex items-center space-x-4">
-            <NotificationDropdown />
             <Link href="/projects/new">
               <Button
                 variant="ghost"
@@ -75,15 +74,7 @@ export function Navbar() {
                 New Project
               </Button>
             </Link>
-            <form action={signOutAction}>
-              <Button
-                type="submit"
-                variant="ghost"
-                className="text-gray-300 hover:text-gray-100 hover:bg-gray-800"
-              >
-                <LogOut className="h-5 w-5" />
-              </Button>
-            </form>
+            <NotificationDropdown />
           </div>
         </div>
       </div>
