@@ -5,8 +5,6 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { Button } from "@/components/ui/button";
-import { Textarea } from "@/components/ui/textarea";
 import { SDGSelect } from "@/components/sdg-select";
 import { SDGGoal } from "@prisma/client";
 import { Badge } from "@/components/ui/badge";

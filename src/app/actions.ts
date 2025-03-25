@@ -6,11 +6,20 @@ import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { Prisma } from "@/lib/prismaClient";
 import {
+  GoogleGenAI,
+  createUserContent,
+  createPartFromUri,
+} from "@google/genai";
+import {
   RoleType,
   NotificationType,
   SDGGoal,
   ProjectStatus,
 } from "@prisma/client";
+
+const genAI = new GoogleGenAI({
+  apiKey: process.env.GOOGLE_API_KEY as string,
+});
 
 export const signUpAction = async (formData: FormData) => {
   const email = formData.get("email")?.toString();
@@ -1214,3 +1223,90 @@ export async function imageUpload(formData: FormData) {
 
   return { error: "Failed to get public URL" };
 }
+
+async function extractJSONFromText(text: string) {
+  try {
+    try {
+      return JSON.parse(text);
+    } catch {
+      // Try to find a JSON object in the text using regex
+      const jsonMatch = text.match(/\{[^]*\}/);
+      if (!jsonMatch) {
+        throw new Error("No JSON object found in response");
+      }
+      // Clean and parse the JSON
+      const cleanJson = jsonMatch[0].trim();
+      return JSON.parse(cleanJson);
+    }
+  } catch (error) {
+    console.error("JSON extraction error:", error);
+    throw new Error("Failed to parse data");
+  }
+}
+
+export async function StudentIdCardExtraction(formData: FormData) {
+  try {
+    const file = formData.get("id_card") as File;
+    if (!file) {
+      throw new Error("No image file provided");
+    }
+
+    // Upload the image file
+    const image = await genAI.files.upload({
+      file: file,
+    });
+
+    const prompt = `
+      Analyze this ID Card image and extract ONLY the following information:
+      1. Name
+      2. Roll No
+      3. Branch
+      4. Also get the current academic year of the student (eg : on the id card it is written STUDENT IDENTITY CARD 2023 - 2027 , so get the last year "2027" return this last date as numeric_last_year)
+
+      Return ONLY a JSON object with this exact format:
+      {
+        "name": "store name here",
+        "roll_no": "numeric_roll_no_here",
+        "branch": "store branch here",
+        "year": numeric_last_year
+      }
+    `;
+
+    // Generate content with structured prompt and image
+    const result = await genAI.models.generateContent({
+      model: "gemini-2.0-flash",
+      contents: [
+        createUserContent([
+          prompt,
+          createPartFromUri(image.uri as string, image.mimeType as string),
+        ]),
+      ],
+    });
+
+    // Get the response text
+    const responseText = await result.text;
+    console.log(responseText);
+
+    // Parse the JSON from the response
+    const extractedData = await extractJSONFromText(responseText as string);
+
+    if (!extractedData || typeof extractedData !== "object") {
+      throw new Error("Invalid response format");
+    }
+
+    // Validate the extracted data structure
+    const requiredFields = ["name", "roll_no", "branch", "year"];
+    for (const field of requiredFields) {
+      if (!(field in extractedData)) {
+        throw new Error(`Missing required field: ${field}`);
+      }
+    }
+
+    return extractedData;
+  } catch (error) {
+    console.error("Error processing image:", error);
+    throw error;
+  }
+}
+
+
