@@ -83,7 +83,7 @@ interface ProjectCardProps {
       student: {
         roll_no: string;
         class: string;
-        academic_year: number;
+        academic_year: string;
       } | null;
     };
     _count: {

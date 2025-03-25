@@ -74,7 +74,20 @@ export default function EditProjectForm({
   const loadCollaborators = async () => {
     const result = await getProjectCollaborators(project.id);
     if (!result.error && result.collaborators) {
-      setCollaborators(result.collaborators);
+      setCollaborators(
+        result.collaborators.map((collab) => ({
+          ...collab,
+          user: {
+            ...collab.user,
+            student: collab.user.student
+              ? {
+                  ...collab.user.student,
+                  academic_year: parseInt(collab.user.student.academic_year),
+                }
+              : null,
+          },
+        }))
+      );
     }
   };
 
