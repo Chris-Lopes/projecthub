@@ -165,29 +165,7 @@ export default function Signup() {
                           rollNoInput.value = extractedData.roll_no;
                         }
                         if (classSelect && extractedData.branch) {
-                          // Clean and normalize the branch name for better matching
-                          const branchName = extractedData.branch
-                            .toLowerCase()
-                            .replace(/\s*-\s*/, " ") // normalize hyphens
-                            .trim();
-
-                          const options = Array.from(classSelect.options);
-                          const bestMatch = options.find((opt) => {
-                            const optionValue = opt.value.toLowerCase();
-                            // Check for "Computer A" in "COMPUTERS - A"
-                            if (branchName.includes("computer")) {
-                              const division = branchName.slice(-1); // Get last character (A, B, C)
-                              return (
-                                optionValue ===
-                                `computer ${division}`.toLowerCase()
-                              );
-                            }
-                            return optionValue.includes(branchName);
-                          });
-
-                          if (bestMatch) {
-                            classSelect.value = bestMatch.value;
-                          }
+                          classSelect.value = extractedData.branch;
                         }
                         if (academicYearSelect && extractedData.year) {
                           const currentDate = new Date();
