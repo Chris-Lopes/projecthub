@@ -152,11 +152,11 @@ export default function Signup() {
                           'input[name="roll_no"]'
                         ) as HTMLInputElement;
                         const classSelect = form.querySelector(
-                          'select[name="class"]'
-                        ) as HTMLSelectElement;
+                          'input[name="class"]'
+                        ) as HTMLInputElement;
                         const academicYearSelect = form.querySelector(
-                          'select[name="academic_year"]'
-                        ) as HTMLSelectElement;
+                          'input[name="academic_year"]'
+                        ) as HTMLInputElement;
 
                         if (nameInput && extractedData.name) {
                           nameInput.value = extractedData.name;
@@ -238,38 +238,24 @@ export default function Signup() {
               <Label htmlFor="class" className="text-gray-200">
                 Class {isAutoFilling && "(Auto-filling...)"}
               </Label>
-              <select
+              <input
                 name="class"
+                placeholder="Class"
                 className="flex h-10 w-full rounded-md border border-gray-600 bg-gray-700 px-3 py-2 text-sm text-gray-100 ring-offset-gray-800 file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-gray-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-purple-500 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                 required
-              >
-                <option value="">Select a class</option>
-                <option value="Computer A">Computer A</option>
-                <option value="Computer B">Computer B</option>
-                <option value="Computer C">Computer C</option>
-                <option value="Electronics and Computer Science">
-                  Electronics and Computer Science
-                </option>
-                <option value="Mechanical">Mechanical</option>
-                <option value="Artificial Intelligence and Data Science">
-                  Artificial Intelligence and Data Science
-                </option>
-              </select>
+                readOnly
+              />
 
               <Label htmlFor="academic_year" className="text-gray-200">
                 Academic Year {isAutoFilling && "(Auto-filling...)"}
               </Label>
-              <select
+              <input
                 name="academic_year"
+                placeholder="Academic Year"
                 className="flex h-10 w-full rounded-md border border-gray-600 bg-gray-700 px-3 py-2 text-sm text-gray-100 ring-offset-gray-800 file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-gray-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-purple-500 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                 required
-              >
-                <option value="">Select year</option>
-                <option value="1">First Year</option>
-                <option value="2">Second Year</option>
-                <option value="3">Third Year</option>
-                <option value="4">Fourth Year</option>
-              </select>
+                readOnly
+              />
             </>
           )}
 
