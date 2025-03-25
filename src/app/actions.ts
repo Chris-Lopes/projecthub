@@ -63,6 +63,33 @@ export const signUpAction = async (formData: FormData) => {
     }
   }
 
+  // Additional validation for faculty role
+  if (role.toUpperCase() === "FACULTY") {
+    const employee_no = formData.get("employee_no")?.toString();
+    const designation = formData.get("designation")?.toString();
+    const department = formData.get("department")?.toString();
+
+    if (!employee_no || !designation || !department) {
+      return {
+        error: true,
+        message:
+          "Employee number, designation and department are required for faculty",
+      };
+    }
+
+    // Check if employee number already exists
+    const existingFaculty = await Prisma.faculty.findUnique({
+      where: { employee_no },
+    });
+
+    if (existingFaculty) {
+      return {
+        error: true,
+        message: "A faculty member with this employee number already exists",
+      };
+    }
+  }
+
   try {
     // Check if user already exists in UserDB
     const existingUser = await Prisma.userDB.findUnique({
@@ -133,9 +160,16 @@ export const signUpAction = async (formData: FormData) => {
         });
         break;
       case "FACULTY":
+        const employee_no = formData.get("employee_no")?.toString() || "";
+        const designation = formData.get("designation")?.toString() || "";
+        const department = formData.get("department")?.toString() || "";
+
         await Prisma.faculty.create({
           data: {
             userId: user.id,
+            employee_no,
+            designation,
+            department,
           },
         });
         break;
@@ -1309,4 +1343,67 @@ export async function StudentIdCardExtraction(formData: FormData) {
   }
 }
 
+export async function FacultyIdCardExtraction(formData: FormData) {
+  try {
+    const file = formData.get("id_card") as File;
+    if (!file) {
+      throw new Error("No image file provided");
+    }
 
+    // Upload the image file
+    const image = await genAI.files.upload({
+      file: file,
+    });
+
+    const prompt = `
+      Analyze this ID Card image and extract ONLY the following information:
+      1. Name
+      2. Employee No
+      3. Designation
+      4. Department
+
+      Return ONLY a JSON object with this exact format:
+      {
+        "name": "store name here",
+        "employee_no": numeric_employee_no_here,
+        "designation": "store designation here",
+        "department": "store department here"
+      }
+    `;
+
+    // Generate content with structured prompt and image
+    const result = await genAI.models.generateContent({
+      model: "gemini-2.0-flash",
+      contents: [
+        createUserContent([
+          prompt,
+          createPartFromUri(image.uri as string, image.mimeType as string),
+        ]),
+      ],
+    });
+
+    // Get the response text
+    const responseText = await result.text;
+    console.log(responseText);
+
+    // Parse the JSON from the response
+    const extractedData = await extractJSONFromText(responseText as string);
+
+    if (!extractedData || typeof extractedData !== "object") {
+      throw new Error("Invalid response format");
+    }
+
+    // Validate the extracted data structure
+    const requiredFields = ["name", "employee_no", "designation", "department"];
+    for (const field of requiredFields) {
+      if (!(field in extractedData)) {
+        throw new Error(`Missing required field: ${field}`);
+      }
+    }
+
+    return extractedData;
+  } catch (error) {
+    console.error("Error processing image:", error);
+    throw error;
+  }
+}
