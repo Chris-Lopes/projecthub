@@ -27,7 +27,6 @@ export const signUpAction = async (formData: FormData) => {
   const role = formData.get("role")?.toString();
   const name = formData.get("name")?.toString();
   const supabase = await createClient();
-  const origin = (await headers()).get("origin");
 
   if (!email || !password || !role || !name) {
     return {
@@ -146,9 +145,7 @@ export const signUpAction = async (formData: FormData) => {
       case "STUDENT":
         const roll_no = formData.get("roll_no")?.toString() || "";
         const class_name = formData.get("class")?.toString() || "";
-        const academic_year = parseInt(
-          formData.get("academic_year")?.toString() || "0"
-        );
+        const academic_year = formData.get("academic_year")?.toString() || "";
 
         await Prisma.student.create({
           data: {

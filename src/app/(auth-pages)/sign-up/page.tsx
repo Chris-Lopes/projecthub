@@ -10,7 +10,7 @@ import { Label } from "@/components/ui/label";
 import Link from "next/link";
 import { useState } from "react";
 import { FormEvent } from "react";
-import { redirect } from "next/navigation";
+import { useRouter } from "next/navigation";
 
 type ActionResponse = {
   error: boolean;
@@ -18,10 +18,12 @@ type ActionResponse = {
 };
 
 export default function Signup() {
+  const router = useRouter();
   const [selectedRole, setSelectedRole] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [textResult, setTextResult] = useState("");
   const [isAutoFilling, setIsAutoFilling] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen p-4">
@@ -31,16 +33,21 @@ export default function Signup() {
           const form = e.currentTarget;
           const formData = new FormData(form);
           setIsLoading(true);
+          setError(null);
+
           try {
             const result = (await signUpAction(formData)) as ActionResponse;
             if (!result.error) {
               form.reset();
+              router.push("/sign-in");
+            } else {
+              setError(result.message);
             }
           } catch (error) {
             console.error(error);
+            setError("An unexpected error occurred. Please try again.");
           } finally {
             setIsLoading(false);
-            redirect("/sign-in");
           }
         }}
         className="flex flex-col min-w-64 max-w-md w-full p-6 rounded-lg bg-gray-800/50"
@@ -55,6 +62,11 @@ export default function Signup() {
             Sign in
           </Link>
         </p>
+        {error && (
+          <div className="mb-4 p-3 rounded bg-red-500/20 border border-red-500 text-red-200 text-sm">
+            {error}
+          </div>
+        )}
         <div className="flex flex-col gap-2">
           <Label htmlFor="name" className="text-gray-200">
             Name {isAutoFilling && "(Auto-filling...)"}
@@ -220,7 +232,6 @@ export default function Signup() {
                 placeholder="Roll Number"
                 required
                 readOnly
-                disabled
                 className="bg-gray-700 border-gray-600 text-gray-100 placeholder:text-gray-400"
               />
 
@@ -231,7 +242,6 @@ export default function Signup() {
                 name="class"
                 className="flex h-10 w-full rounded-md border border-gray-600 bg-gray-700 px-3 py-2 text-sm text-gray-100 ring-offset-gray-800 file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-gray-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-purple-500 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                 required
-                disabled
               >
                 <option value="">Select a class</option>
                 <option value="Computer A">Computer A</option>
@@ -251,7 +261,6 @@ export default function Signup() {
               </Label>
               <select
                 name="academic_year"
-                disabled
                 className="flex h-10 w-full rounded-md border border-gray-600 bg-gray-700 px-3 py-2 text-sm text-gray-100 ring-offset-gray-800 file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-gray-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-purple-500 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                 required
               >
@@ -337,7 +346,6 @@ export default function Signup() {
                 placeholder="Employee Number"
                 required
                 readOnly
-                disabled
                 className="bg-gray-700 border-gray-600 text-gray-100 placeholder:text-gray-400"
               />
 
@@ -349,7 +357,6 @@ export default function Signup() {
                 placeholder="Designation"
                 required
                 readOnly
-                disabled
                 className="bg-gray-700 border-gray-600 text-gray-100 placeholder:text-gray-400"
               />
 
@@ -361,7 +368,6 @@ export default function Signup() {
                 placeholder="Department"
                 required
                 readOnly
-                disabled
                 className="bg-gray-700 border-gray-600 text-gray-100 placeholder:text-gray-400"
               />
             </>

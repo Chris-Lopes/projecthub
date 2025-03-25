@@ -86,7 +86,7 @@ model Student {
   userId        String   @unique
   roll_no       String   @unique
   class         String
-  academic_year Int
+  academic_year String
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
 }
