@@ -1,5 +1,24 @@
 @import "tailwindcss";
 @import "tw-animate-css";
+@import "@fontsource/inter";
+@import "@fontsource/bricolage-grotesque";
+
+button {
+  cursor: pointer;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: "Bricolage Grotesque", sans-serif;
+}
+
+body {
+  font-family: "Inter", sans-serif;
+}
 
 @custom-variant dark (&:is(.dark *));
 
