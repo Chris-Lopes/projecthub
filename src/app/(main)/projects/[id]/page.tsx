@@ -1,16 +1,20 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
-import { ProjectImage } from "@/components/project-image";
-import { ViewCounter } from "@/components/view-counter";
-import { LikeButton } from "@/components/like-button";
 import { RoleType, SDGGoal } from "@prisma/client";
-import { CommentForm } from "@/components/comment-form";
-import { CommentList } from "@/components/comment-list";
 import { getUser, getProject } from "@/app/actions";
 import { Badge } from "@/components/ui/badge";
 import { Prisma } from "@/lib/prismaClient";
+import dynamic from "next/dynamic";
 
-// Define SDG goals for server-side rendering
+const ProjectImage = dynamic(() => import("@/components/project-image").then(mod => mod.ProjectImage), {
+  loading: () => <div className="bg-gray-800 h-64 animate-pulse rounded-t-lg"></div>
+});
+
+const ViewCounter = dynamic(() => import("@/components/view-counter").then(mod => mod.ViewCounter));
+const LikeButton = dynamic(() => import("@/components/like-button").then(mod => mod.LikeButton));
+const CommentForm = dynamic(() => import("@/components/comment-form").then(mod => mod.CommentForm));
+const CommentList = dynamic(() => import("@/components/comment-list").then(mod => mod.CommentList));
+
 const sdgGoals = [
   { value: SDGGoal.NO_POVERTY, label: "No Poverty", number: 1 },
   { value: SDGGoal.ZERO_HUNGER, label: "Zero Hunger", number: 2 },
@@ -75,8 +79,9 @@ interface PageProps {
   params: Promise<{ id: string }>;
 }
 
+export const revalidate = 60; // Revalidate this page every 60 seconds
+
 export default async function ProjectPage({ params }: PageProps) {
-  // Await the params object
   const { id } = await params;
   const result = await getProject(id);
   const user = await getUser();
