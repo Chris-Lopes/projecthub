@@ -21,6 +21,7 @@ export default function NewProjectPage() {
     description: "",
     thumbnail_url: "",
     github_url: "",
+    website_url: "",
   });
   const [selectedSDGs, setSelectedSDGs] = useState<SDGGoal[]>([]);
 
@@ -184,6 +185,27 @@ export default function NewProjectPage() {
                 placeholder="Describe your project"
                 className="w-full min-h-[150px] rounded-md bg-slate-700/50 border-slate-600/50 p-3 text-slate-300 focus:border-teal-500/50 focus:ring-teal-500/20 transition-all duration-200"
               />
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="website_url" className="text-slate-300">
+                Live Website URL
+              </Label>
+              <Input
+                id="website_url"
+                name="website_url"
+                type="url"
+                value={formData.website_url}
+                onChange={(e) =>
+                  setFormData({ ...formData, website_url: e.target.value })
+                }
+                placeholder="https://your-deployed-project.com"
+                className="bg-slate-700/50 border-slate-600/50 focus:border-teal-500/50 focus:ring-teal-500/20"
+              />
+              <p className="text-xs text-slate-400">
+                Enter the URL where your project is deployed (optional). This
+                will be embedded as a live demo on your project page.
+              </p>
             </div>
 
             <div className="space-y-2">

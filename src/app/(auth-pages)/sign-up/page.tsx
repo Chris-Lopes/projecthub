@@ -8,8 +8,7 @@ import { SubmitButton } from "@/components/submit-button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import Link from "next/link";
-import { useState } from "react";
-import { FormEvent } from "react";
+import { useState, FormEvent } from "react";
 import { useRouter } from "next/navigation";
 
 type ActionResponse = {
@@ -26,326 +25,435 @@ export default function Signup() {
   const [error, setError] = useState<string | null>(null);
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen p-4">
-      <form
-        onSubmit={async (e: FormEvent<HTMLFormElement>) => {
-          e.preventDefault();
-          const form = e.currentTarget;
-          const formData = new FormData(form);
-          setIsLoading(true);
-          setError(null);
-
-          try {
-            const result = (await signUpAction(formData)) as ActionResponse;
-            if (!result.error) {
-              form.reset();
-              router.push("/sign-in");
-            } else {
-              setError(result.message);
-            }
-          } catch (error) {
-            console.error(error);
-            setError("An unexpected error occurred. Please try again.");
-          } finally {
-            setIsLoading(false);
-          }
-        }}
-        className="flex flex-col min-w-64 max-w-md w-full p-6 rounded-lg bg-gray-800/50"
-      >
-        <h1 className="text-2xl font-medium mb-2 text-gray-100">Sign up</h1>
-        <p className="text-sm text-gray-300 mb-6">
-          Already have an account?{" "}
-          <Link
-            className="text-purple-400 hover:text-purple-300 font-medium underline"
-            href="/sign-in"
-          >
-            Sign in
-          </Link>
+    <div className="w-full max-w-sm mx-auto relative z-10 py-10">
+      <div className="mb-8 text-center">
+        <h1 className="text-3xl font-bold text-white mb-2">
+          Create an account
+        </h1>
+        <p className="text-slate-400">
+          Join ProjectHub to showcase your projects
         </p>
-        {error && (
-          <div className="mb-4 p-3 rounded bg-red-500/20 border border-red-500 text-red-200 text-sm">
-            {error}
-          </div>
-        )}
-        <div className="flex flex-col gap-2">
-          <Label htmlFor="name" className="text-gray-200">
-            Name {isAutoFilling && "(Auto-filling...)"}
-          </Label>
-          <Input
-            name="name"
-            placeholder="name"
-            required
-            className="bg-gray-700 border-gray-600 text-gray-100 placeholder:text-gray-400"
-          />
-          <Label htmlFor="email" className="text-gray-200">
-            Email
-          </Label>
-          <Input
-            name="email"
-            placeholder="you@example.com"
-            required
-            className="bg-gray-700 border-gray-600 text-gray-100 placeholder:text-gray-400"
-          />
-          <Label htmlFor="password" className="text-gray-200">
-            Password
-          </Label>
-          <Input
-            type="password"
-            name="password"
-            placeholder="Your password"
-            minLength={6}
-            required
-            className="bg-gray-700 border-gray-600 text-gray-100 placeholder:text-gray-400"
-          />
-          <Label htmlFor="role" className="text-gray-200">
-            Role
-          </Label>
-          <select
-            name="role"
-            className="flex h-10 w-full rounded-md border border-gray-600 bg-gray-700 px-3 py-2 text-sm text-gray-100 ring-offset-gray-800 file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-gray-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-purple-500 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-            required
-            onChange={(e) => setSelectedRole(e.target.value)}
-          >
-            <option value="">Select a role</option>
-            <option value="viewer">Viewer</option>
-            <option value="student">Student</option>
-            <option value="faculty">Faculty</option>
-          </select>
+      </div>
 
-          {selectedRole === "student" && (
-            <>
-              {/* {textResult && (
-                <div className="relative w-full p-4 mb-4 bg-gray-700 rounded-md">
-                  <pre className="text-sm text-gray-200 whitespace-pre-wrap">
-                    {textResult}
-                  </pre>
+      <div className="bg-slate-800/50 backdrop-blur-sm rounded-xl border border-slate-700/50 shadow-lg p-6">
+        <form
+          onSubmit={async (e: FormEvent<HTMLFormElement>) => {
+            e.preventDefault();
+            const form = e.currentTarget;
+            const formData = new FormData(form);
+            setIsLoading(true);
+            setError(null);
+
+            try {
+              const result = (await signUpAction(formData)) as ActionResponse;
+              if (!result.error) {
+                form.reset();
+                router.push("/sign-in");
+              } else {
+                setError(result.message);
+              }
+            } catch (error) {
+              console.error(error);
+              setError("An unexpected error occurred. Please try again.");
+            } finally {
+              setIsLoading(false);
+            }
+          }}
+          className="space-y-5"
+        >
+          {error && (
+            <div className="p-4 rounded-md bg-red-900/20 border border-red-700/50 text-red-200 text-sm">
+              {error}
+            </div>
+          )}
+
+          <div className="space-y-4">
+            <div className="space-y-2">
+              <Label htmlFor="name" className="text-slate-300">
+                Name{" "}
+                {isAutoFilling && (
+                  <span className="text-teal-400 text-xs ml-1">
+                    (Auto-filling...)
+                  </span>
+                )}
+              </Label>
+              <Input
+                name="name"
+                id="name"
+                placeholder="Your full name"
+                required
+                className="bg-slate-700/50 border-slate-600/50 focus:border-teal-500/50 focus:ring-teal-500/20 text-slate-200 placeholder:text-slate-500"
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="email" className="text-slate-300">
+                Email
+              </Label>
+              <Input
+                name="email"
+                id="email"
+                type="email"
+                placeholder="you@example.com"
+                required
+                className="bg-slate-700/50 border-slate-600/50 focus:border-teal-500/50 focus:ring-teal-500/20 text-slate-200 placeholder:text-slate-500"
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="password" className="text-slate-300">
+                Password
+              </Label>
+              <Input
+                type="password"
+                name="password"
+                id="password"
+                placeholder="Choose a secure password"
+                minLength={6}
+                required
+                className="bg-slate-700/50 border-slate-600/50 focus:border-teal-500/50 focus:ring-teal-500/20 text-slate-200 placeholder:text-slate-500"
+              />
+              <p className="text-xs text-slate-400">
+                Must be at least 6 characters
+              </p>
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="role" className="text-slate-300">
+                Role
+              </Label>
+              <select
+                name="role"
+                id="role"
+                className="w-full rounded-md border border-slate-600/50 bg-slate-700/50 px-3 py-2 text-slate-200 focus:border-teal-500/50 focus:ring-teal-500/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal-500/50 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-900"
+                required
+                onChange={(e) => setSelectedRole(e.target.value)}
+              >
+                <option value="">Select your role</option>
+                <option value="viewer">Viewer</option>
+                <option value="student">Student</option>
+                <option value="faculty">Faculty</option>
+              </select>
+            </div>
+
+            {selectedRole === "student" && (
+              <div className="mt-6 space-y-4 border-t border-slate-700/50 pt-5">
+                <h3 className="text-slate-300 font-medium">
+                  Student Information
+                </h3>
+                <p className="text-xs text-slate-400">
+                  Upload your college ID card to auto-fill the details
+                </p>
+
+                <div className="space-y-2">
+                  <Label htmlFor="id_card" className="text-slate-300">
+                    College ID Card
+                  </Label>
+                  <Input
+                    id="id_card"
+                    name="id_card"
+                    type="file"
+                    accept="image/*"
+                    onChange={async (e) => {
+                      const file = e.target.files?.[0];
+                      if (file) {
+                        try {
+                          setIsAutoFilling(true);
+                          const formData = new FormData();
+                          formData.append("id_card", file);
+
+                          const extractedData = await StudentIdCardExtraction(
+                            formData
+                          );
+                          setTextResult(JSON.stringify(extractedData, null, 2));
+
+                          // Auto-fill the form fields
+                          const form = e.target.closest("form");
+                          if (form) {
+                            const nameInput = form.querySelector(
+                              'input[name="name"]'
+                            ) as HTMLInputElement;
+                            const rollNoInput = form.querySelector(
+                              'input[name="roll_no"]'
+                            ) as HTMLInputElement;
+                            const classSelect = form.querySelector(
+                              'input[name="class"]'
+                            ) as HTMLInputElement;
+                            const academicYearSelect = form.querySelector(
+                              'input[name="academic_year"]'
+                            ) as HTMLInputElement;
+
+                            if (nameInput && extractedData.name) {
+                              nameInput.value = extractedData.name;
+                            }
+                            if (rollNoInput && extractedData.roll_no) {
+                              rollNoInput.value = extractedData.roll_no;
+                            }
+                            if (classSelect && extractedData.branch) {
+                              classSelect.value = extractedData.branch;
+                            }
+                            if (academicYearSelect && extractedData.year) {
+                              const currentDate = new Date();
+                              const currentYear = currentDate.getFullYear();
+                              const currentMonth = currentDate.getMonth() + 1;
+
+                              // If we're in or after July, we're in the next academic year
+                              const effectiveYear =
+                                currentMonth >= 7
+                                  ? currentYear + 1
+                                  : currentYear;
+
+                              // For a 4-year course:
+                              // If graduation is in 2027 and current effective year is 2024, they are in 1st year
+                              // If graduation is in 2027 and current effective year is 2025, they are in 2nd year
+                              // and so on...
+                              const yearsUntilGraduation =
+                                extractedData.year - effectiveYear;
+                              const academicYear = Math.min(
+                                Math.max(1, 4 - yearsUntilGraduation),
+                                4
+                              ).toString();
+
+                              academicYearSelect.value = academicYear;
+                            }
+                          }
+                        } catch (error) {
+                          console.error("OCR Error:", error);
+                          setTextResult(
+                            "Failed to extract text from the image. Please try again or fill in the details manually."
+                          );
+                        } finally {
+                          setIsAutoFilling(false);
+                        }
+                      }
+                    }}
+                    className="bg-slate-700/50 border-slate-600/50 focus:border-teal-500/50 focus:ring-teal-500/20 text-slate-200"
+                  />
                 </div>
-              )} */}
-              <Label htmlFor="id_card" className="text-gray-200">
-                Id Card
-              </Label>
-              <Input
-                id="id_card"
-                name="id_card"
-                type="file"
-                accept="image/*"
-                onChange={async (e) => {
-                  const file = e.target.files?.[0];
-                  if (file) {
-                    try {
-                      setIsAutoFilling(true);
-                      const formData = new FormData();
-                      formData.append("id_card", file);
 
-                      const extractedData = await StudentIdCardExtraction(
-                        formData
-                      );
-                      setTextResult(JSON.stringify(extractedData, null, 2));
+                <div className="space-y-2">
+                  <Label htmlFor="roll_no" className="text-slate-300">
+                    Roll Number{" "}
+                    {isAutoFilling && (
+                      <span className="text-teal-400 text-xs ml-1">
+                        (Auto-filling...)
+                      </span>
+                    )}
+                  </Label>
+                  <Input
+                    name="roll_no"
+                    id="roll_no"
+                    placeholder="Roll Number"
+                    required
+                    readOnly
+                    className="bg-slate-700/50 border-slate-600/50 focus:border-teal-500/50 focus:ring-teal-500/20 text-slate-200 placeholder:text-slate-500"
+                  />
+                </div>
 
-                      // Auto-fill the form fields
-                      const form = e.target.closest("form");
-                      if (form) {
-                        const nameInput = form.querySelector(
-                          'input[name="name"]'
-                        ) as HTMLInputElement;
-                        const rollNoInput = form.querySelector(
-                          'input[name="roll_no"]'
-                        ) as HTMLInputElement;
-                        const classSelect = form.querySelector(
-                          'input[name="class"]'
-                        ) as HTMLInputElement;
-                        const academicYearSelect = form.querySelector(
-                          'input[name="academic_year"]'
-                        ) as HTMLInputElement;
+                <div className="space-y-2">
+                  <Label htmlFor="class" className="text-slate-300">
+                    Class{" "}
+                    {isAutoFilling && (
+                      <span className="text-teal-400 text-xs ml-1">
+                        (Auto-filling...)
+                      </span>
+                    )}
+                  </Label>
+                  <Input
+                    name="class"
+                    id="class"
+                    placeholder="Class"
+                    required
+                    readOnly
+                    className="bg-slate-700/50 border-slate-600/50 focus:border-teal-500/50 focus:ring-teal-500/20 text-slate-200 placeholder:text-slate-500"
+                  />
+                </div>
 
-                        if (nameInput && extractedData.name) {
-                          nameInput.value = extractedData.name;
-                        }
-                        if (rollNoInput && extractedData.roll_no) {
-                          rollNoInput.value = extractedData.roll_no;
-                        }
-                        if (classSelect && extractedData.branch) {
-                          classSelect.value = extractedData.branch;
-                        }
-                        if (academicYearSelect && extractedData.year) {
-                          const currentDate = new Date();
-                          const currentYear = currentDate.getFullYear();
-                          const currentMonth = currentDate.getMonth() + 1;
+                <div className="space-y-2">
+                  <Label htmlFor="academic_year" className="text-slate-300">
+                    Academic Year{" "}
+                    {isAutoFilling && (
+                      <span className="text-teal-400 text-xs ml-1">
+                        (Auto-filling...)
+                      </span>
+                    )}
+                  </Label>
+                  <Input
+                    name="academic_year"
+                    id="academic_year"
+                    placeholder="Academic Year"
+                    required
+                    readOnly
+                    className="bg-slate-700/50 border-slate-600/50 focus:border-teal-500/50 focus:ring-teal-500/20 text-slate-200 placeholder:text-slate-500"
+                  />
+                </div>
+              </div>
+            )}
 
-                          // If we're in or after July, we're in the next academic year
-                          const effectiveYear =
-                            currentMonth >= 7 ? currentYear + 1 : currentYear;
+            {selectedRole === "faculty" && (
+              <div className="mt-6 space-y-4 border-t border-slate-700/50 pt-5">
+                <h3 className="text-slate-300 font-medium">
+                  Faculty Information
+                </h3>
+                <p className="text-xs text-slate-400">
+                  Upload your college ID card to auto-fill the details
+                </p>
 
-                          // For a 4-year course:
-                          // If graduation is in 2027 and current effective year is 2024, they are in 1st year
-                          // If graduation is in 2027 and current effective year is 2025, they are in 2nd year
-                          // and so on...
-                          const yearsUntilGraduation =
-                            extractedData.year - effectiveYear;
-                          const academicYear = Math.min(
-                            Math.max(1, 4 - yearsUntilGraduation),
-                            4
-                          ).toString();
+                <div className="space-y-2">
+                  <Label htmlFor="id_card" className="text-slate-300">
+                    College ID Card
+                  </Label>
+                  <Input
+                    id="id_card"
+                    name="id_card"
+                    type="file"
+                    accept="image/*"
+                    onChange={async (e) => {
+                      const file = e.target.files?.[0];
+                      if (file) {
+                        try {
+                          setIsAutoFilling(true);
+                          const formData = new FormData();
+                          formData.append("id_card", file);
 
-                          academicYearSelect.value = academicYear;
-                        }
-                      }
-                    } catch (error) {
-                      console.error("OCR Error:", error);
-                      setTextResult(
-                        "Failed to extract text from the image. Please try again or fill in the details manually."
-                      );
-                    } finally {
-                      setIsAutoFilling(false);
-                    }
-                  }
-                }}
-                className="bg-gray-700 border-gray-600"
-              />
-              <Label htmlFor="roll_no" className="text-gray-200">
-                Roll Number {isAutoFilling && "(Auto-filling...)"}
-              </Label>
-              <Input
-                name="roll_no"
-                placeholder="Roll Number"
-                required
-                readOnly
-                className="bg-gray-700 border-gray-600 text-gray-100 placeholder:text-gray-400"
-              />
+                          const extractedData = await FacultyIdCardExtraction(
+                            formData
+                          );
+                          setTextResult(JSON.stringify(extractedData, null, 2));
 
-              <Label htmlFor="class" className="text-gray-200">
-                Class {isAutoFilling && "(Auto-filling...)"}
-              </Label>
-              <input
-                name="class"
-                placeholder="Class"
-                className="flex h-10 w-full rounded-md border border-gray-600 bg-gray-700 px-3 py-2 text-sm text-gray-100 ring-offset-gray-800 file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-gray-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-purple-500 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-                required
-                readOnly
-              />
+                          // Auto-fill the form fields
+                          const form = e.target.closest("form");
+                          if (form) {
+                            const nameInput = form.querySelector(
+                              'input[name="name"]'
+                            ) as HTMLInputElement;
+                            const employeeNoInput = form.querySelector(
+                              'input[name="employee_no"]'
+                            ) as HTMLInputElement;
+                            const designationInput = form.querySelector(
+                              'input[name="designation"]'
+                            ) as HTMLInputElement;
+                            const departmentInput = form.querySelector(
+                              'input[name="department"]'
+                            ) as HTMLInputElement;
 
-              <Label htmlFor="academic_year" className="text-gray-200">
-                Academic Year {isAutoFilling && "(Auto-filling...)"}
-              </Label>
-              <input
-                name="academic_year"
-                placeholder="Academic Year"
-                className="flex h-10 w-full rounded-md border border-gray-600 bg-gray-700 px-3 py-2 text-sm text-gray-100 ring-offset-gray-800 file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-gray-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-purple-500 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-                required
-                readOnly
-              />
-            </>
-          )}
-
-          {selectedRole === "faculty" && (
-            <>
-              <Label htmlFor="id_card" className="text-gray-200">
-                Id Card
-              </Label>
-              <Input
-                id="id_card"
-                name="id_card"
-                type="file"
-                accept="image/*"
-                onChange={async (e) => {
-                  const file = e.target.files?.[0];
-                  if (file) {
-                    try {
-                      setIsAutoFilling(true);
-                      const formData = new FormData();
-                      formData.append("id_card", file);
-
-                      const extractedData = await FacultyIdCardExtraction(
-                        formData
-                      );
-                      setTextResult(JSON.stringify(extractedData, null, 2));
-
-                      // Auto-fill the form fields
-                      const form = e.target.closest("form");
-                      if (form) {
-                        const nameInput = form.querySelector(
-                          'input[name="name"]'
-                        ) as HTMLInputElement;
-                        const employeeNoInput = form.querySelector(
-                          'input[name="employee_no"]'
-                        ) as HTMLInputElement;
-                        const designationInput = form.querySelector(
-                          'input[name="designation"]'
-                        ) as HTMLInputElement;
-                        const departmentInput = form.querySelector(
-                          'input[name="department"]'
-                        ) as HTMLInputElement;
-
-                        if (nameInput && extractedData.name) {
-                          nameInput.value = extractedData.name;
-                        }
-                        if (employeeNoInput && extractedData.employee_no) {
-                          employeeNoInput.value =
-                            extractedData.employee_no.toString();
-                        }
-                        if (designationInput && extractedData.designation) {
-                          designationInput.value = extractedData.designation;
-                        }
-                        if (departmentInput && extractedData.department) {
-                          departmentInput.value = extractedData.department;
+                            if (nameInput && extractedData.name) {
+                              nameInput.value = extractedData.name;
+                            }
+                            if (employeeNoInput && extractedData.employee_no) {
+                              employeeNoInput.value =
+                                extractedData.employee_no.toString();
+                            }
+                            if (designationInput && extractedData.designation) {
+                              designationInput.value =
+                                extractedData.designation;
+                            }
+                            if (departmentInput && extractedData.department) {
+                              departmentInput.value = extractedData.department;
+                            }
+                          }
+                        } catch (error) {
+                          console.error("OCR Error:", error);
+                          setTextResult(
+                            "Failed to extract text from the image. Please try again or fill in the details manually."
+                          );
+                        } finally {
+                          setIsAutoFilling(false);
                         }
                       }
-                    } catch (error) {
-                      console.error("OCR Error:", error);
-                      setTextResult(
-                        "Failed to extract text from the image. Please try again or fill in the details manually."
-                      );
-                    } finally {
-                      setIsAutoFilling(false);
-                    }
-                  }
-                }}
-                className="bg-gray-700 border-gray-600"
-              />
-              <Label htmlFor="employee_no" className="text-gray-200">
-                Employee Number {isAutoFilling && "(Auto-filling...)"}
-              </Label>
-              <Input
-                name="employee_no"
-                placeholder="Employee Number"
-                required
-                readOnly
-                className="bg-gray-700 border-gray-600 text-gray-100 placeholder:text-gray-400"
-              />
+                    }}
+                    className="bg-slate-700/50 border-slate-600/50 focus:border-teal-500/50 focus:ring-teal-500/20 text-slate-200"
+                  />
+                </div>
 
-              <Label htmlFor="designation" className="text-gray-200">
-                Designation {isAutoFilling && "(Auto-filling...)"}
-              </Label>
-              <Input
-                name="designation"
-                placeholder="Designation"
-                required
-                readOnly
-                className="bg-gray-700 border-gray-600 text-gray-100 placeholder:text-gray-400"
-              />
+                <div className="space-y-2">
+                  <Label htmlFor="employee_no" className="text-slate-300">
+                    Employee Number{" "}
+                    {isAutoFilling && (
+                      <span className="text-teal-400 text-xs ml-1">
+                        (Auto-filling...)
+                      </span>
+                    )}
+                  </Label>
+                  <Input
+                    name="employee_no"
+                    id="employee_no"
+                    placeholder="Employee Number"
+                    required
+                    readOnly
+                    className="bg-slate-700/50 border-slate-600/50 focus:border-teal-500/50 focus:ring-teal-500/20 text-slate-200 placeholder:text-slate-500"
+                  />
+                </div>
 
-              <Label htmlFor="department" className="text-gray-200">
-                Department {isAutoFilling && "(Auto-filling...)"}
-              </Label>
-              <Input
-                name="department"
-                placeholder="Department"
-                required
-                readOnly
-                className="bg-gray-700 border-gray-600 text-gray-100 placeholder:text-gray-400"
-              />
-            </>
-          )}
+                <div className="space-y-2">
+                  <Label htmlFor="designation" className="text-slate-300">
+                    Designation{" "}
+                    {isAutoFilling && (
+                      <span className="text-teal-400 text-xs ml-1">
+                        (Auto-filling...)
+                      </span>
+                    )}
+                  </Label>
+                  <Input
+                    name="designation"
+                    id="designation"
+                    placeholder="Designation"
+                    required
+                    readOnly
+                    className="bg-slate-700/50 border-slate-600/50 focus:border-teal-500/50 focus:ring-teal-500/20 text-slate-200 placeholder:text-slate-500"
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="department" className="text-slate-300">
+                    Department{" "}
+                    {isAutoFilling && (
+                      <span className="text-teal-400 text-xs ml-1">
+                        (Auto-filling...)
+                      </span>
+                    )}
+                  </Label>
+                  <Input
+                    name="department"
+                    id="department"
+                    placeholder="Department"
+                    required
+                    readOnly
+                    className="bg-slate-700/50 border-slate-600/50 focus:border-teal-500/50 focus:ring-teal-500/20 text-slate-200 placeholder:text-slate-500"
+                  />
+                </div>
+              </div>
+            )}
+          </div>
 
           <SubmitButton
-            pendingText="Signing up..."
+            pendingText="Creating account..."
             disabled={isLoading}
-            className="bg-purple-600 hover:bg-purple-700 text-white mt-4"
+            className="w-full bg-teal-600 hover:bg-teal-500 text-white font-medium py-2.5 rounded-lg transition-colors focus:ring-2 focus:ring-teal-500/50 focus:ring-offset-1 focus:ring-offset-slate-900 mt-6"
           >
             {isLoading ? "Creating account..." : "Sign up"}
           </SubmitButton>
-        </div>
-      </form>
+        </form>
+      </div>
+
+      <div className="mt-6 text-center text-slate-400 text-sm">
+        Already have an account?{" "}
+        <Link
+          className="text-teal-400 hover:text-teal-300 font-medium transition-colors"
+          href="/sign-in"
+        >
+          Sign in
+        </Link>
+      </div>
+
+      <div className="mt-8 text-center">
+        <Link
+          href="/"
+          className="text-sm text-slate-500 hover:text-slate-400 transition-colors flex items-center justify-center gap-1"
+        >
+          <span>←</span> Back to home
+        </Link>
+      </div>
     </div>
   );
 }

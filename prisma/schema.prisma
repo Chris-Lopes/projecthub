@@ -116,6 +116,7 @@ model Project {
   name          String
   description   String
   thumbnail_url String
+  website_url   String?
   github_url    String
   views         Int                   @default(0)
   likes         Int                   @default(0)

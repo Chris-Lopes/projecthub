@@ -25,6 +25,7 @@ interface EditProjectFormData {
   description: string;
   thumbnail_url: string;
   github_url: string;
+  website_url: string; // Make sure this is defined
   sdgGoals: SDGGoal[];
 }
 
@@ -52,6 +53,7 @@ export default function EditProjectForm({
     description: project.description,
     thumbnail_url: project.thumbnail_url,
     github_url: project.github_url,
+    website_url: (project as any).website_url || "", // Add this with fallback
     sdgGoals: project.sdgGoals || [],
   });
   const [isLoading, setIsLoading] = useState(false);
@@ -180,6 +182,7 @@ export default function EditProjectForm({
     form.append("description", formData.description);
     form.append("thumbnail_url", formData.thumbnail_url);
     form.append("github_url", formData.github_url);
+    form.append("website_url", formData.website_url); // Add this line
     selectedSDGs.forEach((goal) => {
       form.append("sdgGoals", goal);
     });
@@ -276,6 +279,31 @@ export default function EditProjectForm({
             required
             placeholder="https://github.com/username/repository"
           />
+        </div>
+
+        {/* Add Website URL field */}
+        <div>
+          <label
+            htmlFor="website_url"
+            className="block text-sm font-medium text-slate-300"
+          >
+            Live Website URL
+          </label>
+          <Input
+            type="url"
+            id="website_url"
+            name="website_url"
+            value={formData.website_url}
+            onChange={(e) =>
+              setFormData({ ...formData, website_url: e.target.value })
+            }
+            className="mt-1 bg-slate-700/50 text-slate-300 border-slate-600/50 focus:border-teal-500/50 focus:ring-teal-500/20"
+            placeholder="https://your-deployed-project.com"
+          />
+          <p className="text-xs text-slate-400 mt-1">
+            Enter the URL where your project is deployed (optional). This will
+            be embedded as a live demo.
+          </p>
         </div>
 
         <div>

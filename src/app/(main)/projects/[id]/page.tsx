@@ -7,14 +7,33 @@ import { Prisma } from "@/lib/prismaClient";
 import dynamic from "next/dynamic";
 
 // Dynamic imports for better performance
-const ProjectImage = dynamic(() => import("@/components/project-image").then(mod => mod.ProjectImage), {
-  loading: () => <div className="bg-slate-800/70 h-64 animate-pulse rounded-t-lg"></div>
+const WebsiteEmbed = dynamic(() => import("@/components/website-embed"), {
+  loading: () => (
+    <div className="bg-slate-800/70 h-64 animate-pulse rounded-lg"></div>
+  ),
 });
 
-const ViewCounter = dynamic(() => import("@/components/view-counter").then(mod => mod.ViewCounter));
-const LikeButton = dynamic(() => import("@/components/like-button").then(mod => mod.LikeButton));
-const CommentForm = dynamic(() => import("@/components/comment-form").then(mod => mod.CommentForm));
-const CommentList = dynamic(() => import("@/components/comment-list").then(mod => mod.CommentList));
+const ProjectImage = dynamic(
+  () => import("@/components/project-image").then((mod) => mod.ProjectImage),
+  {
+    loading: () => (
+      <div className="bg-slate-800/70 h-64 animate-pulse rounded-t-lg"></div>
+    ),
+  }
+);
+
+const ViewCounter = dynamic(() =>
+  import("@/components/view-counter").then((mod) => mod.ViewCounter)
+);
+const LikeButton = dynamic(() =>
+  import("@/components/like-button").then((mod) => mod.LikeButton)
+);
+const CommentForm = dynamic(() =>
+  import("@/components/comment-form").then((mod) => mod.CommentForm)
+);
+const CommentList = dynamic(() =>
+  import("@/components/comment-list").then((mod) => mod.CommentList)
+);
 
 const sdgGoals = [
   { value: SDGGoal.NO_POVERTY, label: "No Poverty", number: 1 },
@@ -49,7 +68,7 @@ export default async function ProjectPage({ params }: PageProps) {
       {/* Decorative elements matching landing page */}
       <div className="fixed -top-64 -right-64 w-[30rem] h-[30rem] bg-teal-500/5 rounded-full blur-3xl" />
       <div className="fixed -bottom-64 -left-64 w-[30rem] h-[30rem] bg-indigo-500/5 rounded-full blur-3xl" />
-      
+
       <ViewCounter projectId={project.id} />
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         {/* Project Header */}
@@ -72,7 +91,17 @@ export default async function ProjectPage({ params }: PageProps) {
                 rel="noopener noreferrer"
                 className="bg-teal-700 hover:bg-teal-600 text-white px-4 py-2 rounded-md transition-all duration-300 flex items-center gap-2 whitespace-nowrap"
               >
-                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="20"
+                  height="20"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                >
                   <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path>
                 </svg>
                 View on GitHub
@@ -151,14 +180,22 @@ export default async function ProjectPage({ params }: PageProps) {
 
         {/* Project Description */}
         <div className="mt-8 bg-slate-800/50 backdrop-blur-sm rounded-xl border border-slate-700/50 shadow-lg p-6">
-          <h2 className="text-xl font-semibold text-white mb-4">
-            Description
-          </h2>
+          <h2 className="text-xl font-semibold text-white mb-4">Description</h2>
           <p className="text-slate-300 whitespace-pre-wrap">
             {project.description}
           </p>
         </div>
 
+        {project && (project as any).website_url && (
+          <div className="mt-8 bg-slate-800/50 backdrop-blur-sm rounded-xl border border-slate-700/50 shadow-lg p-6">
+            <h2 className="text-xl font-semibold text-white mb-4">Live Demo</h2>
+            <WebsiteEmbed
+              url={(project as any).website_url}
+              title={`${project.name} live preview`}
+            />
+          </div>
+        )}
+        
         {/* Comments Section */}
         <div className="mt-8 bg-slate-800/50 backdrop-blur-sm rounded-xl border border-slate-700/50 shadow-lg p-6">
           <h2 className="text-xl font-semibold text-white mb-4">
