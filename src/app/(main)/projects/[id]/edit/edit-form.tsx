@@ -206,7 +206,7 @@ export default function EditProjectForm({
         <div>
           <label
             htmlFor="name"
-            className="block text-sm font-medium text-gray-300"
+            className="block text-sm font-medium text-slate-300"
           >
             Project Name
           </label>
@@ -216,7 +216,7 @@ export default function EditProjectForm({
             name="name"
             value={formData.name}
             onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-            className="mt-1 bg-gray-800 text-gray-300 border-gray-700"
+            className="mt-1 bg-slate-700/50 text-slate-300 border-slate-600/50 focus:border-teal-500/50 focus:ring-teal-500/20"
             required
             placeholder="Enter project name"
           />
@@ -226,7 +226,7 @@ export default function EditProjectForm({
           <div className="flex items-center justify-between mb-2">
             <label
               htmlFor="description"
-              className="block text-sm font-medium text-gray-300"
+              className="block text-sm font-medium text-slate-300"
             >
               Description
             </label>
@@ -234,7 +234,7 @@ export default function EditProjectForm({
               type="button"
               onClick={fetchGithubReadme}
               disabled={isFetchingReadme || !formData.github_url}
-              className={`text-sm text-purple-400 hover:text-purple-300 ${
+              className={`text-sm text-teal-400 hover:text-teal-300 transition-colors ${
                 isFetchingReadme || !formData.github_url
                   ? "opacity-50 cursor-not-allowed"
                   : ""
@@ -251,7 +251,7 @@ export default function EditProjectForm({
               setFormData({ ...formData, description: e.target.value })
             }
             rows={4}
-            className="mt-1 bg-gray-800 text-gray-300 border-gray-700"
+            className="mt-1 bg-slate-700/50 text-slate-300 border-slate-600/50 focus:border-teal-500/50 focus:ring-teal-500/20"
             required
             placeholder="Describe your project"
           />
@@ -260,7 +260,7 @@ export default function EditProjectForm({
         <div>
           <label
             htmlFor="github_url"
-            className="block text-sm font-medium text-gray-300"
+            className="block text-sm font-medium text-slate-300"
           >
             GitHub URL
           </label>
@@ -272,7 +272,7 @@ export default function EditProjectForm({
             onChange={(e) =>
               setFormData({ ...formData, github_url: e.target.value })
             }
-            className="mt-1 bg-gray-800 text-gray-300 border-gray-700"
+            className="mt-1 bg-slate-700/50 text-slate-300 border-slate-600/50 focus:border-teal-500/50 focus:ring-teal-500/20"
             required
             placeholder="https://github.com/username/repository"
           />
@@ -281,7 +281,7 @@ export default function EditProjectForm({
         <div>
           <label
             htmlFor="thumbnail_url"
-            className="block text-sm font-medium text-gray-300"
+            className="block text-sm font-medium text-slate-300"
           >
             Thumbnail URL
           </label>
@@ -293,33 +293,37 @@ export default function EditProjectForm({
             onChange={(e) =>
               setFormData({ ...formData, thumbnail_url: e.target.value })
             }
-            className="mt-1 bg-gray-800 text-gray-300 border-gray-700"
+            className="mt-1 bg-slate-700/50 text-slate-300 border-slate-600/50 focus:border-teal-500/50 focus:ring-teal-500/20"
             required
             placeholder="https://example.com/image.jpg"
           />
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-300 mb-2">
+          <label className="block text-sm font-medium text-slate-300 mb-2">
             SDG Goals
           </label>
           <SDGSelect selected={selectedSDGs} onChange={setSelectedSDGs} />
         </div>
 
-        {error && <p className="text-red-400 text-sm">{error}</p>}
+        {error && (
+          <p className="text-red-400 text-sm p-3 rounded-md bg-red-900/20 border border-red-700/50">
+            {error}
+          </p>
+        )}
 
         <div className="flex justify-end gap-4">
           <button
             type="button"
             onClick={() => router.back()}
-            className="px-4 py-2 text-sm font-medium text-gray-300 bg-gray-700 rounded-md hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-purple-500"
+            className="px-4 py-2 text-sm font-medium text-slate-300 bg-slate-800/70 border border-slate-700 rounded-md hover:bg-slate-700/70 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-slate-800 focus:ring-teal-500/50 transition-all duration-300"
           >
             Cancel
           </button>
           <Button
             type="submit"
             disabled={isLoading}
-            className={`px-4 py-2 text-sm font-medium text-white bg-purple-500 rounded-md hover:bg-purple-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-purple-500 ${
+            className={`px-4 py-2 text-sm font-medium text-white bg-teal-700 rounded-md hover:bg-teal-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-slate-800 focus:ring-teal-500 transition-all duration-300 ${
               isLoading ? "opacity-50 cursor-not-allowed" : ""
             }`}
           >
@@ -329,8 +333,8 @@ export default function EditProjectForm({
       </form>
 
       {isOwner && (
-        <div className="bg-gray-800 p-6 rounded-lg space-y-4">
-          <h3 className="text-lg font-medium text-purple-400">
+        <div className="bg-slate-800/50 backdrop-blur-sm p-6 rounded-xl border border-slate-700/50 shadow-lg space-y-4">
+          <h3 className="text-lg font-medium text-teal-400">
             Project Collaborators
           </h3>
 
@@ -338,7 +342,7 @@ export default function EditProjectForm({
             <div>
               <label
                 htmlFor="collaborator_email"
-                className="block text-sm font-medium text-gray-300"
+                className="block text-sm font-medium text-slate-300"
               >
                 Add Collaborator by Email
               </label>
@@ -349,13 +353,13 @@ export default function EditProjectForm({
                   value={newCollaboratorEmail}
                   onChange={(e) => setNewCollaboratorEmail(e.target.value)}
                   placeholder="teammate@example.com"
-                  className="flex-1 p-2 rounded-md bg-gray-700 border-gray-600 text-gray-300 shadow-sm focus:border-purple-500 focus:ring-purple-500"
+                  className="flex-1 p-2 rounded-md bg-slate-700/50 border-slate-600/50 text-slate-300 shadow-sm focus:border-teal-500/50 focus:ring-teal-500/20"
                   required
                 />
                 <button
                   type="submit"
                   disabled={isAddingCollaborator || !newCollaboratorEmail}
-                  className={`px-4 py-2 text-sm font-medium text-white bg-purple-500 rounded-md hover:bg-purple-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-purple-500 ${
+                  className={`px-4 py-2 text-sm font-medium text-white bg-teal-700 rounded-md hover:bg-teal-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-slate-800 focus:ring-teal-500 transition-all duration-300 ${
                     isAddingCollaborator || !newCollaboratorEmail
                       ? "opacity-50 cursor-not-allowed"
                       : ""
@@ -367,7 +371,9 @@ export default function EditProjectForm({
             </div>
 
             {collaboratorError && (
-              <p className="text-red-400 text-sm">{collaboratorError}</p>
+              <p className="text-red-400 text-sm p-3 rounded-md bg-red-900/20 border border-red-700/50">
+                {collaboratorError}
+              </p>
             )}
           </form>
 
@@ -375,17 +381,17 @@ export default function EditProjectForm({
             {collaborators.map((collaborator) => (
               <div
                 key={collaborator.id}
-                className="flex items-center justify-between bg-gray-700 p-3 rounded-md"
+                className="flex items-center justify-between bg-slate-700/50 p-3 rounded-md border border-slate-600/50"
               >
                 <div className="flex items-center gap-3">
-                  <UserCircle className="h-8 w-8 text-gray-400" />
+                  <UserCircle className="h-8 w-8 text-slate-400" />
                   <div>
-                    <p className="text-gray-200">{collaborator.user.name}</p>
-                    <p className="text-sm text-gray-400">
+                    <p className="text-slate-200">{collaborator.user.name}</p>
+                    <p className="text-sm text-slate-400">
                       {collaborator.user.email}
                     </p>
                     {collaborator.user.student && (
-                      <p className="text-xs text-gray-500">
+                      <p className="text-xs text-slate-500">
                         {collaborator.user.student.roll_no} •{" "}
                         {collaborator.user.student.class}
                       </p>
@@ -394,7 +400,7 @@ export default function EditProjectForm({
                 </div>
                 <button
                   onClick={() => handleRemoveCollaborator(collaborator.user.id)}
-                  className="p-1 text-gray-400 hover:text-red-400 transition-colors"
+                  className="p-1 text-slate-400 hover:text-red-400 transition-colors"
                   title="Remove collaborator"
                 >
                   <X className="h-5 w-5" />
@@ -403,7 +409,7 @@ export default function EditProjectForm({
             ))}
 
             {collaborators.length === 0 && (
-              <p className="text-gray-400 text-sm">No collaborators yet</p>
+              <p className="text-slate-400 text-sm">No collaborators yet</p>
             )}
           </div>
         </div>

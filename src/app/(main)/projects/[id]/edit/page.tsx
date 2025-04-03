@@ -51,12 +51,25 @@ export default async function EditProjectPage({ params }: PageProps) {
   }
 
   return (
-    <div className="min-h-screen bg-gray-900 pt-20 pb-10">
-      <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8">
-        <h1 className="text-3xl font-bold text-purple-400 mb-8">
-          Edit Project
-        </h1>
-        <EditProjectForm project={project} isOwner={isOwner} />
+    <div className="min-h-screen bg-gradient-to-b from-slate-950 via-slate-900 to-slate-800 pt-30 pb-10">
+      {/* Decorative elements matching landing page */}
+      <div className="fixed -top-64 -right-64 w-[30rem] h-[30rem] bg-teal-500/5 rounded-full blur-3xl" />
+      <div className="fixed -bottom-64 -left-64 w-[30rem] h-[30rem] bg-indigo-500/5 rounded-full blur-3xl" />
+
+      <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+        <div className="mb-8">
+          <span className="inline-block text-teal-400 font-medium mb-3 bg-teal-500/10 px-3 py-1 rounded-full text-sm">
+            Edit
+          </span>
+          <h1 className="text-3xl font-bold text-white mb-4">Edit Project</h1>
+          <p className="text-slate-300 max-w-2xl">
+            Update your project information and collaborators
+          </p>
+        </div>
+
+        <div className="bg-slate-800/50 backdrop-blur-sm rounded-xl border border-slate-700/50 shadow-lg p-6">
+          <EditProjectForm project={project} isOwner={isOwner} />
+        </div>
       </div>
     </div>
   );
