@@ -1,21 +1,21 @@
 import Link from "next/link";
-import Image from "next/image";
 import { Logo } from "@/components/logo";
+import { ProjectShowcase } from "@/components/project-showcase";
+import { FlipWords } from "@/components/flip-words";
 
-// Static content export for better performance
 export const dynamic = "force-static";
-export const revalidate = 86400; // Revalidate once per day
+export const revalidate = 86400;
 
 export default function LandingPage() {
   const currentYear = new Date().getFullYear();
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-slate-950 via-slate-900 to-slate-800 text-white">
-      <div className="fixed -top-64 -right-64 w-[30rem] h-[30rem] bg-teal-500/5 rounded-full blur-3xl" />
-      <div className="fixed -bottom-64 -left-64 w-[30rem] h-[30rem] bg-indigo-500/5 rounded-full blur-3xl" />
+    <div className="min-h-screen bg-gradient-to-b from-[#0D0D14] via-[#111120] to-[#1A1A2E] text-white">
+      <div className="fixed -top-64 -right-64 w-[30rem] h-[30rem] bg-purple-500/5 rounded-full blur-3xl" />
+      <div className="fixed -bottom-64 -left-64 w-[30rem] h-[30rem] bg-violet-500/5 rounded-full blur-3xl" />
 
       <div className="fixed w-full px-4 sm:px-6 top-4 z-50">
-        <header className="mx-auto max-w-5xl bg-slate-800/30 backdrop-blur-md rounded-full border border-slate-700/30 shadow-lg shadow-slate-900/20">
+        <header className="mx-auto max-w-5xl bg-[#141428]/30 backdrop-blur-md rounded-full border border-purple-900/30 shadow-lg shadow-black/20">
           <div className="px-4 sm:px-7 py-4 flex justify-between items-center">
             <Link href="/" className="flex items-center group">
               <Logo
@@ -28,15 +28,15 @@ export default function LandingPage() {
             <nav className="hidden md:flex items-center space-x-6">
               <Link
                 href="/sign-up"
-                className="group relative bg-teal-600 hover:bg-teal-700 px-4 py-2 rounded-md text-white transition-all duration-300 hover:shadow-lg hover:shadow-teal-900/30"
+                className="group relative bg-purple-700 hover:bg-purple-800 px-4 py-2 rounded-md text-white transition-all duration-300 hover:shadow-lg hover:shadow-purple-900/30"
               >
                 <span className="relative z-10">Sign Up</span>
-                <div className="absolute inset-0 rounded-md opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-gradient-to-r from-teal-600 to-teal-500"></div>
+                <div className="absolute inset-0 rounded-md opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-gradient-to-r from-purple-700 to-purple-600"></div>
               </Link>
             </nav>
 
             {/* Mobile menu button */}
-            <button className="md:hidden text-white hover:text-teal-400 transition-colors">
+            <button className="md:hidden text-white hover:text-purple-400 transition-colors">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 className="h-6 w-6"
@@ -62,31 +62,32 @@ export default function LandingPage() {
           <div className="grid md:grid-cols-2 gap-12 items-center">
             {/* Left side - Content */}
             <div className="relative">
-              <div className="inline-flex items-center bg-slate-800/80 backdrop-blur-sm border border-slate-700/50 rounded-full px-3 py-1 text-sm text-teal-400 mb-6">
+              <div className="inline-flex items-center bg-[#141428]/80 backdrop-blur-sm border border-purple-900/50 rounded-full px-3 py-1 text-sm text-purple-400 mb-6">
                 <span className="flex h-2 w-2 mr-2">
-                  <span className="animate-ping absolute h-2 w-2 rounded-full bg-teal-400 opacity-75"></span>
-                  <span className="relative rounded-full h-2 w-2 bg-teal-500"></span>
+                  <span className="animate-ping absolute h-2 w-2 rounded-full bg-purple-400 opacity-75"></span>
+                  <span className="relative rounded-full h-2 w-2 bg-purple-500"></span>
                 </span>
                 Platform for SDG-focused projects
               </div>
 
               <h1 className="text-4xl md:text-5xl font-bold text-white mb-6 leading-tight">
                 Showcase{" "}
-                <span className="text-transparent bg-clip-text bg-gradient-to-r from-teal-400 to-teal-500">
-                  Innovation
-                </span>{" "}
-                That Matters
+                <FlipWords
+                  words={["Innovation", "Solutions"]}
+                  className="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-violet-500"
+                />
+                That Matter
               </h1>
 
-              <p className="text-lg text-slate-300 mb-8 leading-relaxed">
-                A platform for students to share projects focused
-                on sustainable development goals to make a positive impact.
+              <p className="text-lg text-gray-300 mb-8 leading-relaxed">
+                A platform for students to share projects focused on sustainable
+                development goals to make a positive impact.
               </p>
 
               <div className="flex flex-wrap gap-5">
                 <Link
                   href="/projects"
-                  className="group relative overflow-hidden bg-teal-600 px-6 py-3 rounded-md text-white font-medium transition-all duration-300 hover:shadow-lg hover:shadow-teal-900/30"
+                  className="group relative overflow-hidden bg-purple-700 px-6 py-3 rounded-md text-white font-medium transition-all duration-300 hover:shadow-lg hover:shadow-purple-900/30"
                 >
                   <span className="relative z-10 flex items-center">
                     Explore Projects
@@ -105,37 +106,37 @@ export default function LandingPage() {
                       />
                     </svg>
                   </span>
-                  <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-gradient-to-r from-teal-600 to-teal-500 blur-sm"></div>
+                  <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-gradient-to-r from-purple-700 to-violet-600 blur-sm"></div>
                 </Link>
                 <Link
                   href="/sign-up"
-                  className="group relative px-6 py-3 rounded-md text-white font-medium transition-colors duration-300 bg-slate-800/80 hover:bg-slate-700/80 backdrop-blur-sm border border-slate-700/50 hover:border-teal-500/30"
+                  className="group relative px-6 py-3 rounded-md text-white font-medium transition-colors duration-300 bg-[#141428]/80 hover:bg-[#1a1a30]/80 backdrop-blur-sm border border-purple-900/50 hover:border-purple-500/30"
                 >
                   <span className="relative z-10">Get Started</span>
                 </Link>
               </div>
 
-              <div className="absolute top-5 left-0 -translate-x-36 translate-y-16 w-72 h-72 bg-teal-500/5 rounded-full mix-blend-multiply blur-3xl opacity-70 animate-blob animation-delay-2000"></div>
+              <div className="absolute top-5 left-0 -translate-x-36 translate-y-16 w-72 h-72 bg-purple-500/5 rounded-full mix-blend-multiply blur-3xl opacity-70 animate-blob animation-delay-2000"></div>
             </div>
 
             {/* Right side - Visual element */}
             <div className="relative hidden md:block">
-              <div className="absolute inset-0 bg-gradient-to-br from-slate-800/50 to-slate-900/50 backdrop-blur-sm rounded-2xl"></div>
+              <div className="absolute inset-0 bg-gradient-to-br from-[#141428]/50 to-[#0D0D14]/50 backdrop-blur-sm rounded-2xl"></div>
               <div className="relative p-8">
                 {/* 3D floating card effect */}
                 <div className="relative w-full h-[400px] perspective-1000">
                   {/* Project card - floating in 3D space */}
-                  <div className="absolute inset-0 transform rotate-y-3 rotate-x-6 shadow-xl rounded-xl border border-slate-700/50 bg-gradient-to-br from-slate-800/90 to-slate-900/90 backdrop-blur-sm animate-float p-6 flex flex-col">
+                  <div className="absolute inset-0 transform rotate-y-3 rotate-x-6 shadow-xl rounded-xl border border-purple-900/50 bg-gradient-to-br from-[#141428]/90 to-[#0D0D14]/90 backdrop-blur-sm animate-float p-6 flex flex-col">
                     {/* Card header */}
                     <div className="flex justify-between items-start mb-4">
-                      <div className="bg-teal-500/10 px-3 py-1 rounded-full">
-                        <span className="text-sm font-medium text-teal-400">
+                      <div className="bg-purple-500/10 px-3 py-1 rounded-full">
+                        <span className="text-sm font-medium text-purple-400">
                           SDG Goal #6
                         </span>
                       </div>
-                      <div className="w-8 h-8 rounded-full bg-slate-700/70 flex items-center justify-center">
+                      <div className="w-8 h-8 rounded-full bg-[#1A1A2E]/70 flex items-center justify-center">
                         <svg
-                          className="w-4 h-4 text-slate-400"
+                          className="w-4 h-4 text-gray-400"
                           fill="none"
                           viewBox="0 0 24 24"
                           stroke="currentColor"
@@ -156,7 +157,7 @@ export default function LandingPage() {
                     </h3>
 
                     {/* Project description */}
-                    <p className="text-slate-300 text-sm mb-6">
+                    <p className="text-gray-300 text-sm mb-6">
                       Using IoT devices to track water quality and consumption
                       in urban areas, helping communities reduce waste and
                       ensure access to clean water.
@@ -165,13 +166,13 @@ export default function LandingPage() {
                     {/* Project stats */}
                     <div className="flex justify-between items-center mb-6">
                       <div className="flex flex-col">
-                        <span className="text-xs text-slate-400">
+                        <span className="text-xs text-gray-400">
                           Contributors
                         </span>
                         <span className="text-white font-medium">12</span>
                       </div>
                       <div className="flex flex-col">
-                        <span className="text-xs text-slate-400">
+                        <span className="text-xs text-gray-400">
                           Implemented
                         </span>
                         <span className="text-white font-medium">
@@ -179,7 +180,7 @@ export default function LandingPage() {
                         </span>
                       </div>
                       <div className="flex flex-col">
-                        <span className="text-xs text-slate-400">Impact</span>
+                        <span className="text-xs text-gray-400">Impact</span>
                         <span className="text-white font-medium">
                           6,500+ people
                         </span>
@@ -188,31 +189,31 @@ export default function LandingPage() {
 
                     {/* Tech stack tags */}
                     <div className="flex flex-wrap gap-2 mb-6">
-                      <span className="px-2 py-1 text-xs rounded-md bg-slate-700/60 text-slate-300">
+                      <span className="px-2 py-1 text-xs rounded-md bg-[#1A1A2E]/60 text-gray-300">
                         Arduino
                       </span>
-                      <span className="px-2 py-1 text-xs rounded-md bg-slate-700/60 text-slate-300">
+                      <span className="px-2 py-1 text-xs rounded-md bg-[#1A1A2E]/60 text-gray-300">
                         React
                       </span>
-                      <span className="px-2 py-1 text-xs rounded-md bg-slate-700/60 text-slate-300">
+                      <span className="px-2 py-1 text-xs rounded-md bg-[#1A1A2E]/60 text-gray-300">
                         Python
                       </span>
-                      <span className="px-2 py-1 text-xs rounded-md bg-slate-700/60 text-slate-300">
+                      <span className="px-2 py-1 text-xs rounded-md bg-[#1A1A2E]/60 text-gray-300">
                         IoT
                       </span>
                     </div>
 
                     {/* Bottom section with avatar */}
-                    <div className="mt-auto pt-4 border-t border-slate-700/30 flex justify-between items-center">
+                    <div className="mt-auto pt-4 border-t border-purple-900/30 flex justify-between items-center">
                       <div className="flex items-center">
-                        <div className="w-8 h-8 rounded-full bg-teal-900/60 flex items-center justify-center text-teal-300 border border-teal-700/50">
+                        <div className="w-8 h-8 rounded-full bg-purple-900/60 flex items-center justify-center text-purple-300 border border-purple-700/50">
                           TS
                         </div>
-                        <span className="ml-2 text-sm text-slate-300">
+                        <span className="ml-2 text-sm text-gray-300">
                           Team Sustain
                         </span>
                       </div>
-                      <div className="inline-flex items-center text-teal-400 text-sm">
+                      <div className="inline-flex items-center text-purple-400 text-sm">
                         View Project
                         <svg
                           className="ml-1 w-4 h-4"
@@ -232,8 +233,8 @@ export default function LandingPage() {
                   </div>
 
                   {/* Decorative elements */}
-                  <div className="absolute top-7 -right-8 w-24 h-24 bg-teal-500/20 rounded-full blur-2xl"></div>
-                  <div className="absolute bottom-7 -left-8 w-24 h-24 bg-indigo-500/10 rounded-full blur-2xl"></div>
+                  <div className="absolute top-7 -right-8 w-24 h-24 bg-purple-500/20 rounded-full blur-2xl"></div>
+                  <div className="absolute bottom-7 -left-8 w-24 h-24 bg-violet-500/10 rounded-full blur-2xl"></div>
                 </div>
               </div>
             </div>
@@ -241,17 +242,19 @@ export default function LandingPage() {
         </div>
       </section>
 
+      <ProjectShowcase />
+
       {/* Feature Highlights */}
-      <section className="relative py-24 bg-slate-800/20 backdrop-blur-sm">
+      <section className="relative py-24 bg-[#141428]/20 backdrop-blur-sm">
         <div className="max-w-5xl mx-auto px-4 relative z-10">
           <div className="text-center mb-16">
-            <span className="inline-block text-teal-400 font-medium mb-3 bg-teal-500/10 px-3 py-1 rounded-full text-sm">
+            <span className="inline-block text-purple-400 font-medium mb-3 bg-purple-500/10 px-3 py-1 rounded-full text-sm">
               Features
             </span>
             <h2 className="text-3xl font-bold text-white mb-4">
               Why Choose ProjectHub?
             </h2>
-            <p className="text-slate-300 max-w-2xl mx-auto">
+            <p className="text-gray-300 max-w-2xl mx-auto">
               Our platform provides everything you need to showcase your
               innovative ideas and connect with like-minded innovators.
             </p>
@@ -259,11 +262,11 @@ export default function LandingPage() {
 
           <div className="grid md:grid-cols-3 gap-8">
             {/* Feature 1 */}
-            <div className="group bg-slate-800/50 p-6 rounded-xl shadow-lg border border-slate-700/50 hover:border-teal-500/30 transition-all duration-300 hover:shadow-teal-900/5 hover:shadow-lg hover:-translate-y-1">
-              <div className="w-14 h-14 mb-6 bg-gradient-to-br from-teal-400/20 to-teal-600/20 rounded-xl flex items-center justify-center group-hover:from-teal-400/30 group-hover:to-teal-600/30 transition-all duration-300">
+            <div className="group bg-[#141428]/50 p-6 rounded-xl shadow-lg border border-purple-900/50 hover:border-purple-500/30 transition-all duration-300 hover:shadow-purple-900/5 hover:shadow-lg hover:-translate-y-1">
+              <div className="w-14 h-14 mb-6 bg-gradient-to-br from-purple-400/20 to-purple-600/20 rounded-xl flex items-center justify-center group-hover:from-purple-400/30 group-hover:to-purple-600/30 transition-all duration-300">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
-                  className="h-7 w-7 text-teal-400"
+                  className="h-7 w-7 text-purple-400"
                   fill="none"
                   viewBox="0 0 24 24"
                   stroke="currentColor"
@@ -276,10 +279,10 @@ export default function LandingPage() {
                   />
                 </svg>
               </div>
-              <h3 className="text-xl font-semibold text-white mb-3 group-hover:text-teal-400 transition-colors">
+              <h3 className="text-xl font-semibold text-white mb-3 group-hover:text-purple-400 transition-colors">
                 Showcase Your Work
               </h3>
-              <p className="text-slate-300 text-sm leading-relaxed">
+              <p className="text-gray-300 text-sm leading-relaxed">
                 Share your projects with peers, educators, and potential
                 collaborators. Build your portfolio and gain recognition for
                 your innovation.
@@ -287,11 +290,11 @@ export default function LandingPage() {
             </div>
 
             {/* Feature 2 */}
-            <div className="group bg-slate-800/50 p-6 rounded-xl shadow-lg border border-slate-700/50 hover:border-teal-500/30 transition-all duration-300 hover:shadow-teal-900/5 hover:shadow-lg hover:-translate-y-1">
-              <div className="w-14 h-14 mb-6 bg-gradient-to-br from-teal-400/20 to-teal-600/20 rounded-xl flex items-center justify-center group-hover:from-teal-400/30 group-hover:to-teal-600/30 transition-all duration-300">
+            <div className="group bg-[#141428]/50 p-6 rounded-xl shadow-lg border border-purple-900/50 hover:border-purple-500/30 transition-all duration-300 hover:shadow-purple-900/5 hover:shadow-lg hover:-translate-y-1">
+              <div className="w-14 h-14 mb-6 bg-gradient-to-br from-purple-400/20 to-purple-600/20 rounded-xl flex items-center justify-center group-hover:from-purple-400/30 group-hover:to-purple-600/30 transition-all duration-300">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
-                  className="h-7 w-7 text-teal-400"
+                  className="h-7 w-7 text-purple-400"
                   fill="none"
                   viewBox="0 0 24 24"
                   stroke="currentColor"
@@ -304,21 +307,21 @@ export default function LandingPage() {
                   />
                 </svg>
               </div>
-              <h3 className="text-xl font-semibold text-white mb-3 group-hover:text-teal-400 transition-colors">
+              <h3 className="text-xl font-semibold text-white mb-3 group-hover:text-purple-400 transition-colors">
                 Connect with Others
               </h3>
-              <p className="text-slate-300 text-sm leading-relaxed">
+              <p className="text-gray-300 text-sm leading-relaxed">
                 Discover projects from other students and educators, leave
                 comments, and engage with a community of innovative thinkers.
               </p>
             </div>
 
             {/* Feature 3 */}
-            <div className="group bg-slate-800/50 p-6 rounded-xl shadow-lg border border-slate-700/50 hover:border-teal-500/30 transition-all duration-300 hover:shadow-teal-900/5 hover:shadow-lg hover:-translate-y-1">
-              <div className="w-14 h-14 mb-6 bg-gradient-to-br from-teal-400/20 to-teal-600/20 rounded-xl flex items-center justify-center group-hover:from-teal-400/30 group-hover:to-teal-600/30 transition-all duration-300">
+            <div className="group bg-[#141428]/50 p-6 rounded-xl shadow-lg border border-purple-900/50 hover:border-purple-500/30 transition-all duration-300 hover:shadow-purple-900/5 hover:shadow-lg hover:-translate-y-1">
+              <div className="w-14 h-14 mb-6 bg-gradient-to-br from-purple-400/20 to-purple-600/20 rounded-xl flex items-center justify-center group-hover:from-purple-400/30 group-hover:to-purple-600/30 transition-all duration-300">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
-                  className="h-7 w-7 text-teal-400"
+                  className="h-7 w-7 text-purple-400"
                   fill="none"
                   viewBox="0 0 24 24"
                   stroke="currentColor"
@@ -331,10 +334,10 @@ export default function LandingPage() {
                   />
                 </svg>
               </div>
-              <h3 className="text-xl font-semibold text-white mb-3 group-hover:text-teal-400 transition-colors">
+              <h3 className="text-xl font-semibold text-white mb-3 group-hover:text-purple-400 transition-colors">
                 Support SDG Goals
               </h3>
-              <p className="text-slate-300 text-sm leading-relaxed">
+              <p className="text-gray-300 text-sm leading-relaxed">
                 Align your projects with UN Sustainable Development Goals and
                 make a positive impact on the world through technology and
                 innovation.
@@ -346,19 +349,19 @@ export default function LandingPage() {
 
       {/* CTA Section */}
       <section className="py-16 px-4 relative">
-        <div className="absolute inset-0 bg-gradient-to-r from-slate-900/80 via-transparent to-slate-900/80"></div>
+        <div className="absolute inset-0 bg-gradient-to-r from-[#0D0D14]/80 via-transparent to-[#0D0D14]/80"></div>
         <div className="max-w-5xl mx-auto relative z-10">
-          <div className="bg-gradient-to-r from-slate-800/90 to-slate-900/90 backdrop-blur-md rounded-2xl p-10 border border-slate-700/50 shadow-xl relative overflow-hidden">
-            <div className="absolute top-0 inset-x-0 h-1 bg-gradient-to-r from-teal-500 via-teal-400 to-teal-500"></div>
-            <div className="absolute -top-24 -right-24 w-64 h-64 bg-teal-500/5 rounded-full blur-3xl"></div>
-            <div className="absolute -bottom-32 -left-32 w-96 h-96 bg-indigo-500/5 rounded-full blur-3xl"></div>
+          <div className="bg-gradient-to-r from-[#141428]/90 to-[#0D0D14]/90 backdrop-blur-md rounded-2xl p-10 border border-purple-900/50 shadow-xl relative overflow-hidden">
+            <div className="absolute top-0 inset-x-0 h-1 bg-gradient-to-r from-purple-600 via-purple-400 to-purple-600"></div>
+            <div className="absolute -top-24 -right-24 w-64 h-64 bg-purple-500/5 rounded-full blur-3xl"></div>
+            <div className="absolute -bottom-32 -left-32 w-96 h-96 bg-violet-500/5 rounded-full blur-3xl"></div>
 
             <div className="flex flex-col md:flex-row items-center justify-between gap-8">
               <div className="text-center md:text-left max-w-lg">
                 <h2 className="text-2xl md:text-3xl font-bold text-white mb-4">
                   Ready to showcase your projects?
                 </h2>
-                <p className="text-slate-300 leading-relaxed">
+                <p className="text-gray-300 leading-relaxed">
                   Join our growing community of innovative creators and
                   contribute to sustainable development through technology and
                   creative solutions.
@@ -367,14 +370,14 @@ export default function LandingPage() {
               <div className="flex flex-col sm:flex-row gap-4">
                 <Link
                   href="/sign-up"
-                  className="group relative overflow-hidden bg-teal-600 hover:bg-teal-700 px-7 py-3 rounded-md text-white font-medium transition-all duration-300 hover:shadow-lg hover:shadow-teal-900/30 text-center whitespace-nowrap"
+                  className="group relative overflow-hidden bg-purple-700 hover:bg-purple-800 px-7 py-3 rounded-md text-white font-medium transition-all duration-300 hover:shadow-lg hover:shadow-purple-900/30 text-center whitespace-nowrap"
                 >
                   <span className="relative z-10">Create Account</span>
-                  <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-gradient-to-r from-teal-600 to-teal-500 blur-sm"></div>
+                  <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-gradient-to-r from-purple-700 to-purple-600 blur-sm"></div>
                 </Link>
                 <Link
                   href="/projects"
-                  className="group px-7 py-3 rounded-md text-white font-medium transition-colors duration-300 bg-slate-700/80 hover:bg-slate-600/80 backdrop-blur-sm border border-slate-600/50 hover:border-teal-500/30 text-center whitespace-nowrap"
+                  className="group px-7 py-3 rounded-md text-white font-medium transition-colors duration-300 bg-[#1A1A2E]/80 hover:bg-[#222240]/80 backdrop-blur-sm border border-purple-900/50 hover:border-purple-500/30 text-center whitespace-nowrap"
                 >
                   <span className="relative z-10">Browse Projects</span>
                 </Link>
@@ -385,7 +388,7 @@ export default function LandingPage() {
       </section>
 
       {/* Footer */}
-      <footer className="bg-slate-900/80 backdrop-blur-sm py-16 border-t border-slate-800/80">
+      <footer className="bg-[#0D0D14]/80 backdrop-blur-sm py-16 border-t border-purple-900/30">
         <div className="max-w-5xl mx-auto px-4">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-10">
             <div className="col-span-2 md:col-span-1">
@@ -395,14 +398,14 @@ export default function LandingPage() {
                   className="group-hover:opacity-90 transition-opacity"
                 />
               </Link>
-              <p className="text-slate-400 text-sm mt-2 mb-5 max-w-xs">
-                A platform for students to showcase innovation and
-                build solutions for sustainable development.
+              <p className="text-gray-400 text-sm mt-2 mb-5 max-w-xs">
+                A platform for students to showcase innovation and build
+                solutions for sustainable development.
               </p>
               <div className="flex space-x-4">
                 <a
                   href="#"
-                  className="text-slate-400 hover:text-teal-400 transition-colors"
+                  className="text-gray-400 hover:text-purple-400 transition-colors"
                 >
                   <svg
                     className="h-5 w-5"
@@ -419,7 +422,7 @@ export default function LandingPage() {
                 </a>
                 <a
                   href="#"
-                  className="text-slate-400 hover:text-teal-400 transition-colors"
+                  className="text-gray-400 hover:text-purple-400 transition-colors"
                 >
                   <svg
                     className="h-5 w-5"
@@ -432,7 +435,7 @@ export default function LandingPage() {
                 </a>
                 <a
                   href="#"
-                  className="text-slate-400 hover:text-teal-400 transition-colors"
+                  className="text-gray-400 hover:text-purple-400 transition-colors"
                 >
                   <svg
                     className="h-5 w-5"
@@ -458,7 +461,7 @@ export default function LandingPage() {
                 <li>
                   <Link
                     href="/projects"
-                    className="text-slate-400 hover:text-teal-400 transition-colors text-sm"
+                    className="text-gray-400 hover:text-purple-400 transition-colors text-sm"
                   >
                     Browse Projects
                   </Link>
@@ -466,7 +469,7 @@ export default function LandingPage() {
                 <li>
                   <Link
                     href="/projects/new"
-                    className="text-slate-400 hover:text-teal-400 transition-colors text-sm"
+                    className="text-gray-400 hover:text-purple-400 transition-colors text-sm"
                   >
                     Create Project
                   </Link>
@@ -474,7 +477,7 @@ export default function LandingPage() {
                 <li>
                   <Link
                     href="/student"
-                    className="text-slate-400 hover:text-teal-400 transition-colors text-sm"
+                    className="text-gray-400 hover:text-purple-400 transition-colors text-sm"
                   >
                     Student Hub
                   </Link>
@@ -490,7 +493,7 @@ export default function LandingPage() {
                 <li>
                   <Link
                     href="/sign-in"
-                    className="text-slate-400 hover:text-teal-400 transition-colors text-sm"
+                    className="text-gray-400 hover:text-purple-400 transition-colors text-sm"
                   >
                     Sign In
                   </Link>
@@ -498,7 +501,7 @@ export default function LandingPage() {
                 <li>
                   <Link
                     href="/sign-up"
-                    className="text-slate-400 hover:text-teal-400 transition-colors text-sm"
+                    className="text-gray-400 hover:text-purple-400 transition-colors text-sm"
                   >
                     Create Account
                   </Link>
@@ -506,7 +509,7 @@ export default function LandingPage() {
                 <li>
                   <Link
                     href="/forgot-password"
-                    className="text-slate-400 hover:text-teal-400 transition-colors text-sm"
+                    className="text-gray-400 hover:text-purple-400 transition-colors text-sm"
                   >
                     Reset Password
                   </Link>
@@ -522,7 +525,7 @@ export default function LandingPage() {
                 <li>
                   <a
                     href="#"
-                    className="text-slate-400 hover:text-teal-400 transition-colors text-sm"
+                    className="text-gray-400 hover:text-purple-400 transition-colors text-sm"
                   >
                     Privacy Policy
                   </a>
@@ -530,7 +533,7 @@ export default function LandingPage() {
                 <li>
                   <a
                     href="#"
-                    className="text-slate-400 hover:text-teal-400 transition-colors text-sm"
+                    className="text-gray-400 hover:text-purple-400 transition-colors text-sm"
                   >
                     Terms of Service
                   </a>
@@ -538,7 +541,7 @@ export default function LandingPage() {
                 <li>
                   <a
                     href="#"
-                    className="text-slate-400 hover:text-teal-400 transition-colors text-sm"
+                    className="text-gray-400 hover:text-purple-400 transition-colors text-sm"
                   >
                     Cookie Policy
                   </a>
@@ -547,8 +550,8 @@ export default function LandingPage() {
             </div>
           </div>
 
-          <div className="mt-12 pt-8 border-t border-slate-800 text-center">
-            <p className="text-slate-500 text-sm">
+          <div className="mt-12 pt-8 border-t border-purple-900/30 text-center">
+            <p className="text-gray-500 text-sm">
               © {currentYear} ProjectHub. All rights reserved. Building a
               sustainable future together.
             </p>

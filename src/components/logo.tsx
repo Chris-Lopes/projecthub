@@ -28,7 +28,7 @@ export function Logo({
           fill="none"
           xmlns="http://www.w3.org/2000/svg"
         >
-          <rect width="32" height="32" rx="6" fill="#0D1120" />
+          <rect width="32" height="32" rx="6" fill="#0D0D14" />
           <path
             d="M9 8H21C23.2091 8 25 9.79086 25 12V15C25 17.2091 23.2091 19 21 19H15V24"
             stroke="url(#paint0_linear)"
@@ -44,8 +44,8 @@ export function Logo({
               y2="24"
               gradientUnits="userSpaceOnUse"
             >
-              <stop stopColor="#14B8A6" />
-              <stop offset="1" stopColor="#0D9488" />
+              <stop stopColor="#A855F7" />
+              <stop offset="1" stopColor="#8B5CF6" />
             </linearGradient>
           </defs>
         </svg>
