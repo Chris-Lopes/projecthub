@@ -88,9 +88,9 @@ export const Card = ({
         boxShadow:
           "0 0 #0000004d, 0 9px 20px #0000004a, 0 37px 37px #00000042, 0 84px 50px #00000026, 0 149px 60px #0000000a, 0 233px 65px #00000003",
       }}
-      className="max-w-5xl -mt-12 mx-auto h-[25rem] md:h-[35rem] w-full border-4 border-slate-700/50 p-2 md:p-6 bg-slate-800/90 rounded-[30px] shadow-2xl"
+      className="max-w-5xl -mt-12 mx-auto h-[25rem] md:h-[35rem] w-full border-4 border-purple-900/50 p-2 md:p-6 bg-[#0D0D14]/90 rounded-[30px] shadow-2xl"
     >
-      <div className="h-full w-full overflow-hidden rounded-2xl bg-slate-900/90 dark:bg-slate-900 md:rounded-2xl md:p-4">
+      <div className="h-full w-full overflow-hidden rounded-2xl bg-[#141428]/90 dark:bg-[#1A1A2E] md:rounded-2xl md:p-4">
         {children}
       </div>
     </motion.div>

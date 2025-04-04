@@ -28,7 +28,7 @@ export default function LandingPage() {
             <nav className="hidden md:flex items-center space-x-6">
               <Link
                 href="/sign-up"
-                className="group relative bg-purple-700 hover:bg-purple-800 px-4 py-2 rounded-md text-white transition-all duration-300 hover:shadow-lg hover:shadow-purple-900/30"
+                className="group relative bg-purple-700 hover:bg-purple-800 px-4 py-2 rounded-md text-white transition-all duration-300 hover:shadow-lg hover:shadow-purple-900/30 font-semibold"
               >
                 <span className="relative z-10">Sign Up</span>
                 <div className="absolute inset-0 rounded-md opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-gradient-to-r from-purple-700 to-purple-600"></div>
