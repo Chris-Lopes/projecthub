@@ -10,13 +10,24 @@ const inter = Inter({
 
 export const metadata: Metadata = {
   title: "ProjectHub",
-  description: "Share and discover amazing projects",
+  description: "Share and discover amazing student projects",
+  keywords: [
+    "projects",
+    "student projects",
+    "academic showcase",
+    "portfolio",
+    "SDG goals",
+  ],
+  authors: [{ name: "ProjectHub Team" }],
+  creator: "ProjectHub",
 };
 
 export const viewport: Viewport = {
-  themeColor: "#121827",
+  themeColor: "#0D0D14", // Updated to match the dark purple theme
   width: "device-width",
   initialScale: 1,
+  maximumScale: 1,
+  userScalable: false,
 };
 
 export default function RootLayout({
@@ -27,7 +38,7 @@ export default function RootLayout({
   return (
     <html lang="en" className={inter.variable}>
       <body
-        className={`${inter.className} bg-gray-900 text-gray-100 antialiased`}
+        className={`${inter.className} bg-[#0D0D14] text-gray-100 antialiased`}
       >
         {children}
       </body>
