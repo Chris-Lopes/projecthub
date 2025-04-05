@@ -30,12 +30,12 @@ export default function Signup() {
         <h1 className="text-3xl font-bold text-white mb-2">
           Create an account
         </h1>
-        <p className="text-slate-400">
+        <p className="text-gray-400">
           Join ProjectHub to showcase your projects
         </p>
       </div>
 
-      <div className="bg-slate-800/50 backdrop-blur-sm rounded-xl border border-slate-700/50 shadow-lg p-6">
+      <div className="bg-[#141428]/50 backdrop-blur-sm rounded-xl border border-purple-900/50 shadow-lg p-6">
         <form
           onSubmit={async (e: FormEvent<HTMLFormElement>) => {
             e.preventDefault();
@@ -69,10 +69,10 @@ export default function Signup() {
 
           <div className="space-y-4">
             <div className="space-y-2">
-              <Label htmlFor="name" className="text-slate-300">
+              <Label htmlFor="name" className="text-gray-300">
                 Name{" "}
                 {isAutoFilling && (
-                  <span className="text-teal-400 text-xs ml-1">
+                  <span className="text-purple-400 text-xs ml-1">
                     (Auto-filling...)
                   </span>
                 )}
@@ -82,12 +82,12 @@ export default function Signup() {
                 id="name"
                 placeholder="Your full name"
                 required
-                className="bg-slate-700/50 border-slate-600/50 focus:border-teal-500/50 focus:ring-teal-500/20 text-slate-200 placeholder:text-slate-500"
+                className="bg-[#1a1a30]/50 border-purple-900/50 focus:border-purple-500/50 focus:ring-purple-500/20 text-gray-200 placeholder:text-gray-500"
               />
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="email" className="text-slate-300">
+              <Label htmlFor="email" className="text-gray-300">
                 Email
               </Label>
               <Input
@@ -96,12 +96,12 @@ export default function Signup() {
                 type="email"
                 placeholder="you@example.com"
                 required
-                className="bg-slate-700/50 border-slate-600/50 focus:border-teal-500/50 focus:ring-teal-500/20 text-slate-200 placeholder:text-slate-500"
+                className="bg-[#1a1a30]/50 border-purple-900/50 focus:border-purple-500/50 focus:ring-purple-500/20 text-gray-200 placeholder:text-gray-500"
               />
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="password" className="text-slate-300">
+              <Label htmlFor="password" className="text-gray-300">
                 Password
               </Label>
               <Input
@@ -111,21 +111,21 @@ export default function Signup() {
                 placeholder="Choose a secure password"
                 minLength={6}
                 required
-                className="bg-slate-700/50 border-slate-600/50 focus:border-teal-500/50 focus:ring-teal-500/20 text-slate-200 placeholder:text-slate-500"
+                className="bg-[#1a1a30]/50 border-purple-900/50 focus:border-purple-500/50 focus:ring-purple-500/20 text-gray-200 placeholder:text-gray-500"
               />
-              <p className="text-xs text-slate-400">
+              <p className="text-xs text-gray-400">
                 Must be at least 6 characters
               </p>
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="role" className="text-slate-300">
+              <Label htmlFor="role" className="text-gray-300">
                 Role
               </Label>
               <select
                 name="role"
                 id="role"
-                className="w-full rounded-md border border-slate-600/50 bg-slate-700/50 px-3 py-2 text-slate-200 focus:border-teal-500/50 focus:ring-teal-500/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal-500/50 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-900"
+                className="w-full rounded-md border border-purple-900/50 bg-[#1a1a30]/50 px-3 py-2 text-gray-200 focus:border-purple-500/50 focus:ring-purple-500/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-purple-500/50 focus-visible:ring-offset-2 focus-visible:ring-offset-[#141428]"
                 required
                 onChange={(e) => setSelectedRole(e.target.value)}
               >
@@ -137,16 +137,16 @@ export default function Signup() {
             </div>
 
             {selectedRole === "student" && (
-              <div className="mt-6 space-y-4 border-t border-slate-700/50 pt-5">
-                <h3 className="text-slate-300 font-medium">
+              <div className="mt-6 space-y-4 border-t border-purple-900/50 pt-5">
+                <h3 className="text-gray-300 font-medium">
                   Student Information
                 </h3>
-                <p className="text-xs text-slate-400">
+                <p className="text-xs text-gray-400">
                   Upload your college ID card to auto-fill the details
                 </p>
 
                 <div className="space-y-2">
-                  <Label htmlFor="id_card" className="text-slate-300">
+                  <Label htmlFor="id_card" className="text-gray-300">
                     College ID Card
                   </Label>
                   <Input
@@ -227,15 +227,15 @@ export default function Signup() {
                         }
                       }
                     }}
-                    className="bg-slate-700/50 border-slate-600/50 focus:border-teal-500/50 focus:ring-teal-500/20 text-slate-200"
+                    className="bg-[#1a1a30]/50 border-purple-900/50 focus:border-purple-500/50 focus:ring-purple-500/20 text-gray-200"
                   />
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="roll_no" className="text-slate-300">
+                  <Label htmlFor="roll_no" className="text-gray-300">
                     Roll Number{" "}
                     {isAutoFilling && (
-                      <span className="text-teal-400 text-xs ml-1">
+                      <span className="text-purple-400 text-xs ml-1">
                         (Auto-filling...)
                       </span>
                     )}
@@ -246,15 +246,15 @@ export default function Signup() {
                     placeholder="Roll Number"
                     required
                     readOnly
-                    className="bg-slate-700/50 border-slate-600/50 focus:border-teal-500/50 focus:ring-teal-500/20 text-slate-200 placeholder:text-slate-500"
+                    className="bg-[#1a1a30]/50 border-purple-900/50 focus:border-purple-500/50 focus:ring-purple-500/20 text-gray-200 placeholder:text-gray-500"
                   />
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="class" className="text-slate-300">
+                  <Label htmlFor="class" className="text-gray-300">
                     Class{" "}
                     {isAutoFilling && (
-                      <span className="text-teal-400 text-xs ml-1">
+                      <span className="text-purple-400 text-xs ml-1">
                         (Auto-filling...)
                       </span>
                     )}
@@ -265,15 +265,15 @@ export default function Signup() {
                     placeholder="Class"
                     required
                     readOnly
-                    className="bg-slate-700/50 border-slate-600/50 focus:border-teal-500/50 focus:ring-teal-500/20 text-slate-200 placeholder:text-slate-500"
+                    className="bg-[#1a1a30]/50 border-purple-900/50 focus:border-purple-500/50 focus:ring-purple-500/20 text-gray-200 placeholder:text-gray-500"
                   />
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="academic_year" className="text-slate-300">
+                  <Label htmlFor="academic_year" className="text-gray-300">
                     Academic Year{" "}
                     {isAutoFilling && (
-                      <span className="text-teal-400 text-xs ml-1">
+                      <span className="text-purple-400 text-xs ml-1">
                         (Auto-filling...)
                       </span>
                     )}
@@ -284,23 +284,23 @@ export default function Signup() {
                     placeholder="Academic Year"
                     required
                     readOnly
-                    className="bg-slate-700/50 border-slate-600/50 focus:border-teal-500/50 focus:ring-teal-500/20 text-slate-200 placeholder:text-slate-500"
+                    className="bg-[#1a1a30]/50 border-purple-900/50 focus:border-purple-500/50 focus:ring-purple-500/20 text-gray-200 placeholder:text-gray-500"
                   />
                 </div>
               </div>
             )}
 
             {selectedRole === "faculty" && (
-              <div className="mt-6 space-y-4 border-t border-slate-700/50 pt-5">
-                <h3 className="text-slate-300 font-medium">
+              <div className="mt-6 space-y-4 border-t border-purple-900/50 pt-5">
+                <h3 className="text-gray-300 font-medium">
                   Faculty Information
                 </h3>
-                <p className="text-xs text-slate-400">
+                <p className="text-xs text-gray-400">
                   Upload your college ID card to auto-fill the details
                 </p>
 
                 <div className="space-y-2">
-                  <Label htmlFor="id_card" className="text-slate-300">
+                  <Label htmlFor="id_card" className="text-gray-300">
                     College ID Card
                   </Label>
                   <Input
@@ -362,15 +362,15 @@ export default function Signup() {
                         }
                       }
                     }}
-                    className="bg-slate-700/50 border-slate-600/50 focus:border-teal-500/50 focus:ring-teal-500/20 text-slate-200"
+                    className="bg-[#1a1a30]/50 border-purple-900/50 focus:border-purple-500/50 focus:ring-purple-500/20 text-gray-200"
                   />
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="employee_no" className="text-slate-300">
+                  <Label htmlFor="employee_no" className="text-gray-300">
                     Employee Number{" "}
                     {isAutoFilling && (
-                      <span className="text-teal-400 text-xs ml-1">
+                      <span className="text-purple-400 text-xs ml-1">
                         (Auto-filling...)
                       </span>
                     )}
@@ -381,15 +381,15 @@ export default function Signup() {
                     placeholder="Employee Number"
                     required
                     readOnly
-                    className="bg-slate-700/50 border-slate-600/50 focus:border-teal-500/50 focus:ring-teal-500/20 text-slate-200 placeholder:text-slate-500"
+                    className="bg-[#1a1a30]/50 border-purple-900/50 focus:border-purple-500/50 focus:ring-purple-500/20 text-gray-200 placeholder:text-gray-500"
                   />
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="designation" className="text-slate-300">
+                  <Label htmlFor="designation" className="text-gray-300">
                     Designation{" "}
                     {isAutoFilling && (
-                      <span className="text-teal-400 text-xs ml-1">
+                      <span className="text-purple-400 text-xs ml-1">
                         (Auto-filling...)
                       </span>
                     )}
@@ -400,15 +400,15 @@ export default function Signup() {
                     placeholder="Designation"
                     required
                     readOnly
-                    className="bg-slate-700/50 border-slate-600/50 focus:border-teal-500/50 focus:ring-teal-500/20 text-slate-200 placeholder:text-slate-500"
+                    className="bg-[#1a1a30]/50 border-purple-900/50 focus:border-purple-500/50 focus:ring-purple-500/20 text-gray-200 placeholder:text-gray-500"
                   />
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="department" className="text-slate-300">
+                  <Label htmlFor="department" className="text-gray-300">
                     Department{" "}
                     {isAutoFilling && (
-                      <span className="text-teal-400 text-xs ml-1">
+                      <span className="text-purple-400 text-xs ml-1">
                         (Auto-filling...)
                       </span>
                     )}
@@ -419,7 +419,7 @@ export default function Signup() {
                     placeholder="Department"
                     required
                     readOnly
-                    className="bg-slate-700/50 border-slate-600/50 focus:border-teal-500/50 focus:ring-teal-500/20 text-slate-200 placeholder:text-slate-500"
+                    className="bg-[#1a1a30]/50 border-purple-900/50 focus:border-purple-500/50 focus:ring-purple-500/20 text-gray-200 placeholder:text-gray-500"
                   />
                 </div>
               </div>
@@ -429,17 +429,17 @@ export default function Signup() {
           <SubmitButton
             pendingText="Creating account..."
             disabled={isLoading}
-            className="w-full bg-teal-600 hover:bg-teal-500 text-white font-medium py-2.5 rounded-lg transition-colors focus:ring-2 focus:ring-teal-500/50 focus:ring-offset-1 focus:ring-offset-slate-900 mt-6"
+            className="w-full bg-purple-700 hover:bg-purple-600 text-white font-medium py-2.5 rounded-lg transition-colors focus:ring-2 focus:ring-purple-500/50 focus:ring-offset-1 focus:ring-offset-[#141428] mt-6"
           >
             {isLoading ? "Creating account..." : "Sign up"}
           </SubmitButton>
         </form>
       </div>
 
-      <div className="mt-6 text-center text-slate-400 text-sm">
+      <div className="mt-6 text-center text-gray-400 text-sm">
         Already have an account?{" "}
         <Link
-          className="text-teal-400 hover:text-teal-300 font-medium transition-colors"
+          className="text-purple-400 hover:text-purple-300 font-medium transition-colors"
           href="/sign-in"
         >
           Sign in
@@ -449,7 +449,7 @@ export default function Signup() {
       <div className="mt-8 text-center">
         <Link
           href="/"
-          className="text-sm text-slate-500 hover:text-slate-400 transition-colors flex items-center justify-center gap-1"
+          className="text-sm text-gray-500 hover:text-gray-400 transition-colors flex items-center justify-center gap-1"
         >
           <span>←</span> Back to home
         </Link>
