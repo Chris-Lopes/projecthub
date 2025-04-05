@@ -55,49 +55,49 @@ const WebsiteEmbed: React.FC<WebsiteEmbedProps> = ({
   return (
     <div className={`website-embed-container w-full ${className}`}>
       <div className="mb-2 flex items-center justify-between">
-        <h3 className="text-sm font-medium text-slate-300">Live Preview</h3>
+        <h3 className="text-sm font-medium text-gray-300">Live Preview</h3>
         <div className="flex gap-2">
           <Button
             variant="outline"
             size="icon"
-            className="h-7 w-7 bg-slate-800 border-slate-700 hover:bg-slate-700"
+            className="h-7 w-7 bg-[#141428] border-purple-900/50 hover:bg-[#1a1a30]"
             onClick={refreshEmbed}
             title="Refresh"
           >
-            <RefreshCw className="h-3.5 w-3.5 text-slate-300" />
+            <RefreshCw className="h-3.5 w-3.5 text-gray-300" />
           </Button>
           <Button
             variant="outline"
             size="icon"
-            className="h-7 w-7 bg-slate-800 border-slate-700 hover:bg-slate-700"
+            className="h-7 w-7 bg-[#141428] border-purple-900/50 hover:bg-[#1a1a30]"
             onClick={toggleHeight}
             title={isFullHeight ? "Reduce height" : "Expand height"}
           >
             {isFullHeight ? (
-              <Minimize2 className="h-3.5 w-3.5 text-slate-300" />
+              <Minimize2 className="h-3.5 w-3.5 text-gray-300" />
             ) : (
-              <Maximize2 className="h-3.5 w-3.5 text-slate-300" />
+              <Maximize2 className="h-3.5 w-3.5 text-gray-300" />
             )}
           </Button>
           <Button
             variant="outline"
             size="icon"
-            className="h-7 w-7 bg-slate-800 border-slate-700 hover:bg-slate-700"
+            className="h-7 w-7 bg-[#141428] border-purple-900/50 hover:bg-[#1a1a30]"
             onClick={() => window.open(url, "_blank")}
             title="Open in new tab"
           >
-            <ExternalLink className="h-3.5 w-3.5 text-slate-300" />
+            <ExternalLink className="h-3.5 w-3.5 text-gray-300" />
           </Button>
         </div>
       </div>
 
       <div
-        className="relative w-full rounded-lg overflow-hidden border border-slate-700/50 bg-slate-800/50"
+        className="relative w-full rounded-lg overflow-hidden border border-purple-900/50 bg-[#141428]/50"
         style={{ height: currentHeight }}
       >
         {loading && (
-          <div className="absolute inset-0 flex items-center justify-center bg-slate-800/70 z-10">
-            <Spinner className="h-8 w-8 text-teal-500" />
+          <div className="absolute inset-0 flex items-center justify-center bg-[#141428]/70 z-10">
+            <Spinner className="h-8 w-8 text-purple-500" />
           </div>
         )}
 
@@ -137,13 +137,13 @@ const WebsiteEmbed: React.FC<WebsiteEmbedProps> = ({
           />
         )}
       </div>
-      <p className="mt-1 text-xs text-slate-400">
+      <p className="mt-1 text-xs text-gray-400">
         Source:{" "}
         <a
           href={url}
           target="_blank"
           rel="noopener noreferrer"
-          className="text-teal-400 hover:underline"
+          className="text-purple-400 hover:underline"
         >
           {url}
         </a>

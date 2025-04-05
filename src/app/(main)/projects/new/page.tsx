@@ -119,26 +119,26 @@ export default function NewProjectPage() {
   );
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-slate-950 via-slate-900 to-slate-800 pt-30 pb-10">
+    <div className="min-h-screen bg-gradient-to-b from-[#0D0D14] via-[#111120] to-[#1A1A2E] pt-30 pb-10">
       {/* Decorative elements matching landing page */}
-      <div className="fixed -top-64 -right-64 w-[30rem] h-[30rem] bg-teal-500/5 rounded-full blur-3xl" />
-      <div className="fixed -bottom-64 -left-64 w-[30rem] h-[30rem] bg-indigo-500/5 rounded-full blur-3xl" />
+      <div className="fixed -top-64 -right-64 w-[30rem] h-[30rem] bg-purple-500/5 rounded-full blur-3xl" />
+      <div className="fixed -bottom-64 -left-64 w-[30rem] h-[30rem] bg-violet-500/5 rounded-full blur-3xl" />
 
       <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <div className="mb-8">
-          <span className="inline-block text-teal-400 font-medium mb-3 bg-teal-500/10 px-3 py-1 rounded-full text-sm">
+          <span className="inline-block text-purple-400 font-medium mb-3 bg-purple-500/10 px-3 py-1 rounded-full text-sm">
             Create
           </span>
           <h1 className="text-3xl font-bold text-white mb-4">New Project</h1>
-          <p className="text-slate-300 max-w-2xl">
+          <p className="text-gray-300 max-w-2xl">
             Share your innovative work with the community
           </p>
         </div>
 
-        <div className="bg-slate-800/50 backdrop-blur-sm rounded-xl border border-slate-700/50 shadow-lg p-6">
+        <div className="bg-[#141428]/50 backdrop-blur-sm rounded-xl border border-purple-900/50 shadow-lg p-6">
           <form onSubmit={handleSubmit} className="space-y-6">
             <div className="space-y-2">
-              <Label htmlFor="name" className="text-slate-300">
+              <Label htmlFor="name" className="text-gray-300">
                 Project Name
               </Label>
               <Input
@@ -150,20 +150,20 @@ export default function NewProjectPage() {
                   setFormData({ ...formData, name: e.target.value })
                 }
                 placeholder="Enter project name"
-                className="bg-slate-700/50 border-slate-600/50 focus:border-teal-500/50 focus:ring-teal-500/20"
+                className="bg-[#1a1a30]/50 border-purple-900/50 focus:border-purple-500/50 focus:ring-purple-500/20"
               />
             </div>
 
             <div className="space-y-2">
               <div className="flex items-center justify-between">
-                <Label htmlFor="description" className="text-slate-300">
+                <Label htmlFor="description" className="text-gray-300">
                   Description
                 </Label>
                 <button
                   type="button"
                   onClick={fetchGithubReadme}
                   disabled={isFetchingReadme || !formData.github_url}
-                  className={`text-sm text-teal-400 hover:text-teal-300 transition-colors ${
+                  className={`text-sm text-purple-400 hover:text-purple-300 transition-colors ${
                     isFetchingReadme || !formData.github_url
                       ? "opacity-50 cursor-not-allowed"
                       : ""
@@ -183,12 +183,12 @@ export default function NewProjectPage() {
                   setFormData({ ...formData, description: e.target.value })
                 }
                 placeholder="Describe your project"
-                className="w-full min-h-[150px] rounded-md bg-slate-700/50 border-slate-600/50 p-3 text-slate-300 focus:border-teal-500/50 focus:ring-teal-500/20 transition-all duration-200"
+                className="w-full min-h-[150px] rounded-md bg-[#1a1a30]/50 border-purple-900/50 p-3 text-gray-300 focus:border-purple-500/50 focus:ring-purple-500/20 transition-all duration-200"
               />
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="website_url" className="text-slate-300">
+              <Label htmlFor="website_url" className="text-gray-300">
                 Live Website URL
               </Label>
               <Input
@@ -200,16 +200,16 @@ export default function NewProjectPage() {
                   setFormData({ ...formData, website_url: e.target.value })
                 }
                 placeholder="https://your-deployed-project.com"
-                className="bg-slate-700/50 border-slate-600/50 focus:border-teal-500/50 focus:ring-teal-500/20"
+                className="bg-[#1a1a30]/50 border-purple-900/50 focus:border-purple-500/50 focus:ring-purple-500/20"
               />
-              <p className="text-xs text-slate-400">
+              <p className="text-xs text-gray-400">
                 Enter the URL where your project is deployed (optional). This
                 will be embedded as a live demo on your project page.
               </p>
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="github_url" className="text-slate-300">
+              <Label htmlFor="github_url" className="text-gray-300">
                 GitHub URL
               </Label>
               <Input
@@ -222,17 +222,17 @@ export default function NewProjectPage() {
                   setFormData({ ...formData, github_url: e.target.value })
                 }
                 placeholder="https://github.com/username/repository"
-                className="bg-slate-700/50 border-slate-600/50 focus:border-teal-500/50 focus:ring-teal-500/20"
+                className="bg-[#1a1a30]/50 border-purple-900/50 focus:border-purple-500/50 focus:ring-purple-500/20"
               />
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="thumbnail" className="text-slate-300">
+              <Label htmlFor="thumbnail" className="text-gray-300">
                 Project Thumbnail
               </Label>
               <div className="flex flex-col gap-4">
                 {formData.thumbnail_url && (
-                  <div className="relative w-full h-48 rounded-md overflow-hidden border border-slate-600/50">
+                  <div className="relative w-full h-48 rounded-md overflow-hidden border border-purple-900/50">
                     <Image
                       src={formData.thumbnail_url}
                       alt="Project thumbnail preview"
@@ -249,10 +249,10 @@ export default function NewProjectPage() {
                       type="file"
                       accept="image/*"
                       onChange={handleFileUpload}
-                      className="bg-slate-700/50 border-slate-600/50 focus:border-teal-500/50 focus:ring-teal-500/20"
+                      className="bg-[#1a1a30]/50 border-purple-900/50 focus:border-purple-500/50 focus:ring-purple-500/20"
                     />
                   </div>
-                  <span className="text-sm text-slate-400">or</span>
+                  <span className="text-sm text-gray-400">or</span>
                   <div className="w-full">
                     <Input
                       id="thumbnail_url"
@@ -266,7 +266,7 @@ export default function NewProjectPage() {
                         })
                       }
                       placeholder="Enter image URL directly"
-                      className="bg-slate-700/50 border-slate-600/50 focus:border-teal-500/50 focus:ring-teal-500/20"
+                      className="bg-[#1a1a30]/50 border-purple-900/50 focus:border-purple-500/50 focus:ring-purple-500/20"
                     />
                   </div>
                 </div>
@@ -274,7 +274,7 @@ export default function NewProjectPage() {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-slate-300 mb-2">
+              <label className="block text-sm font-medium text-gray-300 mb-2">
                 SDG Goals
               </label>
               <SDGSelect selected={selectedSDGs} onChange={setSelectedSDGs} />
@@ -283,7 +283,7 @@ export default function NewProjectPage() {
                   <Badge
                     key={goal}
                     variant="outline"
-                    className="bg-teal-900/30 text-teal-300 border-teal-700/50 text-xs"
+                    className="bg-purple-900/30 text-purple-300 border-purple-700/50 text-xs"
                   >
                     {goal}
                   </Badge>
@@ -302,14 +302,14 @@ export default function NewProjectPage() {
                 type="button"
                 onClick={() => router.back()}
                 variant="outline"
-                className="bg-slate-800/70 hover:bg-slate-700/70 text-white border-slate-700 hover:border-slate-600 transition-all duration-300"
+                className="bg-[#141428]/70 hover:bg-[#1a1a30]/70 text-white border-purple-900/50 hover:border-purple-500/30 transition-all duration-300"
               >
                 Cancel
               </Button>
               <Button
                 type="submit"
                 disabled={isLoading}
-                className={`bg-teal-700 hover:bg-teal-600 text-white border-none transition-all duration-300 ${
+                className={`bg-purple-700 hover:bg-purple-600 text-white border-none transition-all duration-300 ${
                   isLoading ? "opacity-50 cursor-not-allowed" : ""
                 }`}
               >

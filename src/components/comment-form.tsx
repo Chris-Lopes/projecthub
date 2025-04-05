@@ -59,10 +59,10 @@ export function CommentForm({ projectId }: CommentFormProps) {
           value={content}
           onChange={handleChange}
           placeholder="Add a comment..."
-          className="w-full min-h-[6rem] px-4 py-3 text-slate-300 bg-slate-700/50 border border-slate-600/50 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500/50 focus:border-teal-500/50 transition-all duration-200"
+          className="w-full min-h-[6rem] px-4 py-3 text-gray-300 bg-[#1a1a30]/50 border border-purple-900/50 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500/50 focus:border-purple-500/50 transition-all duration-200"
           disabled={isLoading}
         />
-        <div className="absolute inset-0 rounded-lg pointer-events-none border border-transparent focus-within:border-teal-500/30 focus-within:shadow-sm focus-within:shadow-teal-500/10"></div>
+        <div className="absolute inset-0 rounded-lg pointer-events-none border border-transparent focus-within:border-purple-500/30 focus-within:shadow-sm focus-within:shadow-purple-500/10"></div>
       </div>
 
       {error && (
@@ -75,7 +75,7 @@ export function CommentForm({ projectId }: CommentFormProps) {
         <Button
           type="submit"
           disabled={isLoading || !content.trim()}
-          className={`px-4 py-2 bg-teal-600 hover:bg-teal-500 text-white rounded-md transition-all duration-300 hover:shadow-md hover:shadow-teal-900/20 ${
+          className={`px-4 py-2 bg-purple-700 hover:bg-purple-600 text-white rounded-md transition-all duration-300 hover:shadow-md hover:shadow-purple-900/20 ${
             isLoading || !content.trim() ? "opacity-50 cursor-not-allowed" : ""
           }`}
         >

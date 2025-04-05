@@ -69,16 +69,16 @@ export default async function ProfilePage() {
   const projects = await getUserProjects(userDb.id);
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-slate-950 via-slate-900 to-slate-800 pt-30 pb-10">
+    <div className="min-h-screen bg-gradient-to-b from-[#0D0D14] via-[#111120] to-[#1A1A2E] pt-30 pb-10">
       {/* Decorative elements matching landing page */}
-      <div className="fixed -top-64 -right-64 w-[30rem] h-[30rem] bg-teal-500/5 rounded-full blur-3xl" />
-      <div className="fixed -bottom-64 -left-64 w-[30rem] h-[30rem] bg-indigo-500/5 rounded-full blur-3xl" />
+      <div className="fixed -top-64 -right-64 w-[30rem] h-[30rem] bg-purple-500/5 rounded-full blur-3xl" />
+      <div className="fixed -bottom-64 -left-64 w-[30rem] h-[30rem] bg-violet-500/5 rounded-full blur-3xl" />
 
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <div className="mb-8">
           <div className="flex justify-between items-center mb-6">
             <div>
-              <span className="inline-block text-teal-400 font-medium mb-3 bg-teal-500/10 px-3 py-1 rounded-full text-sm">
+              <span className="inline-block text-purple-400 font-medium mb-3 bg-purple-500/10 px-3 py-1 rounded-full text-sm">
                 Account
               </span>
               <h1 className="text-3xl font-bold text-white">My Profile</h1>
@@ -87,14 +87,14 @@ export default async function ProfilePage() {
               <Button
                 type="submit"
                 variant="outline"
-                className="bg-teal-800 text-slate-300 hover:text-white hover:bg-slate-800/70 border-slate-700 hover:border-teal-500/30 transition-all duration-300"
+                className="bg-[#141428]/70 text-gray-300 hover:text-white hover:bg-[#1a1a30]/70 border-purple-900/50 hover:border-purple-500/30 transition-all duration-300"
               >
                 Logout <LogOut className="h-5 w-5 ml-2" />
               </Button>
             </form>
           </div>
 
-          <div className="bg-slate-800/50 backdrop-blur-sm rounded-xl border border-slate-700/50 shadow-lg p-6">
+          <div className="bg-[#141428]/50 backdrop-blur-sm rounded-xl border border-purple-900/50 shadow-lg p-6">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
                 <h2 className="text-xl font-semibold text-white mb-4">
@@ -102,11 +102,11 @@ export default async function ProfilePage() {
                 </h2>
                 <div className="space-y-3">
                   <div>
-                    <p className="text-slate-400 text-sm">Name</p>
+                    <p className="text-gray-400 text-sm">Name</p>
                     <p className="text-white font-medium">{userDb.name}</p>
                   </div>
                   <div>
-                    <p className="text-slate-400 text-sm">Email</p>
+                    <p className="text-gray-400 text-sm">Email</p>
                     <p className="text-white font-medium">{userDb.email}</p>
                   </div>
                 </div>
@@ -119,19 +119,19 @@ export default async function ProfilePage() {
                   </h2>
                   <div className="space-y-3">
                     <div>
-                      <p className="text-slate-400 text-sm">Roll Number</p>
+                      <p className="text-gray-400 text-sm">Roll Number</p>
                       <p className="text-white font-medium">
                         {userDb.student.roll_no}
                       </p>
                     </div>
                     <div>
-                      <p className="text-slate-400 text-sm">Class</p>
+                      <p className="text-gray-400 text-sm">Class</p>
                       <p className="text-white font-medium">
                         {userDb.student.class}
                       </p>
                     </div>
                     <div>
-                      <p className="text-slate-400 text-sm">Academic Year</p>
+                      <p className="text-gray-400 text-sm">Academic Year</p>
                       <p className="text-white font-medium">
                         {userDb.student.academic_year}
                       </p>
@@ -148,7 +148,7 @@ export default async function ProfilePage() {
             <h2 className="text-2xl font-semibold text-white">My Projects</h2>
             <a
               href="/projects/new"
-              className="bg-teal-700 hover:bg-teal-600 text-white px-4 py-2 rounded-md transition-all duration-300 inline-flex items-center gap-2"
+              className="bg-purple-700 hover:bg-purple-600 text-white px-4 py-2 rounded-md transition-all duration-300 inline-flex items-center gap-2"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -179,10 +179,10 @@ export default async function ProfilePage() {
               ))}
             </div>
           ) : (
-            <div className="bg-slate-800/50 backdrop-blur-sm rounded-xl border border-slate-700/50 shadow-lg p-8 text-center">
+            <div className="bg-[#141428]/50 backdrop-blur-sm rounded-xl border border-purple-900/50 shadow-lg p-8 text-center">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
-                className="h-12 w-12 mx-auto text-slate-500 mb-4"
+                className="h-12 w-12 mx-auto text-gray-500 mb-4"
                 fill="none"
                 viewBox="0 0 24 24"
                 stroke="currentColor"
@@ -194,12 +194,12 @@ export default async function ProfilePage() {
                   d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"
                 />
               </svg>
-              <p className="text-slate-300 mb-4">
+              <p className="text-gray-300 mb-4">
                 You haven't created any projects yet.
               </p>
               <a
                 href="/projects/new"
-                className="text-teal-400 hover:text-teal-300 font-medium hover:underline"
+                className="text-purple-400 hover:text-purple-300 font-medium hover:underline"
               >
                 Create your first project →
               </a>

@@ -71,7 +71,7 @@ export function LikeButton({
       <button
         onClick={handleLike}
         disabled={isLoading}
-        className={`flex items-center gap-2 focus:outline-none focus:ring-2 focus:ring-teal-500/30 focus:ring-offset-2 focus:ring-offset-slate-800 rounded-full p-1 transition-all duration-300 ${
+        className={`flex items-center gap-2 focus:outline-none focus:ring-2 focus:ring-purple-500/30 focus:ring-offset-2 focus:ring-offset-[#141428] rounded-full p-1 transition-all duration-300 ${
           isLoading ? "opacity-50 cursor-not-allowed" : ""
         }`}
         title={error || undefined}
@@ -81,13 +81,13 @@ export function LikeButton({
             isLoading ? "animate-pulse" : ""
           } ${
             liked
-              ? "fill-teal-500 text-teal-500 hover:fill-teal-400 hover:text-teal-400"
-              : "fill-none text-slate-400 hover:text-teal-400"
+              ? "fill-purple-500 text-purple-500 hover:fill-purple-400 hover:text-purple-400"
+              : "fill-none text-gray-400 hover:text-purple-400"
           }`}
         />
         <span
           className={`text-2xl font-bold transition-colors duration-300 ${
-            liked ? "text-teal-500" : "text-slate-400"
+            liked ? "text-purple-500" : "text-gray-400"
           }`}
         >
           {likeCount}

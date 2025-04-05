@@ -2,15 +2,14 @@ import Link from "next/link";
 
 export default function ProjectNotFound() {
   return (
-    <div className="min-h-screen bg-gradient-to-b from-slate-950 via-slate-900 to-slate-800 pt-30 pb-10">
-      {/* Decorative elements matching landing page */}
-      <div className="fixed -top-64 -right-64 w-[30rem] h-[30rem] bg-teal-500/5 rounded-full blur-3xl" />
-      <div className="fixed -bottom-64 -left-64 w-[30rem] h-[30rem] bg-indigo-500/5 rounded-full blur-3xl" />
+    <div className="min-h-screen bg-gradient-to-b from-[#0D0D14] via-[#111120] to-[#1A1A2E] pt-30 pb-10">
+      <div className="fixed -top-64 -right-64 w-[30rem] h-[30rem] bg-purple-500/5 rounded-full blur-3xl" />
+      <div className="fixed -bottom-64 -left-64 w-[30rem] h-[30rem] bg-violet-500/5 rounded-full blur-3xl" />
 
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
-        <div className="bg-slate-800/50 backdrop-blur-sm rounded-xl border border-slate-700/50 shadow-lg p-10">
+        <div className="bg-[#141428]/50 backdrop-blur-sm rounded-xl border border-purple-900/50 shadow-lg p-10">
           <div className="mb-2">
-            <span className="inline-block text-teal-400 font-medium mb-3 bg-teal-500/10 px-3 py-1 rounded-full text-sm">
+            <span className="inline-block text-purple-400 font-medium mb-3 bg-purple-500/10 px-3 py-1 rounded-full text-sm">
               Error 404
             </span>
           </div>
@@ -19,13 +18,13 @@ export default function ProjectNotFound() {
             Project Not Found
           </h1>
 
-          <p className="text-slate-300 mb-8 max-w-md mx-auto">
+          <p className="text-gray-300 mb-8 max-w-md mx-auto">
             The project you're looking for doesn't exist or has been removed.
           </p>
 
           <Link
             href="/projects"
-            className="bg-teal-700 hover:bg-teal-600 text-white px-6 py-3 rounded-md transition-all duration-300 inline-flex items-center gap-2"
+            className="bg-purple-700 hover:bg-purple-600 text-white px-6 py-3 rounded-md transition-all duration-300 inline-flex items-center gap-2"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"

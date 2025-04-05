@@ -65,21 +65,21 @@ export function CommentList({ comments, currentUserId }: CommentListProps) {
       {comments.map((comment) => (
         <div
           key={comment.id}
-          className="bg-slate-800/50 backdrop-blur-sm rounded-lg p-5 border border-slate-700/50 transition-all duration-300 hover:border-slate-600/50 hover:shadow-md hover:shadow-slate-900/20"
+          className="bg-[#141428]/50 backdrop-blur-sm rounded-lg p-5 border border-purple-900/50 transition-all duration-300 hover:border-purple-700/50 hover:shadow-md hover:shadow-purple-900/20"
         >
           <div className="flex items-center justify-between mb-3">
             <div className="flex items-center gap-2">
-              <div className="bg-teal-900/30 rounded-full p-1.5">
-                <User className="w-4 h-4 text-teal-400" />
+              <div className="bg-purple-900/30 rounded-full p-1.5">
+                <User className="w-4 h-4 text-purple-400" />
               </div>
               <div>
-                <span className="font-medium text-teal-300">
+                <span className="font-medium text-purple-300">
                   {comment.user.name}
                 </span>
                 {comment.user.student && (
-                  <div className="flex items-center gap-1.5 text-xs text-slate-400 mt-0.5">
+                  <div className="flex items-center gap-1.5 text-xs text-gray-400 mt-0.5">
                     <span>{comment.user.student.roll_no}</span>
-                    <span className="h-1 w-1 rounded-full bg-slate-600"></span>
+                    <span className="h-1 w-1 rounded-full bg-gray-600"></span>
                     <span>{comment.user.student.class}</span>
                   </div>
                 )}
@@ -90,7 +90,7 @@ export function CommentList({ comments, currentUserId }: CommentListProps) {
               <button
                 onClick={() => handleDelete(comment.id)}
                 disabled={isDeleting === comment.id}
-                className={`text-slate-400 hover:text-red-400 transition-colors p-1 rounded-full hover:bg-red-900/10 ${
+                className={`text-gray-400 hover:text-red-400 transition-colors p-1 rounded-full hover:bg-red-900/10 ${
                   isDeleting === comment.id
                     ? "opacity-50 cursor-not-allowed"
                     : ""
@@ -102,12 +102,10 @@ export function CommentList({ comments, currentUserId }: CommentListProps) {
             )}
           </div>
 
-          <p className="text-slate-300 whitespace-pre-wrap">
-            {comment.content}
-          </p>
+          <p className="text-gray-300 whitespace-pre-wrap">{comment.content}</p>
 
-          <div className="flex justify-between items-center mt-3 pt-2 border-t border-slate-700/30">
-            <p className="text-xs text-slate-500">
+          <div className="flex justify-between items-center mt-3 pt-2 border-t border-purple-900/30">
+            <p className="text-xs text-gray-500">
               {formatDistanceToNow(new Date(comment.createdAt), {
                 addSuffix: true,
               })}
@@ -117,7 +115,7 @@ export function CommentList({ comments, currentUserId }: CommentListProps) {
       ))}
 
       {comments.length === 0 && (
-        <div className="text-center py-8 text-slate-400">
+        <div className="text-center py-8 text-gray-400">
           No comments yet. Be the first to comment!
         </div>
       )}

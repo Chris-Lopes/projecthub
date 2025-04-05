@@ -108,39 +108,39 @@ export function NotificationDropdown() {
       <Button
         variant="ghost"
         size="icon"
-        className="relative text-slate-300 hover:text-white hover:bg-slate-700/50 focus:ring-2 focus:ring-teal-500/30 focus:ring-offset-2 focus:ring-offset-slate-800 transition-all duration-200"
+        className="relative text-gray-300 hover:text-white hover:bg-[#1a1a30]/50 focus:ring-2 focus:ring-purple-500/30 focus:ring-offset-2 focus:ring-offset-[#141428] transition-all duration-200"
         onClick={toggleDropdown}
         aria-label="Notifications"
       >
         <Bell className="h-5 w-5" />
         {unreadCount > 0 && (
-          <span className="absolute -top-1 -right-1 h-4 w-4 rounded-full bg-teal-500 text-xs text-white flex items-center justify-center">
+          <span className="absolute -top-1 -right-1 h-4 w-4 rounded-full bg-purple-500 text-xs text-white flex items-center justify-center">
             {unreadCount}
           </span>
         )}
       </Button>
 
       {isOpen && (
-        <div className="absolute right-0 mt-2 w-80 bg-slate-800/90 backdrop-blur-sm rounded-lg shadow-xl py-2 z-50 border border-slate-700/50 transition-all duration-200 animate-in fade-in slide-in-from-top-5">
-          <div className="px-4 py-2 border-b border-slate-700/50">
+        <div className="absolute right-0 mt-2 w-80 bg-[#141428]/90 backdrop-blur-sm rounded-lg shadow-xl py-2 z-50 border border-purple-900/50 transition-all duration-200 animate-in fade-in slide-in-from-top-5">
+          <div className="px-4 py-2 border-b border-purple-900/50">
             <h3 className="text-sm font-medium text-white flex items-center justify-between">
               <span>Notifications</span>
               {isLoading && (
-                <span className="text-xs text-slate-400">Refreshing...</span>
+                <span className="text-xs text-gray-400">Refreshing...</span>
               )}
             </h3>
           </div>
 
-          <div className="max-h-96 overflow-y-auto scrollbar-thin scrollbar-thumb-slate-700 scrollbar-track-slate-800/50">
+          <div className="max-h-96 overflow-y-auto scrollbar-thin scrollbar-thumb-purple-900 scrollbar-track-[#141428]/50">
             {notifications.length > 0 ? (
               notifications.map((notification) => (
                 <div
                   key={notification.id}
-                  className="px-4 py-3 hover:bg-slate-700/50 transition-all border-b border-slate-700/30 last:border-b-0"
+                  className="px-4 py-3 hover:bg-[#1a1a30]/50 transition-all border-b border-purple-900/30 last:border-b-0"
                 >
                   <div className="flex items-start justify-between gap-2">
                     <div>
-                      <p className="text-sm text-slate-200">
+                      <p className="text-sm text-gray-200">
                         <span
                           className="mr-2"
                           role="img"
@@ -150,14 +150,14 @@ export function NotificationDropdown() {
                         </span>
                         {notification.message}
                       </p>
-                      <p className="text-xs text-slate-400 mt-1">
+                      <p className="text-xs text-gray-400 mt-1">
                         {new Date(notification.createdAt).toLocaleDateString()}
                       </p>
                     </div>
                     <Button
                       variant="ghost"
                       size="sm"
-                      className="text-xs text-teal-400 hover:text-teal-300 hover:bg-teal-900/30 rounded-full px-2 py-1 h-auto transition-all"
+                      className="text-xs text-purple-400 hover:text-purple-300 hover:bg-purple-900/30 rounded-full px-2 py-1 h-auto transition-all"
                       onClick={(e) => handleMarkAsRead(notification.id, e)}
                     >
                       Mark as read
@@ -166,7 +166,7 @@ export function NotificationDropdown() {
                   {notification.projectId && (
                     <Link
                       href={`/projects/${notification.projectId}`}
-                      className="text-xs text-teal-400 hover:text-teal-300 mt-2 inline-flex items-center group"
+                      className="text-xs text-purple-400 hover:text-purple-300 mt-2 inline-flex items-center group"
                       onClick={() => handleMarkAsRead(notification.id)}
                     >
                       View project{" "}
@@ -178,10 +178,10 @@ export function NotificationDropdown() {
                 </div>
               ))
             ) : (
-              <div className="px-4 py-6 text-sm text-slate-400 text-center">
+              <div className="px-4 py-6 text-sm text-gray-400 text-center">
                 {isLoading ? (
                   <div className="flex items-center justify-center space-x-2">
-                    <div className="h-3 w-3 bg-teal-500 rounded-full animate-ping"></div>
+                    <div className="h-3 w-3 bg-purple-500 rounded-full animate-ping"></div>
                     <span>Loading notifications...</span>
                   </div>
                 ) : (
@@ -192,12 +192,12 @@ export function NotificationDropdown() {
           </div>
 
           {notifications.length > 0 && (
-            <div className="px-4 py-2 border-t border-slate-700/50 text-right">
+            <div className="px-4 py-2 border-t border-purple-900/50 text-right">
               <button
                 onClick={() =>
                   notifications.forEach((n) => handleMarkAsRead(n.id))
                 }
-                className="text-xs text-teal-400 hover:text-teal-300 hover:underline"
+                className="text-xs text-purple-400 hover:text-purple-300 hover:underline"
               >
                 Mark all as read
               </button>

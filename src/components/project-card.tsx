@@ -98,7 +98,7 @@ interface ProjectCardProps {
 
 const statusColors = {
   [ProjectStatus.PENDING]: "bg-yellow-500/80 border-yellow-400/50",
-  [ProjectStatus.APPROVED]: "bg-teal-600/80 border-teal-500/50",
+  [ProjectStatus.APPROVED]: "bg-purple-600/80 border-purple-500/50",
   [ProjectStatus.REJECTED]: "bg-red-600/80 border-red-500/50",
 };
 
@@ -111,10 +111,10 @@ export const ProjectCard = memo(function ProjectCard({
   const isOwner = currentUserId === project.user.id;
 
   return (
-    <div className="bg-slate-800/50 backdrop-blur-sm rounded-xl overflow-hidden border border-slate-700/50 shadow-lg transition-all duration-300 hover:shadow-xl hover:shadow-slate-900/30 hover:border-slate-600/50 group">
+    <div className="bg-[#141428]/50 backdrop-blur-sm rounded-xl overflow-hidden border border-purple-900/50 shadow-lg transition-all duration-300 hover:shadow-xl hover:shadow-purple-900/30 hover:border-purple-700/50 group">
       <Link
         href={`/projects/${project.id}`}
-        className="focus:outline-none focus:ring-2 focus:ring-teal-500/50 focus:ring-inset"
+        className="focus:outline-none focus:ring-2 focus:ring-purple-500/50 focus:ring-inset"
       >
         <div className="relative h-48 w-full overflow-hidden">
           <Image
@@ -140,14 +140,14 @@ export const ProjectCard = memo(function ProjectCard({
       <div className="p-5">
         <div className="flex items-center justify-between mb-3">
           <Link href={`/projects/${project.id}`} className="group/title">
-            <h3 className="text-xl font-semibold text-teal-400 group-hover/title:text-teal-300 transition-colors">
+            <h3 className="text-xl font-semibold text-purple-400 group-hover/title:text-purple-300 transition-colors">
               {project.name}
             </h3>
           </Link>
           {showEditButton && isOwner && (
             <Link
               href={`/projects/${project.id}/edit`}
-              className="p-2 text-slate-400 hover:text-teal-400 transition-colors"
+              className="p-2 text-gray-400 hover:text-purple-400 transition-colors"
               title="Edit project"
             >
               <Pencil className="w-4 h-4" />
@@ -156,33 +156,32 @@ export const ProjectCard = memo(function ProjectCard({
         </div>
 
         {/* Creator Info */}
-        <div className="text-slate-400 text-sm space-y-1.5 mb-3">
+        <div className="text-gray-400 text-sm space-y-1.5 mb-3">
           {project.user.student ? (
             <>
               <div className="flex items-center gap-2">
-                <span className="font-medium text-teal-300">
+                <span className="font-medium text-purple-300">
                   {project.user.name}
                 </span>
-                <span className="text-xs text-slate-500">•</span>
+                <span className="text-xs text-gray-500">•</span>
                 <span className="text-xs">{project.user.student.roll_no}</span>
               </div>
-              <div className="text-xs text-slate-500">
+              <div className="text-xs text-gray-500">
                 {project.user.student.class} • Year{" "}
                 {project.user.student.academic_year}
               </div>
             </>
           ) : (
             <div className="flex items-center gap-2">
-              <span className="text-teal-300">By {project.user.name}</span>
+              <span className="text-purple-300">By {project.user.name}</span>
             </div>
           )}
         </div>
 
-        <p className="text-slate-300 text-sm line-clamp-2 mb-4 min-h-[2.5rem]">
+        <p className="text-gray-300 text-sm line-clamp-2 mb-4 min-h-[2.5rem]">
           {project.description}
         </p>
 
-        {/* SDG Goals */}
         {/* SDG Goals */}
         {project.sdgGoals && project.sdgGoals.length > 0 && (
           <div className="mb-4 min-h-[1.5rem]">
@@ -193,7 +192,7 @@ export const ProjectCard = memo(function ProjectCard({
                   <Badge
                     key={goal}
                     variant="outline"
-                    className="bg-teal-900/30 text-teal-300 border-teal-700/50 text-xs whitespace-nowrap"
+                    className="bg-purple-900/30 text-purple-300 border-purple-700/50 text-xs whitespace-nowrap"
                   >
                     {sdgGoal.label}
                   </Badge>
@@ -202,7 +201,7 @@ export const ProjectCard = memo(function ProjectCard({
               {project.sdgGoals.length > 2 && (
                 <Badge
                   variant="outline"
-                  className="bg-slate-800/80 text-slate-300 border-slate-700 text-xs"
+                  className="bg-[#1a1a30]/80 text-gray-300 border-purple-800 text-xs"
                 >
                   +{project.sdgGoals.length - 2}
                 </Badge>
@@ -211,13 +210,13 @@ export const ProjectCard = memo(function ProjectCard({
           </div>
         )}
 
-        <div className="mt-4 pt-3 border-t border-slate-700/30 flex items-center justify-between text-sm text-slate-400">
+        <div className="mt-4 pt-3 border-t border-purple-900/30 flex items-center justify-between text-sm text-gray-400">
           <div className="flex items-center gap-4">
             <span className="flex items-center gap-1.5">
               <Eye className="w-4 h-4" /> {project.views}
             </span>
             <span className="flex items-center gap-1.5">
-              <Heart className="w-4 h-4 text-teal-500" /> {project.likes}
+              <Heart className="w-4 h-4 text-purple-500" /> {project.likes}
             </span>
             <span className="flex items-center gap-1.5">
               <MessageSquare className="w-4 h-4" /> {project._count.comments}
@@ -227,7 +226,7 @@ export const ProjectCard = memo(function ProjectCard({
             href={project.github_url}
             target="_blank"
             rel="noopener noreferrer"
-            className="text-teal-400 hover:text-teal-300 transition-colors flex items-center gap-1"
+            className="text-purple-400 hover:text-purple-300 transition-colors flex items-center gap-1"
           >
             GitHub{" "}
             <span className="transition-transform group-hover:translate-x-0.5">
