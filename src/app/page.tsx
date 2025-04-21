@@ -1,10 +1,8 @@
 import Link from "next/link";
 import { Logo } from "@/components/logo";
-import dynamic from "next/dynamic";
 import { getUser } from "./actions";
-
-const ProjectShowcase = dynamic(() => import("@/components/project-showcase"));
-const FlipWords = dynamic(() => import("@/components/flip-words"));
+import ProjectShowcase from "@/components/project-showcase";
+import FlipWords from "@/components/flip-words";
 
 export default async function LandingPage() {
   const currentYear = new Date().getFullYear();
