@@ -25,6 +25,7 @@ interface EditProjectFormData {
   description: string;
   thumbnail_url: string;
   github_url: string;
+  website_url: string;
   sdgGoals: SDGGoal[];
 }
 
@@ -52,6 +53,7 @@ export default function EditProjectForm({
     description: project.description,
     thumbnail_url: project.thumbnail_url,
     github_url: project.github_url,
+    website_url: (project as any).website_url || "",
     sdgGoals: project.sdgGoals || [],
   });
   const [isLoading, setIsLoading] = useState(false);
@@ -180,6 +182,7 @@ export default function EditProjectForm({
     form.append("description", formData.description);
     form.append("thumbnail_url", formData.thumbnail_url);
     form.append("github_url", formData.github_url);
+    form.append("website_url", formData.website_url);
     selectedSDGs.forEach((goal) => {
       form.append("sdgGoals", goal);
     });
@@ -216,7 +219,7 @@ export default function EditProjectForm({
             name="name"
             value={formData.name}
             onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-            className="mt-1 bg-gray-800 text-gray-300 border-gray-700"
+            className="mt-1 bg-[#1a1a30]/50 text-gray-300 border-purple-900/50 focus:border-purple-500/50 focus:ring-purple-500/20"
             required
             placeholder="Enter project name"
           />
@@ -234,7 +237,7 @@ export default function EditProjectForm({
               type="button"
               onClick={fetchGithubReadme}
               disabled={isFetchingReadme || !formData.github_url}
-              className={`text-sm text-purple-400 hover:text-purple-300 ${
+              className={`text-sm text-purple-400 hover:text-purple-300 transition-colors ${
                 isFetchingReadme || !formData.github_url
                   ? "opacity-50 cursor-not-allowed"
                   : ""
@@ -251,7 +254,7 @@ export default function EditProjectForm({
               setFormData({ ...formData, description: e.target.value })
             }
             rows={4}
-            className="mt-1 bg-gray-800 text-gray-300 border-gray-700"
+            className="mt-1 bg-[#1a1a30]/50 text-gray-300 border-purple-900/50 focus:border-purple-500/50 focus:ring-purple-500/20"
             required
             placeholder="Describe your project"
           />
@@ -272,10 +275,35 @@ export default function EditProjectForm({
             onChange={(e) =>
               setFormData({ ...formData, github_url: e.target.value })
             }
-            className="mt-1 bg-gray-800 text-gray-300 border-gray-700"
+            className="mt-1 bg-[#1a1a30]/50 text-gray-300 border-purple-900/50 focus:border-purple-500/50 focus:ring-purple-500/20"
             required
             placeholder="https://github.com/username/repository"
           />
+        </div>
+
+        {/* Add Website URL field */}
+        <div>
+          <label
+            htmlFor="website_url"
+            className="block text-sm font-medium text-gray-300"
+          >
+            Live Website URL
+          </label>
+          <Input
+            type="url"
+            id="website_url"
+            name="website_url"
+            value={formData.website_url}
+            onChange={(e) =>
+              setFormData({ ...formData, website_url: e.target.value })
+            }
+            className="mt-1 bg-[#1a1a30]/50 text-gray-300 border-purple-900/50 focus:border-purple-500/50 focus:ring-purple-500/20"
+            placeholder="https://your-deployed-project.com"
+          />
+          <p className="text-xs text-gray-400 mt-1">
+            Enter the URL where your project is deployed (optional). This will
+            be embedded as a live demo.
+          </p>
         </div>
 
         <div>
@@ -293,7 +321,7 @@ export default function EditProjectForm({
             onChange={(e) =>
               setFormData({ ...formData, thumbnail_url: e.target.value })
             }
-            className="mt-1 bg-gray-800 text-gray-300 border-gray-700"
+            className="mt-1 bg-[#1a1a30]/50 text-gray-300 border-purple-900/50 focus:border-purple-500/50 focus:ring-purple-500/20"
             required
             placeholder="https://example.com/image.jpg"
           />
@@ -306,20 +334,24 @@ export default function EditProjectForm({
           <SDGSelect selected={selectedSDGs} onChange={setSelectedSDGs} />
         </div>
 
-        {error && <p className="text-red-400 text-sm">{error}</p>}
+        {error && (
+          <p className="text-red-400 text-sm p-3 rounded-md bg-red-900/20 border border-red-700/50">
+            {error}
+          </p>
+        )}
 
         <div className="flex justify-end gap-4">
           <button
             type="button"
             onClick={() => router.back()}
-            className="px-4 py-2 text-sm font-medium text-gray-300 bg-gray-700 rounded-md hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-purple-500"
+            className="px-4 py-2 text-sm font-medium text-gray-300 bg-[#141428]/70 border border-purple-900/50 rounded-md hover:bg-[#1a1a30]/70 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-[#141428] focus:ring-purple-500/50 transition-all duration-300"
           >
             Cancel
           </button>
           <Button
             type="submit"
             disabled={isLoading}
-            className={`px-4 py-2 text-sm font-medium text-white bg-purple-500 rounded-md hover:bg-purple-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-purple-500 ${
+            className={`px-4 py-2 text-sm font-medium text-white bg-purple-700 rounded-md hover:bg-purple-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-[#141428] focus:ring-purple-500 transition-all duration-300 ${
               isLoading ? "opacity-50 cursor-not-allowed" : ""
             }`}
           >
@@ -329,7 +361,7 @@ export default function EditProjectForm({
       </form>
 
       {isOwner && (
-        <div className="bg-gray-800 p-6 rounded-lg space-y-4">
+        <div className="bg-[#141428]/50 backdrop-blur-sm p-6 rounded-xl border border-purple-900/50 shadow-lg space-y-4">
           <h3 className="text-lg font-medium text-purple-400">
             Project Collaborators
           </h3>
@@ -349,13 +381,13 @@ export default function EditProjectForm({
                   value={newCollaboratorEmail}
                   onChange={(e) => setNewCollaboratorEmail(e.target.value)}
                   placeholder="teammate@example.com"
-                  className="flex-1 p-2 rounded-md bg-gray-700 border-gray-600 text-gray-300 shadow-sm focus:border-purple-500 focus:ring-purple-500"
+                  className="flex-1 p-2 rounded-md bg-[#1a1a30]/50 border-purple-900/50 text-gray-300 shadow-sm focus:border-purple-500/50 focus:ring-purple-500/20"
                   required
                 />
                 <button
                   type="submit"
                   disabled={isAddingCollaborator || !newCollaboratorEmail}
-                  className={`px-4 py-2 text-sm font-medium text-white bg-purple-500 rounded-md hover:bg-purple-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-purple-500 ${
+                  className={`px-4 py-2 text-sm font-medium text-white bg-purple-700 rounded-md hover:bg-purple-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-[#141428] focus:ring-purple-500 transition-all duration-300 ${
                     isAddingCollaborator || !newCollaboratorEmail
                       ? "opacity-50 cursor-not-allowed"
                       : ""
@@ -367,7 +399,9 @@ export default function EditProjectForm({
             </div>
 
             {collaboratorError && (
-              <p className="text-red-400 text-sm">{collaboratorError}</p>
+              <p className="text-red-400 text-sm p-3 rounded-md bg-red-900/20 border border-red-700/50">
+                {collaboratorError}
+              </p>
             )}
           </form>
 
@@ -375,7 +409,7 @@ export default function EditProjectForm({
             {collaborators.map((collaborator) => (
               <div
                 key={collaborator.id}
-                className="flex items-center justify-between bg-gray-700 p-3 rounded-md"
+                className="flex items-center justify-between bg-[#1a1a30]/50 p-3 rounded-md border border-purple-900/50"
               >
                 <div className="flex items-center gap-3">
                   <UserCircle className="h-8 w-8 text-gray-400" />

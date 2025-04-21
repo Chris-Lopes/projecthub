@@ -1,15 +1,15 @@
 "use client";
 
-import { createProject } from "@/app/actions";
+import { createProject, imageUpload } from "@/app/actions";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import { SDGSelect } from "@/components/sdg-select";
 import { SDGGoal } from "@prisma/client";
 import { Badge } from "@/components/ui/badge";
 import Image from "next/image";
-import { imageUpload } from "@/app/actions";
+import { Button } from "@/components/ui/button";
 
 export default function NewProjectPage() {
   const router = useRouter();
@@ -21,20 +21,20 @@ export default function NewProjectPage() {
     description: "",
     thumbnail_url: "",
     github_url: "",
+    website_url: "",
   });
   const [selectedSDGs, setSelectedSDGs] = useState<SDGGoal[]>([]);
 
-  const fetchGithubReadme = async () => {
+  const fetchGithubReadme = useCallback(async () => {
+    if (!formData.github_url) return;
+
     try {
       setIsFetchingReadme(true);
       setError(null);
 
       // Clean and parse the GitHub URL
       let cleanUrl = formData.github_url.trim();
-      // Remove .git extension if present
-      cleanUrl = cleanUrl.replace(/\.git$/, "");
-      // Remove trailing slash if present
-      cleanUrl = cleanUrl.replace(/\/$/, "");
+      cleanUrl = cleanUrl.replace(/\.git$/, "").replace(/\/$/, "");
 
       const url = new URL(cleanUrl);
       const parts = url.pathname.split("/").filter(Boolean);
@@ -46,7 +46,6 @@ export default function NewProjectPage() {
       const owner = parts[0];
       const repo = parts[1];
 
-      // Fetch README content
       const response = await fetch(
         `https://api.github.com/repos/${owner}/${repo}/readme`
       );
@@ -58,7 +57,6 @@ export default function NewProjectPage() {
       const data = await response.json();
 
       if (data.content) {
-        // Decode base64 content
         const content = atob(data.content.replace(/\n/g, ""));
         setFormData((prev) => ({ ...prev, description: content }));
       }
@@ -70,7 +68,7 @@ export default function NewProjectPage() {
     } finally {
       setIsFetchingReadme(false);
     }
-  };
+  }, [formData.github_url]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -98,166 +96,228 @@ export default function NewProjectPage() {
     }
   };
 
+  const handleFileUpload = useCallback(
+    async (e: React.ChangeEvent<HTMLInputElement>) => {
+      const file = e.target.files?.[0];
+      if (!file) return;
+
+      const fileData = new FormData();
+      fileData.append("file", file);
+
+      const result = await imageUpload(fileData);
+      if (result && "data" in result && result.data) {
+        setFormData((prev) => ({
+          ...prev,
+          thumbnail_url: result.data.publicUrl,
+        }));
+      } else if (result && "error" in result) {
+        console.error("Upload failed:", result.error);
+        setError("Failed to upload image");
+      }
+    },
+    []
+  );
+
   return (
-    <div className="min-h-screen bg-gray-900 pt-20 pb-10">
-      <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8">
-        <h1 className="text-3xl font-bold text-purple-400 mb-8">
-          Create New Project
-        </h1>
+    <div className="min-h-screen bg-gradient-to-b from-[#0D0D14] via-[#111120] to-[#1A1A2E] pt-30 pb-10">
+      {/* Decorative elements matching landing page */}
+      <div className="fixed -top-64 -right-64 w-[30rem] h-[30rem] bg-purple-500/5 rounded-full blur-3xl" />
+      <div className="fixed -bottom-64 -left-64 w-[30rem] h-[30rem] bg-violet-500/5 rounded-full blur-3xl" />
 
-        <form onSubmit={handleSubmit} className="space-y-6">
-          <div className="space-y-2">
-            <Label htmlFor="name">Project Name</Label>
-            <Input
-              id="name"
-              name="name"
-              required
-              value={formData.name}
-              onChange={(e) =>
-                setFormData({ ...formData, name: e.target.value })
-              }
-              placeholder="Enter project name"
-              className="bg-gray-700 border-gray-600"
-            />
-          </div>
+      <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+        <div className="mb-8">
+          <span className="inline-block text-purple-400 font-medium mb-3 bg-purple-500/10 px-3 py-1 rounded-full text-sm">
+            Create
+          </span>
+          <h1 className="text-3xl font-bold text-white mb-4">New Project</h1>
+          <p className="text-gray-300 max-w-2xl">
+            Share your innovative work with the community
+          </p>
+        </div>
 
-          <div className="space-y-2">
-            <div className="flex items-center justify-between">
-              <Label htmlFor="description">Description</Label>
-              <button
-                type="button"
-                onClick={fetchGithubReadme}
-                disabled={isFetchingReadme || !formData.github_url}
-                className={`text-sm text-purple-400 hover:text-purple-300 ${
-                  isFetchingReadme || !formData.github_url
-                    ? "opacity-50 cursor-not-allowed"
-                    : ""
-                }`}
-              >
-                {isFetchingReadme ? "Fetching README..." : "Use GitHub README"}
-              </button>
+        <div className="bg-[#141428]/50 backdrop-blur-sm rounded-xl border border-purple-900/50 shadow-lg p-6">
+          <form onSubmit={handleSubmit} className="space-y-6">
+            <div className="space-y-2">
+              <Label htmlFor="name" className="text-gray-300">
+                Project Name
+              </Label>
+              <Input
+                id="name"
+                name="name"
+                required
+                value={formData.name}
+                onChange={(e) =>
+                  setFormData({ ...formData, name: e.target.value })
+                }
+                placeholder="Enter project name"
+                className="bg-[#1a1a30]/50 border-purple-900/50 focus:border-purple-500/50 focus:ring-purple-500/20"
+              />
             </div>
-            <textarea
-              id="description"
-              name="description"
-              required
-              value={formData.description}
-              onChange={(e) =>
-                setFormData({ ...formData, description: e.target.value })
-              }
-              placeholder="Describe your project"
-              className="w-full min-h-[100px] rounded-md bg-gray-700 border-gray-600 p-2 text-gray-300"
-            />
-          </div>
 
-          <div className="space-y-2">
-            <Label htmlFor="github_url">GitHub URL</Label>
-            <Input
-              id="github_url"
-              name="github_url"
-              type="url"
-              required
-              value={formData.github_url}
-              onChange={(e) =>
-                setFormData({ ...formData, github_url: e.target.value })
-              }
-              placeholder="https://github.com/username/repository (should be public)"
-              className="bg-gray-700 border-gray-600"
-            />
-          </div>
+            <div className="space-y-2">
+              <div className="flex items-center justify-between">
+                <Label htmlFor="description" className="text-gray-300">
+                  Description
+                </Label>
+                <button
+                  type="button"
+                  onClick={fetchGithubReadme}
+                  disabled={isFetchingReadme || !formData.github_url}
+                  className={`text-sm text-purple-400 hover:text-purple-300 transition-colors ${
+                    isFetchingReadme || !formData.github_url
+                      ? "opacity-50 cursor-not-allowed"
+                      : ""
+                  }`}
+                >
+                  {isFetchingReadme
+                    ? "Fetching README..."
+                    : "Use GitHub README"}
+                </button>
+              </div>
+              <textarea
+                id="description"
+                name="description"
+                required
+                value={formData.description}
+                onChange={(e) =>
+                  setFormData({ ...formData, description: e.target.value })
+                }
+                placeholder="Describe your project"
+                className="w-full min-h-[150px] rounded-md bg-[#1a1a30]/50 border-purple-900/50 p-3 text-gray-300 focus:border-purple-500/50 focus:ring-purple-500/20 transition-all duration-200"
+              />
+            </div>
 
-          <div className="space-y-2">
-            <Label htmlFor="thumbnail">Project Thumbnail</Label>
-            <div className="flex flex-col gap-4">
-              {formData.thumbnail_url && (
-                <div className="relative w-full h-48">
-                  <Image
-                    src={formData.thumbnail_url}
-                    alt="Project thumbnail preview"
-                    fill
-                    className="object-cover rounded-md"
-                  />
-                </div>
-              )}
-              <div className="flex gap-4 items-center">
-                <Input
-                  id="thumbnail"
-                  name="thumbnail"
-                  type="file"
-                  accept="image/*"
-                  onChange={async (e) => {
-                    const file = e.target.files?.[0];
-                    if (file) {
-                      const formData = new FormData();
-                      formData.append("file", file);
-                      const result = await imageUpload(formData);
-                      if (result && "data" in result && result.data) {
-                        setFormData((prev) => ({
-                          ...prev,
-                          thumbnail_url: result.data.publicUrl,
-                        }));
-                      } else if (result && "error" in result) {
-                        console.error("Upload failed:", result.error);
+            <div className="space-y-2">
+              <Label htmlFor="website_url" className="text-gray-300">
+                Live Website URL
+              </Label>
+              <Input
+                id="website_url"
+                name="website_url"
+                type="url"
+                value={formData.website_url}
+                onChange={(e) =>
+                  setFormData({ ...formData, website_url: e.target.value })
+                }
+                placeholder="https://your-deployed-project.com"
+                className="bg-[#1a1a30]/50 border-purple-900/50 focus:border-purple-500/50 focus:ring-purple-500/20"
+              />
+              <p className="text-xs text-gray-400">
+                Enter the URL where your project is deployed (optional). This
+                will be embedded as a live demo on your project page.
+              </p>
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="github_url" className="text-gray-300">
+                GitHub URL
+              </Label>
+              <Input
+                id="github_url"
+                name="github_url"
+                type="url"
+                required
+                value={formData.github_url}
+                onChange={(e) =>
+                  setFormData({ ...formData, github_url: e.target.value })
+                }
+                placeholder="https://github.com/username/repository"
+                className="bg-[#1a1a30]/50 border-purple-900/50 focus:border-purple-500/50 focus:ring-purple-500/20"
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="thumbnail" className="text-gray-300">
+                Project Thumbnail
+              </Label>
+              <div className="flex flex-col gap-4">
+                {formData.thumbnail_url && (
+                  <div className="relative w-full h-48 rounded-md overflow-hidden border border-purple-900/50">
+                    <Image
+                      src={formData.thumbnail_url}
+                      alt="Project thumbnail preview"
+                      fill
+                      className="object-cover transition-all hover:scale-105 duration-300"
+                    />
+                  </div>
+                )}
+                <div className="flex flex-col sm:flex-row gap-4 items-center">
+                  <div className="w-full">
+                    <Input
+                      id="thumbnail"
+                      name="thumbnail"
+                      type="file"
+                      accept="image/*"
+                      onChange={handleFileUpload}
+                      className="bg-[#1a1a30]/50 border-purple-900/50 focus:border-purple-500/50 focus:ring-purple-500/20"
+                    />
+                  </div>
+                  <span className="text-sm text-gray-400">or</span>
+                  <div className="w-full">
+                    <Input
+                      id="thumbnail_url"
+                      name="thumbnail_url"
+                      type="url"
+                      value={formData.thumbnail_url}
+                      onChange={(e) =>
+                        setFormData({
+                          ...formData,
+                          thumbnail_url: e.target.value,
+                        })
                       }
-                    }
-                  }}
-                  className="bg-gray-700 border-gray-600"
-                />
-                <span className="text-sm text-gray-400">or</span>
-                <Input
-                  id="thumbnail_url"
-                  name="thumbnail_url"
-                  type="url"
-                  value={formData.thumbnail_url}
-                  onChange={(e) =>
-                    setFormData({ ...formData, thumbnail_url: e.target.value })
-                  }
-                  placeholder="Enter image URL directly"
-                  className="bg-gray-700 border-gray-600"
-                />
+                      placeholder="Enter image URL directly"
+                      className="bg-[#1a1a30]/50 border-purple-900/50 focus:border-purple-500/50 focus:ring-purple-500/20"
+                    />
+                  </div>
+                </div>
               </div>
             </div>
-          </div>
 
-          <div>
-            <label className="block text-sm font-medium text-gray-300 mb-2">
-              SDG Goals
-            </label>
-            <SDGSelect selected={selectedSDGs} onChange={setSelectedSDGs} />
-            <div className="mt-2 flex flex-wrap gap-2">
-              {selectedSDGs.map((goal) => (
-                <Badge
-                  key={goal}
-                  variant="outline"
-                  className="bg-purple-900/50 text-purple-300 text-xs"
-                >
-                  {goal}
-                </Badge>
-              ))}
+            <div>
+              <label className="block text-sm font-medium text-gray-300 mb-2">
+                SDG Goals
+              </label>
+              <SDGSelect selected={selectedSDGs} onChange={setSelectedSDGs} />
+              <div className="mt-2 flex flex-wrap gap-2">
+                {selectedSDGs.map((goal) => (
+                  <Badge
+                    key={goal}
+                    variant="outline"
+                    className="bg-purple-900/30 text-purple-300 border-purple-700/50 text-xs"
+                  >
+                    {goal}
+                  </Badge>
+                ))}
+              </div>
             </div>
-          </div>
 
-          {error && <p className="text-red-400 text-sm">{error}</p>}
+            {error && (
+              <div className="p-3 rounded-md bg-red-900/20 border border-red-700/50 text-red-400 text-sm">
+                {error}
+              </div>
+            )}
 
-          <div className="flex justify-end gap-4">
-            <button
-              type="button"
-              onClick={() => router.back()}
-              className="px-4 py-2 text-sm font-medium text-gray-300 bg-gray-700 rounded-md hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-purple-500"
-            >
-              Cancel
-            </button>
-            <button
-              type="submit"
-              disabled={isLoading}
-              className={`px-4 py-2 text-sm font-medium text-white bg-purple-500 rounded-md hover:bg-purple-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-purple-500 ${
-                isLoading ? "opacity-50 cursor-not-allowed" : ""
-              }`}
-            >
-              {isLoading ? "Creating..." : "Create Project"}
-            </button>
-          </div>
-        </form>
+            <div className="flex justify-end gap-4 pt-2">
+              <Button
+                type="button"
+                onClick={() => router.back()}
+                variant="outline"
+                className="bg-[#141428]/70 hover:bg-[#1a1a30]/70 text-white border-purple-900/50 hover:border-purple-500/30 transition-all duration-300"
+              >
+                Cancel
+              </Button>
+              <Button
+                type="submit"
+                disabled={isLoading}
+                className={`bg-purple-700 hover:bg-purple-600 text-white border-none transition-all duration-300 ${
+                  isLoading ? "opacity-50 cursor-not-allowed" : ""
+                }`}
+              >
+                {isLoading ? "Creating..." : "Create Project"}
+              </Button>
+            </div>
+          </form>
+        </div>
       </div>
     </div>
   );

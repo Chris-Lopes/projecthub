@@ -5,6 +5,10 @@ const nextConfig: NextConfig = {
     remotePatterns: [
       {
         protocol: "https",
+        hostname: "tlhdqrvgdkdqlkiepifc.supabase.co",
+      },
+      {
+        protocol: "https",
         hostname: "**",
       },
       {
@@ -14,6 +18,7 @@ const nextConfig: NextConfig = {
     ],
   },
   experimental: {
+    optimizeCss: true,
     serverActions: {
       bodySizeLimit: "5mb",
     },

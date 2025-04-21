@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { toggleProjectLike, getProjectLikeStatus } from "@/app/actions";
 import { Heart } from "lucide-react";
 import { useRouter } from "next/navigation";
@@ -43,7 +43,7 @@ export function LikeButton({
     };
   }, [projectId]);
 
-  const handleLike = async () => {
+  const handleLike = useCallback(async () => {
     if (isLoading) return;
 
     setIsLoading(true);
@@ -64,14 +64,14 @@ export function LikeButton({
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [isLoading, projectId, router]);
 
   return (
     <div className="flex flex-col items-center gap-1">
       <button
         onClick={handleLike}
         disabled={isLoading}
-        className={`flex items-center gap-2 focus:outline-none ${
+        className={`flex items-center gap-2 focus:outline-none focus:ring-2 focus:ring-purple-500/30 focus:ring-offset-2 focus:ring-offset-[#141428] rounded-full p-1 transition-all duration-300 ${
           isLoading ? "opacity-50 cursor-not-allowed" : ""
         }`}
         title={error || undefined}
@@ -81,12 +81,12 @@ export function LikeButton({
             isLoading ? "animate-pulse" : ""
           } ${
             liked
-              ? "fill-purple-500 text-purple-500"
+              ? "fill-purple-500 text-purple-500 hover:fill-purple-400 hover:text-purple-400"
               : "fill-none text-gray-400 hover:text-purple-400"
           }`}
         />
         <span
-          className={`text-2xl font-bold ${
+          className={`text-2xl font-bold transition-colors duration-300 ${
             liked ? "text-purple-500" : "text-gray-400"
           }`}
         >
@@ -94,7 +94,9 @@ export function LikeButton({
         </span>
       </button>
       {error && (
-        <span className="text-xs text-red-400 text-center">{error}</span>
+        <span className="text-xs text-red-400 px-2 py-1 bg-red-900/20 rounded-md text-center">
+          {error}
+        </span>
       )}
     </div>
   );

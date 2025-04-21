@@ -20,6 +20,58 @@ body {
   font-family: "Inter", sans-serif;
 }
 
+@keyframes blob {
+  0% {
+    transform: translate(0px, 0px) scale(1);
+  }
+  33% {
+    transform: translate(30px, -50px) scale(1.1);
+  }
+  66% {
+    transform: translate(-20px, 20px) scale(0.9);
+  }
+  100% {
+    transform: translate(0px, 0px) scale(1);
+  }
+}
+.animate-blob {
+  animation: blob 7s infinite;
+}
+.animation-delay-2000 {
+  animation-delay: 2s;
+}
+.animation-delay-4000 {
+  animation-delay: 4s;
+}
+
+@keyframes float {
+  0% {
+    transform: translateY(0) rotate3d(1, 1, 1, 0deg);
+  }
+  50% {
+    transform: translateY(-10px) rotate3d(1, 1, 1, 1deg);
+  }
+  100% {
+    transform: translateY(0) rotate3d(1, 1, 1, 0deg);
+  }
+}
+
+.animate-float {
+  animation: float 6s ease-in-out infinite;
+}
+
+.perspective-1000 {
+  perspective: 1000px;
+}
+
+.rotate-y-3 {
+  transform: rotateY(3deg);
+}
+
+.rotate-x-6 {
+  transform: rotateX(6deg);
+}
+
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {

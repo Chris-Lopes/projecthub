@@ -7,57 +7,82 @@ import Link from "next/link";
 
 export default async function Login(props: { searchParams: Promise<Message> }) {
   const searchParams = await props.searchParams;
+
   return (
-    <div className="flex justify-center items-center w-full">
-      <form className="flex-1 flex flex-col w-full max-w-sm p-6 rounded-lg bg-gray-800/50">
-        <h1 className="text-2xl font-medium text-gray-100">Sign in</h1>
-        <p className="text-sm text-gray-300">
-          Don't have an account?{" "}
-          <Link
-            className="text-purple-400 hover:text-purple-300 font-medium underline"
-            href="/sign-up"
-          >
-            Sign up
-          </Link>
-        </p>
-        <div className="flex flex-col gap-2 [&>input]:mb-3 mt-8">
-          <Label htmlFor="email" className="text-gray-200">
-            Email
-          </Label>
-          <Input
-            name="email"
-            placeholder="you@example.com"
-            required
-            className="bg-gray-700 border-gray-600 text-gray-100 placeholder:text-gray-400"
-          />
-          <div className="flex justify-between items-center">
-            <Label htmlFor="password" className="text-gray-200">
-              Password
+    <div className="w-full max-w-sm mx-auto relative z-10 py-10">
+      <div className="mb-8 text-center">
+        <h1 className="text-3xl font-bold text-white mb-2">Welcome back</h1>
+        <p className="text-gray-400">Sign in to continue to ProjectHub</p>
+      </div>
+
+      <div className="bg-[#141428]/50 backdrop-blur-sm rounded-xl border border-purple-900/50 shadow-lg p-6">
+        <form className="space-y-5">
+          <div className="space-y-2">
+            <Label htmlFor="email" className="text-gray-300">
+              Email
             </Label>
-            <Link
-              className="text-xs text-purple-400 hover:text-purple-300 underline"
-              href="/forgot-password"
-            >
-              Forgot Password?
-            </Link>
+            <Input
+              name="email"
+              id="email"
+              type="email"
+              placeholder="you@example.com"
+              required
+              className="bg-[#1a1a30]/50 border-purple-900/50 focus:border-purple-500/50 focus:ring-purple-500/20 text-gray-200 placeholder:text-gray-500"
+            />
           </div>
-          <Input
-            type="password"
-            name="password"
-            placeholder="Your password"
-            required
-            className="bg-gray-700 border-gray-600 text-gray-100 placeholder:text-gray-400"
-          />
+
+          <div className="space-y-2">
+            <div className="flex justify-between items-center">
+              <Label htmlFor="password" className="text-gray-300">
+                Password
+              </Label>
+              <Link
+                href="/forgot-password"
+                className="text-xs text-purple-400 hover:text-purple-300 transition-colors"
+              >
+                Forgot password?
+              </Link>
+            </div>
+            <Input
+              type="password"
+              name="password"
+              id="password"
+              placeholder="Your password"
+              required
+              className="bg-[#1a1a30]/50 border-purple-900/50 focus:border-purple-500/50 focus:ring-purple-500/20 text-gray-200 placeholder:text-gray-500"
+            />
+          </div>
+
           <SubmitButton
-            pendingText="Signing In..."
+            pendingText="Signing in..."
             formAction={signInAction}
-            className="bg-purple-600 hover:bg-purple-700 text-white"
+            className="w-full bg-purple-700 hover:bg-purple-600 text-white font-medium py-2.5 rounded-lg transition-colors focus:ring-2 focus:ring-purple-500/50 focus:ring-offset-1 focus:ring-offset-[#141428]"
           >
             Sign in
           </SubmitButton>
+
           <FormMessage message={searchParams} />
-        </div>
-      </form>
+        </form>
+      </div>
+
+      <div className="mt-6 text-center text-gray-400 text-sm">
+        Don't have an account?{" "}
+        <Link
+          className="text-purple-400 hover:text-purple-300 font-medium transition-colors"
+          href="/sign-up"
+        >
+          Sign up
+        </Link>
+      </div>
+
+      <div className="mt-8 text-center">
+        <Link
+          href="/"
+          className="text-sm text-gray-500 hover:text-gray-400 transition-colors flex items-center justify-center gap-1"
+        >
+          <span>←</span> Back to home
+        </Link>
+      </div>
     </div>
   );
 }

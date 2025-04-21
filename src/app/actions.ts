@@ -330,6 +330,7 @@ export async function createProject(formData: FormData) {
   const description = formData.get("description")?.toString();
   const thumbnail_url = formData.get("thumbnail_url")?.toString();
   const github_url = formData.get("github_url")?.toString();
+  const website_url = formData.get("website_url")?.toString();
   const sdgGoals = formData
     .getAll("sdgGoals")
     .map((goal) => goal.toString() as SDGGoal);
@@ -348,9 +349,10 @@ export async function createProject(formData: FormData) {
         description,
         thumbnail_url,
         github_url,
+        website_url,
         userId: userDb.id,
         sdgGoals,
-      },
+      } as any,
     });
 
     return {
@@ -725,6 +727,7 @@ export async function updateProject(projectId: string, formData: FormData) {
   const description = formData.get("description")?.toString();
   const thumbnail_url = formData.get("thumbnail_url")?.toString();
   const github_url = formData.get("github_url")?.toString();
+  const website_url = formData.get("website_url")?.toString();
   const sdgGoals = formData
     .getAll("sdgGoals")
     .map((goal) => goal.toString() as SDGGoal);
@@ -744,8 +747,9 @@ export async function updateProject(projectId: string, formData: FormData) {
         description,
         thumbnail_url,
         github_url,
+        website_url,
         sdgGoals,
-      },
+      } as any,
     });
 
     return {
