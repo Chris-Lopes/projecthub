@@ -22,11 +22,11 @@ export default async function Home() {
   }
 
   if (UserDB?.roleType === "FACULTY") {
-    return redirect("/");
+    return redirect("/faculty");
   }
 
   if (UserDB?.roleType === "COLLEGE") {
-    return redirect("/");
+    return redirect("/college");
   }
 
   return <div>How are you here? no one is allowed here!</div>;
