@@ -1,3 +1,5 @@
+"use server";
+
 import Link from "next/link";
 import { Logo } from "@/components/logo";
 import { ProjectShowcase } from "@/components/project-showcase";
