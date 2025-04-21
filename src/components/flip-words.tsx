@@ -1,5 +1,5 @@
 "use client";
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState, FC } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { cn } from "@/lib/utils";
 
@@ -9,7 +9,7 @@ interface FlipWordsProps {
   className?: string;
 }
 
-export const FlipWords: React.FC<FlipWordsProps> = ({
+const FlipWords: FC<FlipWordsProps> = ({
   words,
   duration = 5000,
   className,
@@ -93,3 +93,5 @@ export const FlipWords: React.FC<FlipWordsProps> = ({
     </AnimatePresence>
   );
 };
+
+export default FlipWords;

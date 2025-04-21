@@ -1,10 +1,10 @@
 "use client";
-import React from "react";
+import React, { FC } from "react";
 import { ContainerScroll } from "@/components/ui/container-scroll-animation";
 import Image from "next/image";
 import Link from "next/link";
 
-export function ProjectShowcase() {
+const ProjectShowcase: FC = () => {
   return (
     <div className="overflow-hidden">
       <div className="pt-10 md:pt-16">
@@ -158,4 +158,6 @@ export function ProjectShowcase() {
       </div>
     </div>
   );
-}
+};
+
+export default ProjectShowcase;
