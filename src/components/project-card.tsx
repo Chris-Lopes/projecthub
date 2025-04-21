@@ -87,6 +87,9 @@ interface ProjectCardProps {
         academic_year: string;
       } | null;
     };
+    collaborators?: {
+      userId: string;
+    }[];
     _count: {
       comments: number;
     };
@@ -109,6 +112,10 @@ export const ProjectCard = memo(function ProjectCard({
   showStatus = false,
 }: ProjectCardProps) {
   const isOwner = currentUserId === project.user.id;
+  const isCollaborator = project.collaborators?.some(
+    (collab) => collab.userId === currentUserId
+  );
+  const canEdit = isOwner || isCollaborator;
 
   return (
     <div className="bg-[#141428]/50 backdrop-blur-sm rounded-xl overflow-hidden border border-purple-900/50 shadow-lg transition-all duration-300 hover:shadow-xl hover:shadow-purple-900/30 hover:border-purple-700/50 group">
@@ -144,7 +151,7 @@ export const ProjectCard = memo(function ProjectCard({
               {project.name}
             </h3>
           </Link>
-          {showEditButton && isOwner && (
+          {showEditButton && canEdit && (
             <Link
               href={`/projects/${project.id}/edit`}
               className="p-2 text-gray-400 hover:text-purple-400 transition-colors"

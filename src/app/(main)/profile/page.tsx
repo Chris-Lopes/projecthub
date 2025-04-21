@@ -38,11 +38,21 @@ async function getUserProjects(
   userId: string
 ): Promise<ProjectWithRelations[]> {
   const projects = await Prisma.project.findMany({
-    where: { userId },
+    where: {
+      OR: [
+        { userId }, // Projects owned by the user
+        { collaborators: { some: { userId } } }, // Projects where user is a collaborator
+      ],
+    },
     include: {
       user: {
         include: {
           student: true,
+        },
+      },
+      collaborators: {
+        include: {
+          user: true,
         },
       },
       _count: {
@@ -67,6 +77,12 @@ export default async function ProfilePage() {
   if (!userDb) redirect("/sign-in");
 
   const projects = await getUserProjects(userDb.id);
+  const ownedProjects = projects.filter(
+    (project) => project.userId === userDb.id
+  );
+  const collaboratedProjects = projects.filter(
+    (project) => project.userId !== userDb.id
+  );
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-[#0D0D14] via-[#111120] to-[#1A1A2E] pt-30 pb-10">
@@ -75,75 +91,68 @@ export default async function ProfilePage() {
       <div className="fixed -bottom-64 -left-64 w-[30rem] h-[30rem] bg-violet-500/5 rounded-full blur-3xl" />
 
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-        <div className="mb-8">
-          <div className="flex justify-between items-center mb-6">
-            <div>
-              <span className="inline-block text-purple-400 font-medium mb-3 bg-purple-500/10 px-3 py-1 rounded-full text-sm">
-                Account
-              </span>
-              <h1 className="text-3xl font-bold text-white">My Profile</h1>
-            </div>
-            <form action={signOutAction}>
-              <Button
-                type="submit"
-                variant="outline"
-                className="bg-[#141428]/70 text-gray-300 hover:text-white hover:bg-[#1a1a30]/70 border-purple-900/50 hover:border-purple-500/30 transition-all duration-300"
-              >
-                Logout <LogOut className="h-5 w-5 ml-2" />
-              </Button>
-            </form>
-          </div>
+        <div className="mb-12">
+          <span className="inline-block text-purple-400 font-medium mb-3 bg-purple-500/10 px-3 py-1 rounded-full text-sm">
+            Profile
+          </span>
+          <h1 className="text-3xl font-bold text-white mb-4">
+            Welcome, {userDb.name}
+          </h1>
+          <p className="text-gray-300 max-w-2xl">
+            Manage your profile and projects
+          </p>
+        </div>
 
-          <div className="bg-[#141428]/50 backdrop-blur-sm rounded-xl border border-purple-900/50 shadow-lg p-6">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="bg-[#141428]/50 backdrop-blur-sm rounded-xl border border-purple-900/50 shadow-lg p-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+              <h2 className="text-xl font-semibold text-white mb-4">
+                Personal Information
+              </h2>
+              <div className="space-y-3">
+                <div>
+                  <p className="text-gray-400 text-sm">Name</p>
+                  <p className="text-white font-medium">{userDb.name}</p>
+                </div>
+                <div>
+                  <p className="text-gray-400 text-sm">Email</p>
+                  <p className="text-white font-medium">{userDb.email}</p>
+                </div>
+              </div>
+            </div>
+
+            {userDb.student && (
               <div>
                 <h2 className="text-xl font-semibold text-white mb-4">
-                  Personal Information
+                  Academic Information
                 </h2>
                 <div className="space-y-3">
                   <div>
-                    <p className="text-gray-400 text-sm">Name</p>
-                    <p className="text-white font-medium">{userDb.name}</p>
+                    <p className="text-gray-400 text-sm">Roll Number</p>
+                    <p className="text-white font-medium">
+                      {userDb.student.roll_no}
+                    </p>
                   </div>
                   <div>
-                    <p className="text-gray-400 text-sm">Email</p>
-                    <p className="text-white font-medium">{userDb.email}</p>
+                    <p className="text-gray-400 text-sm">Class</p>
+                    <p className="text-white font-medium">
+                      {userDb.student.class}
+                    </p>
+                  </div>
+                  <div>
+                    <p className="text-gray-400 text-sm">Academic Year</p>
+                    <p className="text-white font-medium">
+                      {userDb.student.academic_year}
+                    </p>
                   </div>
                 </div>
               </div>
-
-              {userDb.student && (
-                <div>
-                  <h2 className="text-xl font-semibold text-white mb-4">
-                    Academic Information
-                  </h2>
-                  <div className="space-y-3">
-                    <div>
-                      <p className="text-gray-400 text-sm">Roll Number</p>
-                      <p className="text-white font-medium">
-                        {userDb.student.roll_no}
-                      </p>
-                    </div>
-                    <div>
-                      <p className="text-gray-400 text-sm">Class</p>
-                      <p className="text-white font-medium">
-                        {userDb.student.class}
-                      </p>
-                    </div>
-                    <div>
-                      <p className="text-gray-400 text-sm">Academic Year</p>
-                      <p className="text-white font-medium">
-                        {userDb.student.academic_year}
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              )}
-            </div>
+            )}
           </div>
         </div>
 
-        <div className="mb-12">
+        {/* My Projects Section */}
+        <div className="mt-12">
           <div className="flex justify-between items-center mb-6">
             <h2 className="text-2xl font-semibold text-white">My Projects</h2>
             <a
@@ -166,9 +175,9 @@ export default async function ProfilePage() {
             </a>
           </div>
 
-          {projects.length > 0 ? (
+          {ownedProjects.length > 0 ? (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {projects.map((project) => (
+              {ownedProjects.map((project) => (
                 <ProjectCard
                   key={project.id}
                   project={project}
@@ -206,6 +215,26 @@ export default async function ProfilePage() {
             </div>
           )}
         </div>
+
+        {/* Collaborated Projects Section */}
+        {collaboratedProjects.length > 0 && (
+          <div className="mt-12">
+            <h2 className="text-2xl font-semibold text-white mb-6">
+              Projects I Collaborate On
+            </h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+              {collaboratedProjects.map((project) => (
+                <ProjectCard
+                  key={project.id}
+                  project={project}
+                  currentUserId={userDb.id}
+                  showEditButton={true}
+                  showStatus={true}
+                />
+              ))}
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
