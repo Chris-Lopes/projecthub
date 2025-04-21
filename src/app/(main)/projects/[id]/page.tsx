@@ -70,7 +70,7 @@ export default async function ProjectPage({ params }: PageProps) {
       <div className="fixed -bottom-64 -left-64 w-[30rem] h-[30rem] bg-violet-500/5 rounded-full blur-3xl" />
 
       <ViewCounter projectId={project.id} />
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         {/* Project Header */}
         <div className="bg-[#141428]/50 backdrop-blur-sm rounded-xl border border-purple-900/50 shadow-xl overflow-hidden">
           <ProjectImage src={project.thumbnail_url} alt={project.name} />

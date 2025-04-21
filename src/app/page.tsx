@@ -2,13 +2,14 @@ import Link from "next/link";
 import { Logo } from "@/components/logo";
 import { ProjectShowcase } from "@/components/project-showcase";
 import { FlipWords } from "@/components/flip-words";
+import { getUser } from "./actions";
 
 export const dynamic = "force-static";
 export const revalidate = 86400;
 
-export default function LandingPage() {
+export default async function LandingPage() {
   const currentYear = new Date().getFullYear();
-
+  const user = await getUser();
   return (
     <div className="min-h-screen bg-gradient-to-b from-[#0D0D14] via-[#111120] to-[#1A1A2E] text-white">
       <div className="fixed -top-64 -right-64 w-[30rem] h-[30rem] bg-purple-500/5 rounded-full blur-3xl" />
@@ -25,33 +26,27 @@ export default function LandingPage() {
             </Link>
 
             {/* Desktop navigation */}
-            <nav className="hidden md:flex items-center space-x-6">
-              <Link
-                href="/sign-up"
-                className="group relative bg-purple-700 hover:bg-purple-800 px-4 py-2 rounded-md text-white transition-all duration-300 hover:shadow-lg hover:shadow-purple-900/30 font-semibold"
-              >
-                <span className="relative z-10">Sign Up</span>
-                <div className="absolute inset-0 rounded-md opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-gradient-to-r from-purple-700 to-purple-600"></div>
-              </Link>
-            </nav>
-
-            {/* Mobile menu button */}
-            <button className="md:hidden text-white hover:text-purple-400 transition-colors">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="h-6 w-6"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M4 6h16M4 12h16M4 18h16"
-                />
-              </svg>
-            </button>
+            {user ? (
+              <nav className="flex items-center space-x-6">
+                <Link
+                  href="/sign-up"
+                  className="group relative bg-purple-700 hover:bg-purple-800 px-4 py-2 rounded-md text-white transition-all duration-300 hover:shadow-lg hover:shadow-purple-900/30 font-semibold"
+                >
+                  <span className="relative z-10">Sign Up</span>
+                  <div className="absolute inset-0 rounded-md opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-gradient-to-r from-purple-700 to-purple-600"></div>
+                </Link>
+              </nav>
+            ) : (
+              <nav className="flex items-center space-x-6">
+                <Link
+                  href="/projects"
+                  className="group relative bg-purple-700 hover:bg-purple-800 px-4 py-2 rounded-md text-white transition-all duration-300 hover:shadow-lg hover:shadow-purple-900/30 font-semibold"
+                >
+                  <span className="relative z-10">Explore</span>
+                  <div className="absolute inset-0 rounded-md opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-gradient-to-r from-purple-700 to-purple-600"></div>
+                </Link>
+              </nav>
+            )}
           </div>
         </header>
       </div>
@@ -108,12 +103,14 @@ export default function LandingPage() {
                   </span>
                   <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-gradient-to-r from-purple-700 to-violet-600 blur-sm"></div>
                 </Link>
-                <Link
-                  href="/sign-up"
-                  className="group relative px-6 py-3 rounded-md text-white font-medium transition-colors duration-300 bg-[#141428]/80 hover:bg-[#1a1a30]/80 backdrop-blur-sm border border-purple-900/50 hover:border-purple-500/30"
-                >
-                  <span className="relative z-10">Get Started</span>
-                </Link>
+                {user && (
+                  <Link
+                    href="/sign-up"
+                    className="group relative px-6 py-3 rounded-md text-white font-medium transition-colors duration-300 bg-[#141428]/80 hover:bg-[#1a1a30]/80 backdrop-blur-sm border border-purple-900/50 hover:border-purple-500/30"
+                  >
+                    <span className="relative z-10">Get Started</span>
+                  </Link>
+                )}
               </div>
 
               <div className="absolute top-5 left-0 -translate-x-36 translate-y-16 w-72 h-72 bg-purple-500/5 rounded-full mix-blend-multiply blur-3xl opacity-70 animate-blob animation-delay-2000"></div>
@@ -368,13 +365,15 @@ export default function LandingPage() {
                 </p>
               </div>
               <div className="flex flex-col sm:flex-row gap-4">
-                <Link
-                  href="/sign-up"
-                  className="group relative overflow-hidden bg-purple-700 hover:bg-purple-800 px-7 py-3 rounded-md text-white font-medium transition-all duration-300 hover:shadow-lg hover:shadow-purple-900/30 text-center whitespace-nowrap"
-                >
-                  <span className="relative z-10">Create Account</span>
-                  <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-gradient-to-r from-purple-700 to-purple-600 blur-sm"></div>
-                </Link>
+                {user && (
+                  <Link
+                    href="/sign-up"
+                    className="group relative overflow-hidden bg-purple-700 hover:bg-purple-800 px-7 py-3 rounded-md text-white font-medium transition-all duration-300 hover:shadow-lg hover:shadow-purple-900/30 text-center whitespace-nowrap"
+                  >
+                    <span className="relative z-10">Create Account</span>
+                    <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-gradient-to-r from-purple-700 to-purple-600 blur-sm"></div>
+                  </Link>
+                )}
                 <Link
                   href="/projects"
                   className="group px-7 py-3 rounded-md text-white font-medium transition-colors duration-300 bg-[#1A1A2E]/80 hover:bg-[#222240]/80 backdrop-blur-sm border border-purple-900/50 hover:border-purple-500/30 text-center whitespace-nowrap"
