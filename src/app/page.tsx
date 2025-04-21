@@ -4,9 +4,6 @@ import { ProjectShowcase } from "@/components/project-showcase";
 import { FlipWords } from "@/components/flip-words";
 import { getUser } from "./actions";
 
-export const dynamic = "force-static";
-export const revalidate = 86400;
-
 export default async function LandingPage() {
   const currentYear = new Date().getFullYear();
   const user = await getUser();
