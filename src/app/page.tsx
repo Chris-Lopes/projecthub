@@ -1,3 +1,4 @@
+"use server";
 import Link from "next/link";
 import { Logo } from "@/components/logo";
 import { getUser } from "./actions";
@@ -21,7 +22,7 @@ export default async function LandingPage() {
             </Link>
 
             {/* Desktop navigation */}
-            {user ? (
+            {!user ? (
               <nav className="flex items-center space-x-6">
                 <Link
                   href="/sign-up"
@@ -93,7 +94,7 @@ export default async function LandingPage() {
                   </span>
                   <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-gradient-to-r from-purple-700 to-violet-600 blur-sm"></div>
                 </Link>
-                {user && (
+                {!user && (
                   <Link
                     href="/sign-up"
                     className="group relative px-6 py-3 rounded-md text-white font-medium transition-colors duration-300 bg-[#141428]/80 hover:bg-[#1a1a30]/80 backdrop-blur-sm border border-purple-900/50 hover:border-purple-500/30"
@@ -355,7 +356,7 @@ export default async function LandingPage() {
                 </p>
               </div>
               <div className="flex flex-col sm:flex-row gap-4">
-                {user && (
+                {!user && (
                   <Link
                     href="/sign-up"
                     className="group relative overflow-hidden bg-purple-700 hover:bg-purple-800 px-7 py-3 rounded-md text-white font-medium transition-all duration-300 hover:shadow-lg hover:shadow-purple-900/30 text-center whitespace-nowrap"
