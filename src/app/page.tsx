@@ -1,8 +1,6 @@
 import Link from "next/link";
 import { Logo } from "@/components/logo";
 import { getUser } from "./actions";
-import ProjectShowcase from "@/components/project-showcase";
-import FlipWords from "@/components/flip-words";
 
 export default async function LandingPage() {
   const currentYear = new Date().getFullYear();
@@ -63,12 +61,7 @@ export default async function LandingPage() {
               </div>
 
               <h1 className="text-4xl md:text-5xl font-bold text-white mb-6 leading-tight">
-                Showcase{" "}
-                <FlipWords
-                  words={["Innovation", "Solutions"]}
-                  className="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-violet-500"
-                />
-                That Matter
+                Showcase Innovation That Matter
               </h1>
 
               <p className="text-lg text-gray-300 mb-8 leading-relaxed">
@@ -236,7 +229,7 @@ export default async function LandingPage() {
         </div>
       </section>
 
-      <ProjectShowcase />
+      {/* <ProjectShowcase /> */}
 
       {/* Feature Highlights */}
       <section className="relative py-24 bg-[#141428]/20 backdrop-blur-sm">
