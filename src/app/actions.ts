@@ -1,5 +1,6 @@
 "use server";
 
+import nodemailer from 'nodemailer';
 import { encodedRedirect } from "@/utils/utils";
 import { createClient } from "@/utils/supabase/server";
 import { headers } from "next/headers";
@@ -1110,6 +1111,48 @@ export async function markNotificationAsRead(notificationId: string) {
   } catch (error) {
     console.error("Error marking notification as read:", error);
     return { error: "Failed to mark notification as read" };
+  }
+}
+
+export async function sendEmail(formData: FormData) {
+  try {
+    const subject = formData.get("subject")?.toString();
+    const body = formData.get("body")?.toString();
+
+    if (!subject || !body) {
+      return {
+        error: true,
+        message: "Subject and body are required",
+      };
+    }
+
+    // Create a transporter using Gmail SMTP
+    const transporter = nodemailer.createTransport({
+      service: 'gmail',
+      auth: {
+        user: process.env.GMAIL_USER,
+        pass: process.env.GMAIL_APP_PASSWORD,
+      },
+    });
+
+    // Send email
+    await transporter.sendMail({
+      from: process.env.GMAIL_USER,
+      to: 'theromeirofernandes@gmail.com',
+      subject: subject,
+      text: body,
+    });
+
+    return {
+      error: false,
+      message: "Email sent successfully",
+    };
+  } catch (error) {
+    console.error("Error sending email:", error);
+    return {
+      error: true,
+      message: "Failed to send email",
+    };
   }
 }
 
