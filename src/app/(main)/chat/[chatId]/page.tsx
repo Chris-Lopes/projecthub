@@ -42,7 +42,7 @@ interface Chat {
 export default function ChatPage() {
   const { chatId } = useParams();
   const [chat, setChat] = useState<Chat | null>(null);
-  const [currentUser, setCurrentUser] = useState<{ email: string } | null>(
+  const [currentUser, setCurrentUser] = useState<{ name: string } | null>(
     null
   );
   const [currentUserName, setCurrentUserName] = useState<string>("");
@@ -60,7 +60,7 @@ export default function ChatPage() {
     const loadUser = async () => {
       const user = await getDbUser();
       if (user && user.email) {
-        setCurrentUser({ email: user.email });
+        setCurrentUser({ name: user.name });
         setCurrentUserName(user.name);
       }
     };
@@ -131,7 +131,7 @@ export default function ChatPage() {
 
   // Determine the other user based on the current user's email
   const otherUser =
-    currentUser?.email === chat.sender.email ? chat.receiver : chat.sender;
+    currentUser?.name === chat.sender.name ? chat.receiver : chat.sender;
 
   return (
     <div className="container mx-auto max-w-4xl p-4 mt-20">

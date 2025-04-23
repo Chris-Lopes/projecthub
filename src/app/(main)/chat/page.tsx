@@ -104,9 +104,8 @@ export default function ChatPage() {
                               lastMessage.createdAt
                             ).toLocaleDateString()}
                         </div>
-                        <div className="mt-1 text-xs">
-                          {chat._count?.messages || chat.messages.length}{" "}
-                          messages
+                        <div className="mt-1 text-xs text-white">
+                          {chat._count?.messages} messages
                         </div>
                       </div>
                     </div>
