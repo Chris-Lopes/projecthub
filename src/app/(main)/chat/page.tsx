@@ -41,7 +41,9 @@ export default function ChatPage() {
       try {
         // Load current user
         const user = await getUser();
-        setCurrentUser(user);
+        if (user && user.email) {
+          setCurrentUser({ email: user.email });
+        }
 
         // Load chats
         const result = await getUserChats();
@@ -105,7 +107,7 @@ export default function ChatPage() {
                             ).toLocaleDateString()}
                         </div>
                         <div className="mt-1 text-xs text-white">
-                          {chat._count?.messages} messages
+                          {chat._count?.messages} new messages
                         </div>
                       </div>
                     </div>

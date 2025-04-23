@@ -20,7 +20,6 @@ interface ChatMessage extends Message {
   sender: {
     id: string;
     name: string;
-    email: string;
   };
 }
 
@@ -29,12 +28,10 @@ interface Chat {
   sender: {
     id: string;
     name: string;
-    email: string;
   };
   receiver: {
     id: string;
     name: string;
-    email: string;
   };
   messages: ChatMessage[];
 }
