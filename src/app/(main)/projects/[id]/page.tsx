@@ -1,10 +1,12 @@
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 import Link from "next/link";
 import { RoleType, SDGGoal } from "@prisma/client";
-import { getUser, getProject } from "@/app/actions";
+import { getUser, getProject, createChat } from "@/app/actions";
 import { Badge } from "@/components/ui/badge";
 import { Prisma } from "@/lib/prismaClient";
 import dynamic from "next/dynamic";
+import { Github, Text } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 // Dynamic imports for better performance
 const WebsiteEmbed = dynamic(() => import("@/components/website-embed"), {
@@ -85,27 +87,36 @@ export default async function ProjectPage({ params }: PageProps) {
                   {project.name}
                 </h1>
               </div>
-              <Link
-                href={project.github_url}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="bg-purple-700 hover:bg-purple-600 text-white px-4 py-2 rounded-md transition-all duration-300 flex items-center gap-2 whitespace-nowrap"
-              >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="20"
-                  height="20"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
+              <div className="flex gap-2">
+                <Link
+                  href={project.github_url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="bg-purple-700 hover:bg-purple-600 text-white px-4 py-2 rounded-md transition-all duration-300 flex items-center gap-2 whitespace-nowrap"
                 >
-                  <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path>
-                </svg>
-                View on GitHub
-              </Link>
+                  <Github className="h-5 w-5" />
+                  View on GitHub
+                </Link>
+                {userDb?.roleType === "VIEWER" && (
+                  <form
+                    action={async () => {
+                      "use server";
+                      const result = await createChat(project.user.id);
+                      if (!result.error && result.chat) {
+                        redirect(`/chat/${result.chat.id}`);
+                      }
+                    }}
+                  >
+                    <Button
+                      type="submit"
+                      className="bg-purple-700 hover:bg-purple-600 text-white flex items-center gap-2"
+                    >
+                      <Text className="h-5 w-5" />
+                      Connect
+                    </Button>
+                  </form>
+                )}
+              </div>
             </div>
 
             {/* SDG Goals */}
@@ -195,7 +206,7 @@ export default async function ProjectPage({ params }: PageProps) {
             />
           </div>
         )}
-        
+
         {/* Comments Section */}
         <div className="mt-8 bg-[#141428]/50 backdrop-blur-sm rounded-xl border border-purple-900/50 shadow-lg p-6">
           <h2 className="text-xl font-semibold text-white mb-4">

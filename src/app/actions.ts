@@ -17,6 +17,8 @@ import {
   ProjectStatus,
 } from "@prisma/client";
 
+import { revalidatePath } from "next/cache";
+
 const genAI = new GoogleGenAI({
   apiKey: process.env.GOOGLE_API_KEY as string,
 });
@@ -305,6 +307,17 @@ export const getUser = async () => {
     data: { user },
   } = await supabase.auth.getUser();
   return user;
+};
+
+export const getDbUser = async () => {
+  const user = await getUser();
+  const userDb = await Prisma.userDB.findUnique({
+    where: { email: user?.email },
+  });
+  if (!userDb) {
+    return false;
+  }
+  return userDb;
 };
 
 export async function createProject(formData: FormData) {
@@ -1406,5 +1419,301 @@ export async function FacultyIdCardExtraction(formData: FormData) {
   } catch (error) {
     console.error("Error processing image:", error);
     throw error;
+  }
+}
+
+export async function getUserChats() {
+  try {
+    const user = await getUser();
+    if (!user) {
+      return { error: "Not authenticated", chats: [] };
+    }
+
+    const userDb = await Prisma.userDB.findUnique({
+      where: { email: user.email },
+    });
+    if (!userDb) {
+      return { error: "User not found", chats: [] };
+    }
+
+    const chats = await Prisma.chat.findMany({
+      where: {
+        OR: [{ senderId: userDb.id }, { receiverId: userDb.id }],
+      },
+      include: {
+        sender: {
+          select: {
+            id: true,
+            name: true,
+            email: true,
+          },
+        },
+        receiver: {
+          select: {
+            id: true,
+            name: true,
+            email: true,
+          },
+        },
+        messages: {
+          orderBy: {
+            createdAt: "desc",
+          },
+          take: 1,
+          include: {
+            sender: {
+              select: {
+                id: true,
+                name: true,
+                email: true,
+              },
+            },
+          },
+        },
+        _count: {
+          select: {
+            messages: {
+              where: {
+                read: false,
+                NOT: {
+                  senderId: userDb.id,
+                },
+              },
+            },
+          },
+        },
+      },
+      orderBy: {
+        updatedAt: "desc",
+      },
+    });
+
+    return { chats };
+  } catch (error) {
+    console.error("Error fetching chats:", error);
+    return { error: "Failed to fetch chats", chats: [] };
+  }
+}
+
+export async function sendMessage({
+  chatId,
+  content,
+}: {
+  chatId: string;
+  content: string;
+}) {
+  const user = await getUser();
+  if (!user?.email) {
+    return { error: true, message: "Unauthorized" };
+  }
+
+  const userDb = await Prisma.userDB.findUnique({
+    where: { email: user.email },
+  });
+
+  if (!userDb) {
+    return { error: true, message: "User not found" };
+  }
+
+  try {
+    const message = await Prisma.message.create({
+      data: {
+        content,
+        chatId,
+        senderId: userDb.id,
+        read: false,
+      },
+      include: {
+        sender: {
+          select: {
+            id: true,
+            name: true,
+          },
+        },
+      },
+    });
+
+    revalidatePath(`/chat/${chatId}`);
+    return { error: false, message };
+  } catch (error) {
+    console.error("Error sending message:", error);
+    return { error: true, message: "Failed to send message" };
+  }
+}
+
+export async function markMessagesAsRead(chatId: string) {
+  const user = await getUser();
+  if (!user?.email) {
+    return { error: true, message: "Unauthorized" };
+  }
+
+  const userDb = await Prisma.userDB.findUnique({
+    where: { email: user.email },
+  });
+
+  if (!userDb) {
+    return { error: true, message: "User not found" };
+  }
+
+  try {
+    // Update all unread messages in the chat that were not sent by the current user
+    await Prisma.message.updateMany({
+      where: {
+        chatId,
+        senderId: { not: userDb.id },
+        read: false,
+      },
+      data: {
+        read: true,
+      },
+    });
+
+    revalidatePath(`/chat/${chatId}`);
+    return { error: false };
+  } catch (error) {
+    console.error("Error marking messages as read:", error);
+    return { error: true, message: "Failed to mark messages as read" };
+  }
+}
+
+export async function createChat(receiverId: string) {
+  try {
+    const user = await getUser();
+    if (!user?.email) {
+      return { error: true, message: "Not authenticated" };
+    }
+
+    const sender = await Prisma.userDB.findUnique({
+      where: { email: user.email },
+    });
+
+    if (!sender) {
+      return { error: true, message: "Sender not found" };
+    }
+
+    // Check if chat already exists
+    const existingChat = await Prisma.chat.findFirst({
+      where: {
+        OR: [
+          {
+            senderId: sender.id,
+            receiverId: receiverId,
+          },
+          {
+            senderId: receiverId,
+            receiverId: sender.id,
+          },
+        ],
+      },
+      include: {
+        sender: {
+          select: {
+            id: true,
+            name: true,
+          },
+        },
+        receiver: {
+          select: {
+            id: true,
+            name: true,
+          },
+        },
+      },
+    });
+
+    if (existingChat) {
+      return { error: false, chat: existingChat };
+    }
+
+    // Create new chat
+    const chat = await Prisma.chat.create({
+      data: {
+        senderId: sender.id,
+        receiverId: receiverId,
+      },
+      include: {
+        sender: {
+          select: {
+            id: true,
+            name: true,
+          },
+        },
+        receiver: {
+          select: {
+            id: true,
+            name: true,
+          },
+        },
+      },
+    });
+
+    return { error: false, chat };
+  } catch (error) {
+    console.error("Error creating chat:", error);
+    return { error: true, message: "Failed to create chat" };
+  }
+}
+
+export async function getChatMessages(chatId: string) {
+  try {
+    const user = await getUser();
+    if (!user?.email) {
+      return { error: true, message: "Unauthorized" };
+    }
+
+    const userDb = await Prisma.userDB.findUnique({
+      where: { email: user.email },
+    });
+
+    if (!userDb) {
+      return { error: true, message: "User not found" };
+    }
+
+    // Verify that the user is part of this chat
+    const chat = await Prisma.chat.findFirst({
+      where: {
+        id: chatId,
+        OR: [{ senderId: userDb.id }, { receiverId: userDb.id }],
+      },
+      include: {
+        sender: {
+          select: {
+            id: true,
+            name: true,
+          },
+        },
+        receiver: {
+          select: {
+            id: true,
+            name: true,
+          },
+        },
+        messages: {
+          include: {
+            sender: {
+              select: {
+                id: true,
+                name: true,
+              },
+            },
+          },
+          orderBy: {
+            createdAt: "asc",
+          },
+        },
+      },
+    });
+
+    if (!chat) {
+      return { error: true, message: "Chat not found" };
+    }
+
+    // Mark messages as read
+    await markMessagesAsRead(chatId);
+
+    return { error: false, chat };
+  } catch (error) {
+    console.error("Error in getChatMessages:", error);
+    return { error: true, message: "Failed to load chat messages" };
   }
 }
