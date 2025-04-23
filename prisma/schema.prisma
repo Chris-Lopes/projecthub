@@ -5,7 +5,7 @@
 // Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
 
 generator client {
-  provider = "prisma-client-js"
+  provider        = "prisma-client-js"
   previewFeatures = ["metrics"]
 }
 
@@ -71,6 +71,9 @@ model UserDB {
   createdAt           DateTime              @default(now())
   updatedAt           DateTime              @updatedAt
   ProjectCollaborator ProjectCollaborator[]
+  sentChats           Chat[]                @relation("SenderChats")
+  receivedChats       Chat[]                @relation("ReceiverChats")
+  messages            Message[]
 }
 
 model Viewer {
@@ -176,4 +179,28 @@ model Notification {
   projectId String?
   createdAt DateTime         @default(now())
   updatedAt DateTime         @updatedAt
+}
+
+model Chat {
+  id         String    @id @default(uuid())
+  sender     UserDB    @relation("SenderChats", fields: [senderId], references: [id])
+  senderId   String
+  receiver   UserDB    @relation("ReceiverChats", fields: [receiverId], references: [id])
+  receiverId String
+  messages   Message[]
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+
+  @@unique([senderId, receiverId])
+}
+
+model Message {
+  id        String   @id @default(uuid())
+  content   String
+  chat      Chat     @relation(fields: [chatId], references: [id])
+  chatId    String
+  sender    UserDB   @relation(fields: [senderId], references: [id])
+  senderId  String
+  read      Boolean  @default(false)
+  createdAt DateTime @default(now())
 }
