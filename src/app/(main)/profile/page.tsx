@@ -91,16 +91,27 @@ export default async function ProfilePage() {
       <div className="fixed -bottom-64 -left-64 w-[30rem] h-[30rem] bg-violet-500/5 rounded-full blur-3xl" />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-        <div className="mb-12">
-          <span className="inline-block text-purple-400 font-medium mb-3 bg-purple-500/10 px-3 py-1 rounded-full text-sm">
-            Profile
-          </span>
-          <h1 className="text-3xl font-bold text-white mb-4">
-            Welcome, {userDb.name}
-          </h1>
-          <p className="text-gray-300 max-w-2xl">
-            Manage your profile and projects
-          </p>
+        <div className="flex md:flex-row flex-col justify-between items-center">
+          <div className="mb-12">
+            <span className="inline-block text-purple-400 font-medium mb-3 bg-purple-500/10 px-3 py-1 rounded-full text-sm">
+              Profile
+            </span>
+            <h1 className="text-3xl font-bold text-white mb-4">
+              Welcome, {userDb.name}
+            </h1>
+            <p className="text-gray-300 max-w-2xl">
+              Manage your profile and projects
+            </p>
+          </div>
+          <form action={signOutAction}>
+            <Button
+              type="submit"
+              variant="outline"
+              className="bg-[#141428]/70 text-gray-300 hover:text-white hover:bg-[#1a1a30]/70 border-purple-900/50 hover:border-purple-500/30 transition-all duration-300"
+            >
+              Logout <LogOut className="h-5 w-5 ml-2" />
+            </Button>
+          </form>
         </div>
 
         <div className="bg-[#141428]/50 backdrop-blur-sm rounded-xl border border-purple-900/50 shadow-lg p-6">
