@@ -1242,6 +1242,55 @@ export async function getProjectsAction(page = 1, limit = 9) {
   };
 }
 
+export async function getLeaderboardProjects() {
+  try {
+    const projects = await Prisma.project.findMany({
+      where: {
+        status: ProjectStatus.APPROVED,
+      },
+      include: {
+        user: {
+          select: {
+            id: true,
+            name: true,
+            student: {
+              select: {
+                roll_no: true,
+                class: true,
+              },
+            },
+          },
+        },
+        comments: {
+          select: {
+            id: true,
+          },
+        },
+      },
+      orderBy: [
+        { likes: "desc" },
+        { views: "desc" },
+        { comments: { _count: "desc" } },
+      ],
+      take: 10, // Top 10 projects
+    });
+
+    // Transform the projects to include comment count
+    const projectsWithCommentCount = projects.map(project => ({
+      ...project,
+      commentCount: project.comments.length,
+    }));
+
+    return { 
+      error: false, 
+      projects: projectsWithCommentCount 
+    };
+  } catch (error) {
+    console.error("Error fetching leaderboard:", error);
+    return { error: true, message: "Failed to fetch leaderboard" };
+  }
+}
+
 export async function imageUpload(formData: FormData) {
   const supabase = await createClient();
   const file = formData.get("file") as File;
