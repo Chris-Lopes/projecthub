@@ -20,7 +20,7 @@ export function Mailer() {
     const formData = new FormData(e.currentTarget);
     
     try {
-      const result = await sendEmail(formData);
+      const result = await sendEmail(formData, "theromeirofernandes@gmail.com");
       if (result.error) {
         setError(result.message);
       } else {

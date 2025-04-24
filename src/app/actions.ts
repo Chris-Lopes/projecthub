@@ -1141,7 +1141,7 @@ export async function markNotificationAsRead(notificationId: string) {
   }
 }
 
-export async function sendEmail(formData: FormData) {
+export async function sendEmail(formData: FormData, to: string) {
   try {
     const subject = formData.get("subject")?.toString();
     const body = formData.get("body")?.toString();
@@ -1165,7 +1165,7 @@ export async function sendEmail(formData: FormData) {
     // Send email
     await transporter.sendMail({
       from: process.env.GMAIL_USER,
-      to: "theromeirofernandes@gmail.com",
+      to: to,
       subject: subject,
       text: body,
     });

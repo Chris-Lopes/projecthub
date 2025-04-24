@@ -76,7 +76,8 @@ export function Navbar() {
           </div>
 
           <div className="flex items-center space-x-4">
-            {userDb?.roleType !== "VIEWER" && (
+            {(userDb?.roleType == "STUDENT" ||
+              userDb?.roleType == "ADMIN") && (
               <Link href="/projects/new" className="hidden sm:block">
                 <Button
                   variant="ghost"
