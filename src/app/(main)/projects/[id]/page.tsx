@@ -207,6 +207,22 @@ export default async function ProjectPage({ params }: PageProps) {
           </div>
         )}
 
+        {userDb?.roleType === "FACULTY" && project.user.student && (
+          <div className="mt-8 bg-[#141428]/50 backdrop-blur-sm rounded-xl border border-purple-900/50 shadow-lg p-6">
+            <h2 className="text-xl font-semibold text-white mb-4">Feedback</h2>
+            <div className="flex justify-between items-center">
+              <p className="text-gray-300">
+                Please provide your feedback for the project.
+              </p>
+              <Link
+                href={`/feedback/${project.user.student.id}`}
+                className="inline-flex items-center px-4 py-2 bg-purple-700 hover:bg-purple-600 text-white rounded-lg transition-all duration-300 shadow-md hover:shadow-lg hover:shadow-purple-900/30 border border-purple-500/20 hover:border-purple-500/30"
+              >
+                <span>Provide Feedback</span>
+              </Link>
+            </div>
+          </div>
+        )}
         {/* Comments Section */}
         <div className="mt-8 bg-[#141428]/50 backdrop-blur-sm rounded-xl border border-purple-900/50 shadow-lg p-6">
           <h2 className="text-xl font-semibold text-white mb-4">

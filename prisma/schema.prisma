@@ -85,25 +85,27 @@ model Viewer {
 }
 
 model Student {
-  id            String   @id @default(uuid())
-  user          UserDB   @relation(fields: [userId], references: [id])
-  userId        String   @unique
-  roll_no       String   @unique
-  class         String
-  academic_year String
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
+  id                String     @id @default(uuid())
+  user              UserDB     @relation(fields: [userId], references: [id])
+  userId            String     @unique
+  roll_no           String     @unique
+  class             String
+  academic_year     String
+  createdAt         DateTime   @default(now())
+  updatedAt         DateTime   @updatedAt
+  feedbacksReceived Feedback[]
 }
 
 model Faculty {
-  id          String   @id @default(uuid())
-  user        UserDB   @relation(fields: [userId], references: [id])
-  userId      String   @unique
-  employee_no String   @unique
-  designation String
-  department  String
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  id             String     @id @default(uuid())
+  user           UserDB     @relation(fields: [userId], references: [id])
+  userId         String     @unique
+  employee_no    String     @unique
+  designation    String
+  department     String
+  createdAt      DateTime   @default(now())
+  updatedAt      DateTime   @updatedAt
+  feedbacksGiven Feedback[]
 }
 
 model College {
@@ -203,4 +205,16 @@ model Message {
   senderId  String
   read      Boolean  @default(false)
   createdAt DateTime @default(now())
+}
+
+model Feedback {
+  id        String   @id @default(uuid())
+  title     String
+  status    String   @default("PENDING") // PENDING, COMPLETED
+  faculty   Faculty  @relation(fields: [facultyId], references: [id])
+  facultyId String
+  student   Student  @relation(fields: [studentId], references: [id])
+  studentId String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }

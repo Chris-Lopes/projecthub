@@ -60,6 +60,16 @@ export function Navbar() {
               >
                 Chats
               </Link>
+              <Link
+                href="/feedback"
+                className={`inline-flex items-center px-3 py-1.5 text-sm font-medium rounded-full transition-all duration-300 ${
+                  pathname === "/feedback"
+                    ? "text-white bg-purple-600/30 border border-purple-500/30"
+                    : "text-gray-300 hover:text-purple-400 hover:bg-purple-900/20"
+                }`}
+              >
+                Feedback
+              </Link>
               {isAdmin && (
                 <Link
                   href="/admin"

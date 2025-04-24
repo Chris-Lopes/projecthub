@@ -1201,6 +1201,7 @@ export async function getProject(id: string) {
             roleType: true,
             student: {
               select: {
+                id: true,
                 roll_no: true,
                 class: true,
                 academic_year: true,
@@ -1834,5 +1835,142 @@ export async function getChatMessages(chatId: string) {
   } catch (error) {
     console.error("Error in getChatMessages:", error);
     return { error: true, message: "Failed to load chat messages" };
+  }
+}
+
+export async function submitFeedback(formData: FormData) {
+  try {
+    const userDb = await getDbUser();
+    if (!userDb) {
+      return {
+        error: true,
+        message: "You must be logged in to submit feedback",
+      };
+    }
+
+    if (userDb.roleType !== "FACULTY") {
+      return {
+        error: true,
+        message: "Only faculty members can submit feedback",
+      };
+    }
+
+    const title = formData.get("title")?.toString();
+    const body = formData.get("body")?.toString();
+    const studentId = formData.get("studentId")?.toString();
+    const studentEmail = formData.get("studentEmail")?.toString();
+
+    if (!title || !body || !studentId || !studentEmail) {
+      return {
+        error: true,
+        message: "All fields are required",
+      };
+    }
+
+    // Get faculty details
+    const faculty = await Prisma.faculty.findFirst({
+      where: {
+        userId: userDb.id,
+      },
+    });
+
+    if (!faculty) {
+      return {
+        error: true,
+        message: "Faculty details not found",
+      };
+    }
+
+    // Create feedback record
+    const feedback = await Prisma.feedback.create({
+      data: {
+        title,
+        facultyId: faculty.id,
+        studentId,
+      },
+    });
+
+    // Send email
+    const transporter = nodemailer.createTransport({
+      service: "gmail",
+      auth: {
+        user: process.env.GMAIL_USER,
+        pass: process.env.GMAIL_APP_PASSWORD,
+      },
+    });
+
+    await transporter.sendMail({
+      from: process.env.GMAIL_USER,
+      to: studentEmail,
+      subject: title,
+      text: body,
+    });
+
+    return {
+      error: false,
+      message: "Feedback sent successfully",
+      feedback,
+    };
+  } catch (error) {
+    console.error("Error submitting feedback:", error);
+    return {
+      error: true,
+      message: "Failed to submit feedback",
+    };
+  }
+}
+
+export async function updateFeedbackStatus(feedbackId: string, status: string) {
+  try {
+    const userDb = await getDbUser();
+    if (!userDb) {
+      return {
+        error: true,
+        message: "You must be logged in to update feedback status",
+      };
+    }
+
+    if (userDb.roleType !== "STUDENT") {
+      return {
+        error: true,
+        message: "Only students can update feedback status",
+      };
+    }
+
+    const student = await Prisma.student.findFirst({
+      where: {
+        userId: userDb.id,
+      },
+    });
+
+    if (!student) {
+      return {
+        error: true,
+        message: "Student details not found",
+      };
+    }
+
+    // Update feedback status
+    const feedback = await Prisma.feedback.update({
+      where: {
+        id: feedbackId,
+        studentId: student.id, // Ensure student can only update their own feedback
+      },
+      data: {
+        status,
+      },
+    });
+
+    return {
+      error: false,
+      message: "Feedback status updated successfully",
+      feedback,
+    };
+  } catch (error) {
+    console.error("Error updating feedback status:", error);
+    return {
+      error: true,
+      message: "Failed to update feedback status",
+    };
   }
 }
