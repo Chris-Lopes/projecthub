@@ -32,17 +32,21 @@ export default async function FeedbackPage({ params }: PageProps) {
     redirect("/"); // Redirect if faculty details not found
   }
 
-  // Get student details
-  const student = await Prisma.student.findUnique({
+  // Get project details
+  const project = await Prisma.project.findUnique({
     where: { id },
     include: {
-      user: true,
+      user: {
+        include: {
+          student: true,
+        },
+      },
     },
   });
 
-  if (!student) {
-    console.log("Student not found");
-    redirect("/"); // Redirect if student not found
+  if (!project || !project.user.student) {
+    console.log("Project not found or owner is not a student");
+    redirect("/"); // Redirect if project not found or owner is not a student
   }
 
   return (
@@ -50,16 +54,20 @@ export default async function FeedbackPage({ params }: PageProps) {
       <div className="max-w-4xl mx-auto px-4">
         <div className="mb-8">
           <h1 className="text-3xl font-bold text-white mb-2">
-            Submit Feedback for {student.user.name}
+            Submit Feedback for {project.name}
           </h1>
+          <p className="text-gray-400 font-medium bg-purple-900/20 inline-block px-3 py-1 rounded-md border border-purple-500/30">
+            Project by {project.user.name} ({project.user.student.roll_no})
+          </p>
           <p className="text-gray-400">
             Provide constructive feedback to help the student improve.
           </p>
         </div>
 
         <FeedbackForm
-          studentId={student.id}
-          studentEmail={student.user.email}
+          projectId={project.id}
+          studentId={project.user.student.id}
+          studentEmail={project.user.email}
         />
       </div>
     </div>

@@ -135,6 +135,7 @@ model Project {
   notifications Notification[]
   createdAt     DateTime              @default(now())
   updatedAt     DateTime              @updatedAt
+  feedbacks     Feedback[]
 }
 
 model ProjectLike {
@@ -215,6 +216,8 @@ model Feedback {
   facultyId String
   student   Student  @relation(fields: [studentId], references: [id])
   studentId String
+  project   Project? @relation(fields: [projectId], references: [id])
+  projectId String?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }

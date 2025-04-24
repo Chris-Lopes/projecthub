@@ -215,12 +215,34 @@ export default async function ProjectPage({ params }: PageProps) {
                 Please provide your feedback for the project.
               </p>
               <Link
-                href={`/feedbacks/${project.user.student.id}`}
+                href={`/feedbacks/${project.id}`}
                 className="inline-flex items-center px-4 py-2 bg-purple-700 hover:bg-purple-600 text-white rounded-lg transition-all duration-300 shadow-md hover:shadow-lg hover:shadow-purple-900/30 border border-purple-500/20 hover:border-purple-500/30"
               >
                 <span>Provide Feedback</span>
               </Link>
             </div>
+            {/* show feedback status */}
+            {project.feedbacks && project.feedbacks.length > 0 && (
+              <div className="mt-4 p-4 w-fit bg-[#1a1a30]/50 rounded-lg">
+                <div className="text-gray-300">
+                  <span className="font-semibold">Feedback:</span>{" "}
+                  {project.feedbacks[0].title}
+                </div>
+                <div className="text-gray-300">
+                  <span className="font-semibold">Status:</span>{" "}
+                  <Badge
+                    variant="outline"
+                    className={`${
+                      project.feedbacks[0].status === "COMPLETED"
+                        ? "bg-green-900/20 text-green-400 border-green-700/50"
+                        : "bg-yellow-900/20 text-yellow-400 border-yellow-700/50"
+                    }`}
+                  >
+                    {project.feedbacks[0].status}
+                  </Badge>
+                </div>
+              </div>
+            )}
           </div>
         )}
         {/* Comments Section */}

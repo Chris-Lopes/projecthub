@@ -10,9 +10,14 @@ import { redirect } from "next/navigation";
 interface FeedbackFormProps {
   studentId: string;
   studentEmail: string;
+  projectId: string;
 }
 
-export function FeedbackForm({ studentId, studentEmail }: FeedbackFormProps) {
+export function FeedbackForm({
+  studentId,
+  studentEmail,
+  projectId,
+}: FeedbackFormProps) {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
@@ -26,6 +31,7 @@ export function FeedbackForm({ studentId, studentEmail }: FeedbackFormProps) {
     const formData = new FormData(e.currentTarget);
     formData.append("studentId", studentId);
     formData.append("studentEmail", studentEmail);
+    formData.append("projectId", projectId);
 
     try {
       const result = await submitFeedback(formData);
@@ -35,12 +41,12 @@ export function FeedbackForm({ studentId, studentEmail }: FeedbackFormProps) {
         setSuccess(true);
         // Reset form
         (e.target as HTMLFormElement).reset();
-        redirect("/feedback");
       }
     } catch (err) {
       setError("Failed to submit feedback");
     } finally {
       setIsLoading(false);
+      redirect("/feedbacks");
     }
   }
 

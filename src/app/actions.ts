@@ -1205,9 +1205,25 @@ export async function getProject(id: string) {
                 roll_no: true,
                 class: true,
                 academic_year: true,
+                feedbacksReceived: {
+                  orderBy: {
+                    createdAt: "desc",
+                  },
+                  take: 1,
+                  select: {
+                    title: true,
+                    status: true,
+                  },
+                },
               },
             },
           },
+        },
+        feedbacks: {
+          orderBy: {
+            createdAt: "desc",
+          },
+          take: 1,
         },
         comments: {
           include: {
@@ -1859,8 +1875,9 @@ export async function submitFeedback(formData: FormData) {
     const body = formData.get("body")?.toString();
     const studentId = formData.get("studentId")?.toString();
     const studentEmail = formData.get("studentEmail")?.toString();
+    const projectId = formData.get("projectId")?.toString();
 
-    if (!title || !body || !studentId || !studentEmail) {
+    if (!title || !body || !studentId || !studentEmail || !projectId) {
       return {
         error: true,
         message: "All fields are required",
@@ -1887,6 +1904,7 @@ export async function submitFeedback(formData: FormData) {
         title,
         facultyId: faculty.id,
         studentId,
+        projectId,
       },
     });
 
