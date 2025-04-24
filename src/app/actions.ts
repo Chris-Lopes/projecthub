@@ -340,11 +340,14 @@ export async function createProject(formData: FormData) {
     };
   }
 
-  // Prevent viewers from creating projects
-  if (userDb.roleType === "VIEWER") {
+  // Only allow students and admin to create projects
+  if (
+    userDb.roleType !== "STUDENT" &&
+    user.email !== process.env.ADMIN_USER_EMAIL
+  ) {
     return {
       error: true,
-      message: "Viewers are not allowed to create projects",
+      message: "Only students can create projects",
     };
   }
 
@@ -717,6 +720,17 @@ export async function updateProject(projectId: string, formData: FormData) {
     };
   }
 
+  // Only allow students and admin to edit projects
+  if (
+    userDb.roleType !== "STUDENT" &&
+    user.email !== process.env.ADMIN_USER_EMAIL
+  ) {
+    return {
+      error: true,
+      message: "Only students can edit projects",
+    };
+  }
+
   // Check if project exists
   const project = await Prisma.project.findUnique({
     where: { id: projectId },
@@ -732,13 +746,18 @@ export async function updateProject(projectId: string, formData: FormData) {
     };
   }
 
-  // Check if user is owner or collaborator
+  // Check if user is owner or collaborator (only for students)
   const isOwner = project.userId === userDb.id;
   const isCollaborator = project.collaborators.some(
     (c) => c.userId === userDb.id
   );
 
-  if (!isOwner && !isCollaborator) {
+  // Admin can edit any project, students can only edit their own or collaborated projects
+  if (
+    user.email !== process.env.ADMIN_USER_EMAIL &&
+    !isOwner &&
+    !isCollaborator
+  ) {
     return {
       error: true,
       message: "You don't have permission to edit this project",

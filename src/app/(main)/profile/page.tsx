@@ -165,10 +165,9 @@ export default async function ProfilePage() {
         {/* My Projects Section */}
         <div className="mt-12">
           <div className="flex justify-between items-center mb-6">
-            {userDb.roleType !== "VIEWER" && (
-              <h2 className="text-2xl font-semibold text-white">My Projects</h2>
-            )}
-            {userDb.roleType !== "VIEWER" && (
+            <h2 className="text-2xl font-semibold text-white">My Projects</h2>
+            {(userDb.roleType === "STUDENT" ||
+              user.email === process.env.ADMIN_USER_EMAIL) && (
               <a
                 href="/projects/new"
                 className="bg-purple-700 hover:bg-purple-600 text-white px-4 py-2 rounded-md transition-all duration-300 inline-flex items-center gap-2"
@@ -190,7 +189,8 @@ export default async function ProfilePage() {
             )}
           </div>
 
-          {userDb.roleType === "VIEWER" ? (
+          {userDb.roleType !== "STUDENT" &&
+          user.email !== process.env.ADMIN_USER_EMAIL ? (
             <div className="bg-[#141428]/50 backdrop-blur-sm rounded-xl border border-purple-900/50 shadow-lg p-8 text-center mb-8">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -207,9 +207,8 @@ export default async function ProfilePage() {
                 />
               </svg>
               <p className="text-gray-300 mb-4">
-                As a viewer, you can browse and interact with projects but
-                cannot create them. To create projects, you need to be
-                registered as a student.
+                Only students can create and manage projects. If you are a
+                student, please register with your student account.
               </p>
             </div>
           ) : ownedProjects.length > 0 ? (

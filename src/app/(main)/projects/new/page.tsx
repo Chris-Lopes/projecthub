@@ -14,7 +14,12 @@ export default async function NewProjectPage() {
     where: { email: user.email },
   });
 
-  if (!userDb || userDb.roleType === "VIEWER") {
+  // Only allow students and admin to access this page
+  if (
+    !userDb ||
+    (userDb.roleType !== "STUDENT" &&
+      user.email !== process.env.ADMIN_USER_EMAIL)
+  ) {
     redirect("/profile");
   }
 

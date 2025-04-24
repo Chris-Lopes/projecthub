@@ -11,7 +11,7 @@ import { Logo } from "@/components/logo";
 export function Navbar() {
   const pathname = usePathname();
   const [isAdmin, setIsAdmin] = useState(false);
-  const [userDb, setUserDb] = useState<User | null>(null);
+  const [userDb, setUserDb] = useState<any>(null);
 
   useEffect(() => {
     checkIsAdmin().then(setIsAdmin).catch(console.error);
