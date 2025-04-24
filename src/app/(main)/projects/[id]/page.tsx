@@ -215,7 +215,7 @@ export default async function ProjectPage({ params }: PageProps) {
                 Please provide your feedback for the project.
               </p>
               <Link
-                href={`/feedback/${project.user.student.id}`}
+                href={`/feedbacks/${project.user.student.id}`}
                 className="inline-flex items-center px-4 py-2 bg-purple-700 hover:bg-purple-600 text-white rounded-lg transition-all duration-300 shadow-md hover:shadow-lg hover:shadow-purple-900/30 border border-purple-500/20 hover:border-purple-500/30"
               >
                 <span>Provide Feedback</span>
