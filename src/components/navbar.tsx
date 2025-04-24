@@ -3,7 +3,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Button } from "./ui/button";
 import { PlusCircle, Menu } from "lucide-react";
-import { checkIsAdmin } from "@/app/actions";
+import { checkIsAdmin, getDbUser } from "@/app/actions";
 import { useEffect, useState } from "react";
 import { NotificationDropdown } from "./notification-dropdown";
 import { Logo } from "@/components/logo";
@@ -11,9 +11,11 @@ import { Logo } from "@/components/logo";
 export function Navbar() {
   const pathname = usePathname();
   const [isAdmin, setIsAdmin] = useState(false);
+  const [userDb, setUserDb] = useState<User | null>(null);
 
   useEffect(() => {
     checkIsAdmin().then(setIsAdmin).catch(console.error);
+    getDbUser().then(setUserDb).catch(console.error);
   }, []);
 
   return (
@@ -74,15 +76,17 @@ export function Navbar() {
           </div>
 
           <div className="flex items-center space-x-4">
-            <Link href="/projects/new" className="hidden sm:block">
-              <Button
-                variant="ghost"
-                className="bg-purple-600/20 hover:bg-purple-600/40 text-white hover:text-white rounded-full px-4 py-2 transition-all duration-300 hover:shadow-sm hover:shadow-purple-900/30 border border-purple-500/20 hover:border-purple-500/30"
-              >
-                <PlusCircle className="h-4 w-4 mr-2" />
-                New Project
-              </Button>
-            </Link>
+            {userDb?.roleType !== "VIEWER" && (
+              <Link href="/projects/new" className="hidden sm:block">
+                <Button
+                  variant="ghost"
+                  className="bg-purple-600/20 hover:bg-purple-600/40 text-white hover:text-white rounded-full px-4 py-2 transition-all duration-300 hover:shadow-sm hover:shadow-purple-900/30 border border-purple-500/20 hover:border-purple-500/30"
+                >
+                  <PlusCircle className="h-4 w-4 mr-2" />
+                  New Project
+                </Button>
+              </Link>
+            )}
             <div className="hidden sm:block">
               <NotificationDropdown />
             </div>

@@ -165,28 +165,54 @@ export default async function ProfilePage() {
         {/* My Projects Section */}
         <div className="mt-12">
           <div className="flex justify-between items-center mb-6">
-            <h2 className="text-2xl font-semibold text-white">My Projects</h2>
-            <a
-              href="/projects/new"
-              className="bg-purple-700 hover:bg-purple-600 text-white px-4 py-2 rounded-md transition-all duration-300 inline-flex items-center gap-2"
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="h-5 w-5"
-                viewBox="0 0 20 20"
-                fill="currentColor"
+            {userDb.roleType !== "VIEWER" && (
+              <h2 className="text-2xl font-semibold text-white">My Projects</h2>
+            )}
+            {userDb.roleType !== "VIEWER" && (
+              <a
+                href="/projects/new"
+                className="bg-purple-700 hover:bg-purple-600 text-white px-4 py-2 rounded-md transition-all duration-300 inline-flex items-center gap-2"
               >
-                <path
-                  fillRule="evenodd"
-                  d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z"
-                  clipRule="evenodd"
-                />
-              </svg>
-              New Project
-            </a>
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="h-5 w-5"
+                  viewBox="0 0 20 20"
+                  fill="currentColor"
+                >
+                  <path
+                    fillRule="evenodd"
+                    d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z"
+                    clipRule="evenodd"
+                  />
+                </svg>
+                New Project
+              </a>
+            )}
           </div>
 
-          {ownedProjects.length > 0 ? (
+          {userDb.roleType === "VIEWER" ? (
+            <div className="bg-[#141428]/50 backdrop-blur-sm rounded-xl border border-purple-900/50 shadow-lg p-8 text-center mb-8">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="h-12 w-12 mx-auto text-gray-500 mb-4"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={1.5}
+                  d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                />
+              </svg>
+              <p className="text-gray-300 mb-4">
+                As a viewer, you can browse and interact with projects but
+                cannot create them. To create projects, you need to be
+                registered as a student.
+              </p>
+            </div>
+          ) : ownedProjects.length > 0 ? (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
               {ownedProjects.map((project) => (
                 <ProjectCard

@@ -1,6 +1,6 @@
 "use server";
 
-import nodemailer from 'nodemailer';
+import nodemailer from "nodemailer";
 import { encodedRedirect } from "@/utils/utils";
 import { createClient } from "@/utils/supabase/server";
 import { headers } from "next/headers";
@@ -337,6 +337,14 @@ export async function createProject(formData: FormData) {
     return {
       error: true,
       message: "User not found",
+    };
+  }
+
+  // Prevent viewers from creating projects
+  if (userDb.roleType === "VIEWER") {
+    return {
+      error: true,
+      message: "Viewers are not allowed to create projects",
     };
   }
 
@@ -1128,7 +1136,7 @@ export async function sendEmail(formData: FormData) {
 
     // Create a transporter using Gmail SMTP
     const transporter = nodemailer.createTransport({
-      service: 'gmail',
+      service: "gmail",
       auth: {
         user: process.env.GMAIL_USER,
         pass: process.env.GMAIL_APP_PASSWORD,
@@ -1138,7 +1146,7 @@ export async function sendEmail(formData: FormData) {
     // Send email
     await transporter.sendMail({
       from: process.env.GMAIL_USER,
-      to: 'theromeirofernandes@gmail.com',
+      to: "theromeirofernandes@gmail.com",
       subject: subject,
       text: body,
     });
@@ -1319,14 +1327,14 @@ export async function getLeaderboardProjects() {
     });
 
     // Transform the projects to include comment count
-    const projectsWithCommentCount = projects.map(project => ({
+    const projectsWithCommentCount = projects.map((project) => ({
       ...project,
       commentCount: project.comments.length,
     }));
 
-    return { 
-      error: false, 
-      projects: projectsWithCommentCount 
+    return {
+      error: false,
+      projects: projectsWithCommentCount,
     };
   } catch (error) {
     console.error("Error fetching leaderboard:", error);
