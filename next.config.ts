@@ -17,12 +17,6 @@ const nextConfig: NextConfig = {
       },
     ],
   },
-  experimental: {
-    optimizeCss: true,
-    serverActions: {
-      bodySizeLimit: "5mb",
-    },
-  },
 };
 
 export default nextConfig;
