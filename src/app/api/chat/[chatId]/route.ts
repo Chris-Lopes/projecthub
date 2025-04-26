@@ -1,15 +1,15 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { Prisma } from "@/lib/prismaClient";
 
 export const dynamic = "force-dynamic";
 
 export async function GET(
-  request: Request,
-  { params }: { params: { chatId: string } }
+  request: NextRequest,
+  context: { params: { chatId: string } }
 ) {
   try {
     const chat = await Prisma.chat.findUnique({
-      where: { id: params.chatId },
+      where: { id: context.params.chatId },
       include: {
         sender: {
           select: {
