@@ -55,6 +55,11 @@ export default async function FeedbacksPage() {
               },
             },
             project: true,
+            faculty: {
+              include: {
+                user: true,
+              },
+            },
           },
           orderBy: {
             createdAt: "desc",
@@ -62,7 +67,18 @@ export default async function FeedbacksPage() {
         },
       },
     });
-    feedbacks = faculty?.feedbacksGiven || [];
+    feedbacks =
+      faculty?.feedbacksGiven.map((feedback) => ({
+        id: feedback.id,
+        title: feedback.title,
+        status: feedback.status,
+        createdAt: feedback.createdAt,
+        project: feedback.project
+          ? { id: feedback.project.id, name: feedback.project.name }
+          : undefined,
+        student: { user: { name: feedback.student.user.name } },
+        faculty: { user: { name: feedback.faculty.user.name } },
+      })) || [];
   } else if (userDb.roleType === "STUDENT") {
     // Get student's projects and their feedbacks
     const projects = await Prisma.project.findMany({
