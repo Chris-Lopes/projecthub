@@ -91,14 +91,14 @@ export function ProjectSearch({
   };
 
   return (
-    <div className="space-y-4 mb-8">
-      <div className="flex gap-4">
+    <div className="space-y-4">
+      <div className="flex flex-col md:flex-row gap-4">
         <Input
           type="search"
           placeholder="Search projects..."
           value={searchTerm}
           onChange={handleSearchChange}
-          className="bg-gray-800 border-gray-700 text-gray-100 flex-1"
+          className="flex-1 bg-[#1A1A2E]/50 border-purple-900/50 text-gray-100 placeholder:text-gray-500 focus:border-purple-500/50 focus:ring-purple-500/20"
         />
         <Select
           value={selectedSDG || "all"}
@@ -113,18 +113,21 @@ export function ProjectSearch({
             }
           }}
         >
-          <SelectTrigger className="w-[280px] bg-gray-800 border-gray-700 text-gray-100">
+          <SelectTrigger className="w-full md:w-[280px] bg-[#1A1A2E]/50 border-purple-900/50 text-gray-100">
             <SelectValue placeholder="Filter by SDG Goal" />
           </SelectTrigger>
-          <SelectContent className="bg-gray-800 border-gray-700">
-            <SelectItem value="all" className="text-gray-100 hover:bg-gray-700">
+          <SelectContent className="bg-[#1A1A2E] border-purple-900/50">
+            <SelectItem
+              value="all"
+              className="text-gray-100 hover:bg-purple-500/10 focus:bg-purple-500/10 hover:text-white focus:text-white"
+            >
               All SDG Goals
             </SelectItem>
             {sdgGoals.map((goal) => (
               <SelectItem
                 key={goal.value}
                 value={goal.value}
-                className="text-gray-100 hover:bg-gray-700"
+                className="text-gray-100 hover:bg-purple-500/10 focus:bg-purple-500/10 hover:text-white focus:text-white"
               >
                 {goal.number}. {goal.label}
               </SelectItem>
