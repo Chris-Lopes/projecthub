@@ -1,35 +1,25 @@
-import { Server as NetServer } from "http";
-import { Server as ServerIO } from "socket.io";
-import { NextApiResponse } from "next";
+import Pusher from "pusher";
 
-export type NextApiResponseServerIO = NextApiResponse & {
-  socket: any & {
-    server: NetServer & {
-      io: ServerIO;
-    };
-  };
+let pusher: Pusher;
+
+export const getPusher = () => {
+  if (!pusher) {
+    pusher = new Pusher({
+      appId: process.env.PUSHER_APP_ID!,
+      key: process.env.NEXT_PUBLIC_PUSHER_KEY!,
+      secret: process.env.PUSHER_SECRET!,
+      cluster: process.env.NEXT_PUBLIC_PUSHER_CLUSTER!,
+      useTLS: true,
+    });
+  }
+  return pusher;
 };
 
-let io: ServerIO;
-
-export const getIO = () => {
-  if (!io) {
-    throw new Error("Socket.IO has not been initialized");
-  }
-  return io;
-};
-
-export const initSocketServer = (res: NextApiResponseServerIO) => {
-  if (res.socket.server.io) {
-    io = res.socket.server.io;
-    return;
-  }
-
-  const httpServer = res.socket.server as any;
-  io = new ServerIO(httpServer, {
-    path: "/api/socket",
-    addTrailingSlash: false,
-  });
-
-  res.socket.server.io = io;
+export const triggerEvent = async (
+  channel: string,
+  event: string,
+  data: any
+) => {
+  const pusherInstance = getPusher();
+  await pusherInstance.trigger(channel, event, data);
 };
