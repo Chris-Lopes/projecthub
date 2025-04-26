@@ -39,9 +39,7 @@ interface Chat {
 export default function ChatPage() {
   const { chatId } = useParams();
   const [chat, setChat] = useState<Chat | null>(null);
-  const [currentUser, setCurrentUser] = useState<{ name: string } | null>(
-    null
-  );
+  const [currentUser, setCurrentUser] = useState<{ name: string } | null>(null);
   const [currentUserName, setCurrentUserName] = useState<string>("");
   const [newMessage, setNewMessage] = useState("");
   const [loading, setLoading] = useState(true);
