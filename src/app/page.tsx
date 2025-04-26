@@ -1,17 +1,14 @@
 "use server";
 import Link from "next/link";
 import { Logo } from "@/components/logo";
-import { getDbUser } from "./actions";
+import { getUser } from "./actions";
 import { redirect } from "next/navigation";
-  
 export default async function LandingPage() {
   const currentYear = new Date().getFullYear();
-  const user = await getDbUser();
-
-  if (user?.roleType == "COLLEGE") {
+  const user = await getUser();
+  if (user?.email == "crce@gmail.com") {
     redirect("/college");
   }
-  
   return (
     <div className="min-h-screen bg-gradient-to-b from-[#0D0D14] via-[#111120] to-[#1A1A2E] text-white">
       <div className="fixed -top-64 -right-64 w-[30rem] h-[30rem] bg-purple-500/5 rounded-full blur-3xl" />
