@@ -1,20 +1,23 @@
-import { initSocketServer } from "@/lib/socket-server";
 import { NextRequest } from "next/server";
+import { getPusher } from "@/lib/socket-server";
 
 export const runtime = "nodejs";
 
-export async function GET(req: NextRequest) {
+export async function POST(req: NextRequest) {
   try {
-    const wss = initSocketServer();
-    return new Response("WebSocket Server initialized", {
+    const { channel, event, data } = await req.json();
+    const pusher = getPusher();
+    await pusher.trigger(channel, event, data);
+
+    return new Response("Event triggered successfully", {
       status: 200,
       headers: {
         "Access-Control-Allow-Origin": "*",
-        "Access-Control-Allow-Methods": "GET, POST",
+        "Access-Control-Allow-Methods": "POST",
       },
     });
   } catch (error) {
-    console.error("WebSocket initialization error:", error);
-    return new Response("Error initializing WebSocket server", { status: 500 });
+    console.error("Pusher error:", error);
+    return new Response("Error triggering event", { status: 500 });
   }
 }

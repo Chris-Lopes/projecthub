@@ -1,41 +1,25 @@
-import { WebSocketServer, WebSocket } from "ws";
+import Pusher from "pusher";
 
-let wss: WebSocketServer;
+let pusher: Pusher;
 
-export const getWSS = () => {
-  if (!wss) {
-    throw new Error("WebSocket Server has not been initialized");
+export const getPusher = () => {
+  if (!pusher) {
+    pusher = new Pusher({
+      appId: process.env.PUSHER_APP_ID!,
+      key: process.env.NEXT_PUBLIC_PUSHER_KEY!,
+      secret: process.env.PUSHER_SECRET!,
+      cluster: process.env.NEXT_PUBLIC_PUSHER_CLUSTER!,
+      useTLS: true,
+    });
   }
-  return wss;
+  return pusher;
 };
 
-export const initSocketServer = () => {
-  if ((global as any).wss) {
-    wss = (global as any).wss;
-    return wss;
-  }
-
-  wss = new WebSocketServer({
-    port: parseInt(process.env.WS_PORT || "3001"),
-  });
-
-  wss.on("connection", (ws: WebSocket) => {
-    console.log("Client connected");
-
-    ws.on("message", (message: Buffer) => {
-      // Broadcast to all clients
-      wss.clients.forEach((client: WebSocket) => {
-        if (client !== ws && client.readyState === WebSocket.OPEN) {
-          client.send(message.toString());
-        }
-      });
-    });
-
-    ws.on("close", () => {
-      console.log("Client disconnected");
-    });
-  });
-
-  (global as any).wss = wss;
-  return wss;
+export const triggerEvent = async (
+  channel: string,
+  event: string,
+  data: any
+) => {
+  const pusherInstance = getPusher();
+  await pusherInstance.trigger(channel, event, data);
 };
