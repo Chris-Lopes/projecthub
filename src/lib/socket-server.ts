@@ -1,35 +1,41 @@
-import { Server as NetServer } from "http";
-import { Server as ServerIO } from "socket.io";
+import { WebSocketServer, WebSocket } from "ws";
 
-let io: ServerIO;
+let wss: WebSocketServer;
 
-export const getIO = () => {
-  if (!io) {
-    throw new Error("Socket.IO has not been initialized");
+export const getWSS = () => {
+  if (!wss) {
+    throw new Error("WebSocket Server has not been initialized");
   }
-  return io;
+  return wss;
 };
 
-export const initSocketServer = (res: Response) => {
-  if ((global as any).io) {
-    io = (global as any).io;
-    return io;
+export const initSocketServer = () => {
+  if ((global as any).wss) {
+    wss = (global as any).wss;
+    return wss;
   }
 
-  const httpServer = new NetServer((req, res) => {
-    res.writeHead(200);
-    res.end();
+  wss = new WebSocketServer({
+    port: parseInt(process.env.WS_PORT || "3001"),
   });
 
-  io = new ServerIO(httpServer, {
-    path: "/api/socket",
-    addTrailingSlash: false,
-    cors: {
-      origin: "*",
-      methods: ["GET", "POST"],
-    },
+  wss.on("connection", (ws: WebSocket) => {
+    console.log("Client connected");
+
+    ws.on("message", (message: Buffer) => {
+      // Broadcast to all clients
+      wss.clients.forEach((client: WebSocket) => {
+        if (client !== ws && client.readyState === WebSocket.OPEN) {
+          client.send(message.toString());
+        }
+      });
+    });
+
+    ws.on("close", () => {
+      console.log("Client disconnected");
+    });
   });
 
-  (global as any).io = io;
-  return io;
+  (global as any).wss = wss;
+  return wss;
 };

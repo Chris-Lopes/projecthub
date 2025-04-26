@@ -1,10 +1,12 @@
 import { initSocketServer } from "@/lib/socket-server";
 import { NextRequest } from "next/server";
 
+export const runtime = "nodejs";
+
 export async function GET(req: NextRequest) {
   try {
-    const io = initSocketServer(new Response());
-    return new Response("Socket initialized", {
+    const wss = initSocketServer();
+    return new Response("WebSocket Server initialized", {
       status: 200,
       headers: {
         "Access-Control-Allow-Origin": "*",
@@ -12,7 +14,7 @@ export async function GET(req: NextRequest) {
       },
     });
   } catch (error) {
-    console.error("Socket initialization error:", error);
-    return new Response("Error initializing socket", { status: 500 });
+    console.error("WebSocket initialization error:", error);
+    return new Response("Error initializing WebSocket server", { status: 500 });
   }
 }
