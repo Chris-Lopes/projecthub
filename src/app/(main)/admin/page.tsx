@@ -4,6 +4,7 @@ import { redirect } from "next/navigation";
 import { ProjectStatus } from "@prisma/client";
 import { ProjectCard } from "@/components/project-card";
 import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 
 async function getPendingProjects() {
   const projects = await Prisma.project.findMany({
@@ -34,37 +35,62 @@ export default async function AdminPage() {
   const projects = await getPendingProjects();
 
   return (
-    <div className="min-h-screen bg-gray-900 pt-20 pb-10">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between mb-8">
-          <h1 className="text-3xl font-bold text-purple-400">
+    <div className="min-h-screen bg-gradient-to-b from-[#0D0D14] via-[#111120] to-[#1A1A2E] pt-28 pb-20">
+      <div className="max-w-7xl mx-auto px-4">
+        {/* Header Section */}
+        <div className="mb-8">
+          <h1 className="text-3xl font-bold text-white mb-4">
             Project Approvals
           </h1>
-          <div className="flex items-center gap-2">
-            <div className="flex items-center gap-2 text-sm text-gray-400">
-              <span className="w-3 h-3 rounded-full bg-yellow-500"></span>
-              Pending
+          <p className="text-gray-400">Review and manage project submissions</p>
+        </div>
+
+        {/* Status Legend */}
+        <div className="bg-[#141428]/50 backdrop-blur-sm rounded-xl border border-purple-900/50 p-6 mb-8">
+          <h2 className="text-lg font-semibold text-white mb-4">
+            Status Guide
+          </h2>
+          <div className="flex items-center gap-6">
+            <div className="flex items-center gap-2">
+              <Badge
+                variant="outline"
+                className="bg-yellow-500/20 text-yellow-300 border-yellow-500/50"
+              >
+                Pending
+              </Badge>
+              <span className="text-sm text-gray-400">Awaiting review</span>
             </div>
-            <div className="flex items-center gap-2 text-sm text-gray-400">
-              <span className="w-3 h-3 rounded-full bg-green-500"></span>
-              Approved
+            <div className="flex items-center gap-2">
+              <Badge
+                variant="outline"
+                className="bg-green-500/20 text-green-300 border-green-500/50"
+              >
+                Approved
+              </Badge>
+              <span className="text-sm text-gray-400">Project accepted</span>
             </div>
-            <div className="flex items-center gap-2 text-sm text-gray-400">
-              <span className="w-3 h-3 rounded-full bg-red-500"></span>
-              Rejected
+            <div className="flex items-center gap-2">
+              <Badge
+                variant="outline"
+                className="bg-red-500/20 text-red-300 border-red-500/50"
+              >
+                Rejected
+              </Badge>
+              <span className="text-sm text-gray-400">Project declined</span>
             </div>
           </div>
         </div>
 
+        {/* Projects List */}
         {projects.length > 0 ? (
-          <div className="grid grid-cols-1 gap-6">
+          <div className="space-y-6">
             {projects.map((project) => (
               <div
                 key={project.id}
-                className="bg-gray-800 rounded-lg p-6 space-y-4"
+                className="bg-[#141428]/50 backdrop-blur-sm rounded-xl border border-purple-900/50 p-6"
               >
                 <ProjectCard project={project} showStatus={true} />
-                <div className="flex justify-end gap-4">
+                <div className="flex justify-end gap-4 mt-6 pt-4 border-t border-purple-900/30">
                   <form
                     action={async () => {
                       "use server";
@@ -74,9 +100,9 @@ export default async function AdminPage() {
                   >
                     <Button
                       type="submit"
-                      className="bg-green-600 hover:bg-green-700"
+                      className="bg-green-600 hover:bg-green-700 text-white border border-green-500/30"
                     >
-                      Approve
+                      Approve Project
                     </Button>
                   </form>
                   <form
@@ -86,8 +112,11 @@ export default async function AdminPage() {
                       redirect("/admin");
                     }}
                   >
-                    <Button type="submit" variant="destructive">
-                      Reject
+                    <Button
+                      type="submit"
+                      className="bg-red-600 hover:bg-red-700 text-white border border-red-500/30"
+                    >
+                      Reject Project
                     </Button>
                   </form>
                 </div>
@@ -95,9 +124,11 @@ export default async function AdminPage() {
             ))}
           </div>
         ) : (
-          <p className="text-gray-400 text-center py-8">
-            No pending projects to review.
-          </p>
+          <div className="bg-[#141428]/50 backdrop-blur-sm rounded-xl border border-purple-900/50 p-12 text-center">
+            <p className="text-gray-400">
+              No pending projects to review at this time.
+            </p>
+          </div>
         )}
       </div>
     </div>
