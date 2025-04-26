@@ -224,25 +224,37 @@ export default function ReportsPage() {
                     <ReactMarkdown
                       components={{
                         h1: ({ children }) => (
-                          <h1 className="text-2xl font-bold mb-4 text-white">{children}</h1>
+                          <h1 className="text-2xl font-bold mb-4 text-white">
+                            {children}
+                          </h1>
                         ),
                         h2: ({ children }) => (
-                          <h2 className="text-xl font-semibold mt-6 mb-3 text-white">{children}</h2>
+                          <h2 className="text-xl font-semibold mt-6 mb-3 text-white">
+                            {children}
+                          </h2>
                         ),
                         h3: ({ children }) => (
-                          <h3 className="text-lg font-medium mt-4 mb-2 text-white">{children}</h3>
+                          <h3 className="text-lg font-medium mt-4 mb-2 text-white">
+                            {children}
+                          </h3>
                         ),
                         ul: ({ children }) => (
-                          <ul className="list-disc pl-6 my-4 space-y-2">{children}</ul>
+                          <ul className="list-disc pl-6 my-4 space-y-2">
+                            {children}
+                          </ul>
                         ),
                         li: ({ children }) => (
                           <li className="text-gray-400">{children}</li>
                         ),
                         p: ({ children }) => (
-                          <p className="mb-4 text-gray-400 leading-relaxed">{children}</p>
+                          <p className="mb-4 text-gray-400 leading-relaxed">
+                            {children}
+                          </p>
                         ),
                         code: ({ children }) => (
-                          <code className="bg-purple-900/20 px-1.5 py-0.5 rounded text-pink-400">{children}</code>
+                          <code className="bg-purple-900/20 px-1.5 py-0.5 rounded text-pink-400">
+                            {children}
+                          </code>
                         ),
                         blockquote: ({ children }) => (
                           <blockquote className="border-l-4 border-purple-500/50 pl-4 italic text-gray-400">
