@@ -64,16 +64,20 @@ export function Navbar() {
                   Chats
                 </Link>
               )}
-              <Link
-                href="/feedbacks"
-                className={`inline-flex items-center px-3 py-1.5 text-sm font-medium rounded-full transition-all duration-300 ${
-                  pathname === "/feedbacks"
-                    ? "text-white bg-purple-600/30 border border-purple-500/30"
-                    : "text-gray-300 hover:text-purple-400 hover:bg-purple-900/20"
-                }`}
-              >
-                Feedbacks
-              </Link>
+              {(userDb?.roleType == "STUDENT" ||
+                userDb?.roleType == "ADMIN" ||
+                userDb?.roleType == "FACULTY") && (
+                <Link
+                  href="/feedbacks"
+                  className={`inline-flex items-center px-3 py-1.5 text-sm font-medium rounded-full transition-all duration-300 ${
+                    pathname === "/feedbacks"
+                      ? "text-white bg-purple-600/30 border border-purple-500/30"
+                      : "text-gray-300 hover:text-purple-400 hover:bg-purple-900/20"
+                  }`}
+                >
+                  Feedbacks
+                </Link>
+              )}
               {isAdmin && (
                 <Link
                   href="/admin"
@@ -84,6 +88,42 @@ export function Navbar() {
                   }`}
                 >
                   Admin
+                </Link>
+              )}
+              {userDb?.roleType == "COLLEGE" && (
+                <Link
+                  href="/college/analytics"
+                  className={`inline-flex items-center px-3 py-1.5 text-sm font-medium rounded-full transition-all duration-300 ${
+                    pathname === "/college/analytics"
+                      ? "text-white bg-purple-600/30 border border-purple-500/30"
+                      : "text-gray-300 hover:text-purple-400 hover:bg-purple-900/20"
+                  }`}
+                >
+                  Dashboard
+                </Link>
+              )}
+              {userDb?.roleType == "COLLEGE" && (
+                <Link
+                  href="/college/reports"
+                  className={`inline-flex items-center px-3 py-1.5 text-sm font-medium rounded-full transition-all duration-300 ${
+                    pathname === "/college/reports"
+                      ? "text-white bg-purple-600/30 border border-purple-500/30"
+                      : "text-gray-300 hover:text-purple-400 hover:bg-purple-900/20"
+                  }`}
+                >
+                  Reports
+                </Link>
+              )}
+              {userDb?.roleType == "COLLEGE" && (
+                <Link
+                  href="/college/industry"
+                  className={`inline-flex items-center px-3 py-1.5 text-sm font-medium rounded-full transition-all duration-300 ${
+                    pathname === "/college/industry"
+                      ? "text-white bg-purple-600/30 border border-purple-500/30"
+                      : "text-gray-300 hover:text-purple-400 hover:bg-purple-900/20"
+                  }`}
+                >
+                  Engagement
                 </Link>
               )}
             </div>
@@ -101,10 +141,11 @@ export function Navbar() {
                 </Button>
               </Link>
             )}
-            <div className="hidden sm:block">
-              <NotificationDropdown />
-            </div>
-
+            {userDb?.roleType !== "COLLEGE" && (
+              <div className="hidden sm:block">
+                <NotificationDropdown />
+              </div>
+            )}
             {/* Mobile menu button */}
             <button className="sm:hidden text-white hover:text-purple-400 transition-colors">
               <Menu className="h-6 w-6" />
