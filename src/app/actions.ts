@@ -222,7 +222,7 @@ export const signInAction = async (formData: FormData) => {
     return encodedRedirect("error", "/sign-in", error.message);
   }
 
-  return redirect("/");
+  return redirect("/projects");
 };
 
 export const forgotPasswordAction = async (formData: FormData) => {
@@ -1138,6 +1138,82 @@ export async function markNotificationAsRead(notificationId: string) {
   } catch (error) {
     console.error("Error marking notification as read:", error);
     return { error: "Failed to mark notification as read" };
+  }
+}
+
+export async function shareProjectWithIndustry(formData: FormData) {
+  try {
+    const userDb = await getDbUser();
+    if (!userDb) {
+      return {
+        error: true,
+        message: "You must be logged in to share projects",
+      };
+    }
+
+    const toEmail = formData.get("toEmail")?.toString();
+    const projectId = formData.get("projectId")?.toString();
+    const studentEmail = formData.get("studentEmail")?.toString();
+    const message = formData.get("message")?.toString();
+
+    if (!toEmail || !projectId || !studentEmail || !message) {
+      return {
+        error: true,
+        message: "All fields are required",
+      };
+    }
+
+    // Get project details
+    const project = await Prisma.project.findUnique({
+      where: { id: projectId },
+      include: {
+        user: true,
+      },
+    });
+
+    if (!project) {
+      return {
+        error: true,
+        message: "Project not found",
+      };
+    }
+
+    // Send email
+    const transporter = nodemailer.createTransport({
+      service: "gmail",
+      auth: {
+        user: process.env.GMAIL_USER,
+        pass: process.env.GMAIL_APP_PASSWORD,
+      },
+    });
+
+    await transporter.sendMail({
+      from: process.env.GMAIL_USER,
+      to: toEmail,
+      cc: studentEmail, // CC the student
+      subject: `Project Recommendation: ${project.name}`,
+      text: `
+${message}
+
+Project Details:
+Name: ${project.name}
+Creator: ${project.user.name}
+Description: ${project.description}
+
+View Project: ${process.env.NEXT_PUBLIC_APP_URL}/projects/${project.id}
+      `,
+    });
+
+    return {
+      error: false,
+      message: "Project shared successfully",
+    };
+  } catch (error) {
+    console.error("Error sharing project:", error);
+    return {
+      error: true,
+      message: "Failed to share project",
+    };
   }
 }
 
