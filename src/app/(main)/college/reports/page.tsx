@@ -90,7 +90,7 @@ export default function ReportsPage() {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
           {/* Projects Report */}
           <div className="bg-[#141428]/50 backdrop-blur-sm rounded-xl border border-purple-900/50 p-6">
             <div className="flex items-center gap-3 mb-4">
@@ -158,39 +158,6 @@ export default function ReportsPage() {
               </Button>
             </div>
           </div>
-
-          {/* Engagement Report */}
-          <div className="bg-[#141428]/50 backdrop-blur-sm rounded-xl border border-purple-900/50 p-6">
-            <div className="flex items-center gap-3 mb-4">
-              <PieChart className="w-5 h-5 text-purple-400" />
-              <h3 className="text-lg font-semibold text-white">
-                Engagement Metrics
-              </h3>
-            </div>
-            <p className="text-gray-400 text-sm mb-4">
-              Analysis of user engagement, interactions, and community impact
-            </p>
-            <div className="flex gap-3">
-              <Button
-                onClick={() => generateReport("engagement")}
-                className="flex-1 bg-purple-700 hover:bg-purple-600"
-                disabled={isGenerating && selectedReport === "engagement"}
-              >
-                {isGenerating && selectedReport === "engagement" ? (
-                  <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                ) : (
-                  "Generate Report"
-                )}
-              </Button>
-              <Button
-                onClick={() => downloadReport("engagement")}
-                variant="outline"
-                className="bg-[#141428]/80 border-purple-900/50 text-purple-400 hover:bg-purple-900/30 hover:text-purple-300"
-              >
-                <FileDown className="w-4 h-4" />
-              </Button>
-            </div>
-          </div>
         </div>
 
         {/* AI Report Display */}
@@ -224,25 +191,37 @@ export default function ReportsPage() {
                     <ReactMarkdown
                       components={{
                         h1: ({ children }) => (
-                          <h1 className="text-2xl font-bold mb-4 text-white">{children}</h1>
+                          <h1 className="text-2xl font-bold mb-4 text-white">
+                            {children}
+                          </h1>
                         ),
                         h2: ({ children }) => (
-                          <h2 className="text-xl font-semibold mt-6 mb-3 text-white">{children}</h2>
+                          <h2 className="text-xl font-semibold mt-6 mb-3 text-white">
+                            {children}
+                          </h2>
                         ),
                         h3: ({ children }) => (
-                          <h3 className="text-lg font-medium mt-4 mb-2 text-white">{children}</h3>
+                          <h3 className="text-lg font-medium mt-4 mb-2 text-white">
+                            {children}
+                          </h3>
                         ),
                         ul: ({ children }) => (
-                          <ul className="list-disc pl-6 my-4 space-y-2">{children}</ul>
+                          <ul className="list-disc pl-6 my-4 space-y-2">
+                            {children}
+                          </ul>
                         ),
                         li: ({ children }) => (
                           <li className="text-gray-400">{children}</li>
                         ),
                         p: ({ children }) => (
-                          <p className="mb-4 text-gray-400 leading-relaxed">{children}</p>
+                          <p className="mb-4 text-gray-400 leading-relaxed">
+                            {children}
+                          </p>
                         ),
                         code: ({ children }) => (
-                          <code className="bg-purple-900/20 px-1.5 py-0.5 rounded text-pink-400">{children}</code>
+                          <code className="bg-purple-900/20 px-1.5 py-0.5 rounded text-pink-400">
+                            {children}
+                          </code>
                         ),
                         blockquote: ({ children }) => (
                           <blockquote className="border-l-4 border-purple-500/50 pl-4 italic text-gray-400">
