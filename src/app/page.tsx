@@ -6,7 +6,7 @@ import { redirect } from "next/navigation";
 export default async function LandingPage() {
   const currentYear = new Date().getFullYear();
   const user = await getUser();
-  if (user?.email == "crce@gmail.com") {
+  if (user?.email == "crce@mail.com") {
     redirect("/college");
   }
   return (
