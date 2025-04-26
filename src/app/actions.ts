@@ -222,7 +222,7 @@ export const signInAction = async (formData: FormData) => {
     return encodedRedirect("error", "/sign-in", error.message);
   }
 
-  return redirect("/projects");
+  return redirect("/");
 };
 
 export const forgotPasswordAction = async (formData: FormData) => {
