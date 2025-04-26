@@ -1,14 +1,5 @@
 import { Server as NetServer } from "http";
 import { Server as ServerIO } from "socket.io";
-import { NextApiResponse } from "next";
-
-export type NextApiResponseServerIO = NextApiResponse & {
-  socket: any & {
-    server: NetServer & {
-      io: ServerIO;
-    };
-  };
-};
 
 let io: ServerIO;
 
@@ -19,17 +10,26 @@ export const getIO = () => {
   return io;
 };
 
-export const initSocketServer = (res: NextApiResponseServerIO) => {
-  if (res.socket.server.io) {
-    io = res.socket.server.io;
-    return;
+export const initSocketServer = (res: Response) => {
+  if ((global as any).io) {
+    io = (global as any).io;
+    return io;
   }
 
-  const httpServer = res.socket.server as any;
+  const httpServer = new NetServer((req, res) => {
+    res.writeHead(200);
+    res.end();
+  });
+
   io = new ServerIO(httpServer, {
     path: "/api/socket",
     addTrailingSlash: false,
+    cors: {
+      origin: "*",
+      methods: ["GET", "POST"],
+    },
   });
 
-  res.socket.server.io = io;
+  (global as any).io = io;
+  return io;
 };
