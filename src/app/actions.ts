@@ -11,6 +11,7 @@ import {
   createUserContent,
   createPartFromUri,
 } from "@google/genai";
+import { GoogleGenerativeAI } from "@google/generative-ai";
 import {
   RoleType,
   NotificationType,
@@ -23,6 +24,63 @@ import { revalidatePath } from "next/cache";
 const genAI = new GoogleGenAI({
   apiKey: process.env.GOOGLE_API_KEY as string,
 });
+
+export async function generateAIReport(projects: any[], reportType: string) {
+  const genAI = new GoogleGenerativeAI(process.env.GOOGLE_API_KEY!);
+  const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
+
+  let prompt = "";
+  let data = {};
+
+  switch (reportType) {
+    case "projects":
+      data = {
+        totalProjects: projects.length,
+        approvedProjects: projects.filter(p => p.status === "APPROVED").length,
+        totalViews: projects.reduce((sum, p) => sum + p.views, 0),
+        totalLikes: projects.reduce((sum, p) => sum + p.likes, 0),
+        totalComments: projects.reduce((sum, p) => sum + p._count.comments, 0),
+        topProjects: projects
+          .sort((a, b) => (b.views + b.likes) - (a.views + a.likes))
+          .slice(0, 5)
+      };
+
+      prompt = `Generate a detailed institutional report analyzing the following project data:
+      ${JSON.stringify(data)}
+      
+      Include:
+      1. Executive Summary
+      2. Project Performance Analysis
+      3. Engagement Metrics Analysis
+      4. Top Performing Projects Analysis
+      5. Recommendations for Improvement
+      
+      Format the response in Markdown.`;
+      break;
+
+    case "sdg":
+      const sdgCounts = Object.values(SDGGoal).reduce((acc: any, goal) => {
+        acc[goal] = projects.filter(p => p.sdgGoals.includes(goal)).length;
+        return acc;
+      }, {});
+
+      prompt = `Generate a comprehensive SDG impact report based on this data:
+      ${JSON.stringify(sdgCounts)}
+      
+      Include:
+      1. Executive Summary
+      2. SDG Distribution Analysis
+      3. Impact Assessment
+      4. Areas of Focus
+      5. Recommendations for Balanced SDG Coverage
+      
+      Format the response in Markdown.`;
+      break;
+  }
+
+  const result = await model.generateContent(prompt);
+  return result.response.text();
+}
 
 export const signUpAction = async (formData: FormData) => {
   const email = formData.get("email")?.toString();
@@ -2068,3 +2126,4 @@ export async function updateFeedbackStatus(feedbackId: string, status: string) {
     };
   }
 }
+
