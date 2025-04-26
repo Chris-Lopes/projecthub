@@ -197,7 +197,8 @@ export default async function ProjectPage({ params }: PageProps) {
           </p>
         </div>
 
-        {project && (project as any).website_url && (
+        {/* Live Demo Section */}
+        {(project as any).website_url && (
           <div className="mt-8 bg-[#141428]/50 backdrop-blur-sm rounded-xl border border-purple-900/50 shadow-lg p-6">
             <h2 className="text-xl font-semibold text-white mb-4">Live Demo</h2>
             <WebsiteEmbed
@@ -206,6 +207,18 @@ export default async function ProjectPage({ params }: PageProps) {
             />
           </div>
         )}
+
+        {/* Project Architecture Diagram Section */}
+        <div className="mt-8 bg-[#141428]/50 backdrop-blur-sm rounded-xl border border-purple-900/50 shadow-lg p-6">
+          <h2 className="text-xl font-semibold text-white mb-4">
+            Project Architecture
+          </h2>
+          <WebsiteEmbed
+            url={project.github_url.replace("github.com", "gitdiagram.com")}
+            title={`${project.name} architecture diagram`}
+            height="400px"
+          />
+        </div>
 
         {userDb?.roleType === "FACULTY" && project.user.student && (
           <div className="mt-8 bg-[#141428]/50 backdrop-blur-sm rounded-xl border border-purple-900/50 shadow-lg p-6">
