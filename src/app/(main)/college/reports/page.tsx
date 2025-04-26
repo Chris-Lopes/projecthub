@@ -90,7 +90,7 @@ export default function ReportsPage() {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
           {/* Projects Report */}
           <div className="bg-[#141428]/50 backdrop-blur-sm rounded-xl border border-purple-900/50 p-6">
             <div className="flex items-center gap-3 mb-4">
@@ -151,39 +151,6 @@ export default function ReportsPage() {
               </Button>
               <Button
                 onClick={() => downloadReport("sdg")}
-                variant="outline"
-                className="bg-[#141428]/80 border-purple-900/50 text-purple-400 hover:bg-purple-900/30 hover:text-purple-300"
-              >
-                <FileDown className="w-4 h-4" />
-              </Button>
-            </div>
-          </div>
-
-          {/* Engagement Report */}
-          <div className="bg-[#141428]/50 backdrop-blur-sm rounded-xl border border-purple-900/50 p-6">
-            <div className="flex items-center gap-3 mb-4">
-              <PieChart className="w-5 h-5 text-purple-400" />
-              <h3 className="text-lg font-semibold text-white">
-                Engagement Metrics
-              </h3>
-            </div>
-            <p className="text-gray-400 text-sm mb-4">
-              Analysis of user engagement, interactions, and community impact
-            </p>
-            <div className="flex gap-3">
-              <Button
-                onClick={() => generateReport("engagement")}
-                className="flex-1 bg-purple-700 hover:bg-purple-600"
-                disabled={isGenerating && selectedReport === "engagement"}
-              >
-                {isGenerating && selectedReport === "engagement" ? (
-                  <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                ) : (
-                  "Generate Report"
-                )}
-              </Button>
-              <Button
-                onClick={() => downloadReport("engagement")}
                 variant="outline"
                 className="bg-[#141428]/80 border-purple-900/50 text-purple-400 hover:bg-purple-900/30 hover:text-purple-300"
               >
