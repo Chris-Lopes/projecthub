@@ -1,36 +1,71 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# ProjectHub 🚀
 
-## Getting Started
+## 👥 Team Members
 
-First, run the development server:
+- **Chris Lopes** (Team Leader) - 10196
+- **Romeiro Fernandes** - 10186
+- **Nigel Dsilva** - 10183
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+## 📝 Project Overview
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+ProjectHub is a platform for sharing and discovering innovative student projects. It enables students to showcase their work, receive feedback, and engage with faculty and industry. Key features include project submission, analytics dashboard, SDG impact tracking, AI-generated institutional reports, and industry engagement tools.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## 🎬 Demo Video
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+- [▶️ Demo Video Link](https://drive.google.com/file/d/19Zbx5bI9LoL_nHjgwxplChol3aWL6ZZm/view?usp=sharing)
 
-## Learn More
+- [📑 Project Presentation (PPT)](https://drive.google.com/file/d/1CMj7G8nn1P7z5o59jA8KDK78YRoft6-l/view?usp=sharing)
 
-To learn more about Next.js, take a look at the following resources:
+## 🛠️ Technologies Used
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+- **Next.js** (App Router)
+- **React 19**
+- **TypeScript**
+- **Tailwind CSS**
+- **Prisma ORM**
+- **Supabase** (Database & Auth)
+- **Chart.js** (Analytics)
+- **Lucide React** (Icons)
+- **Radix UI** (Accessible UI components)
+- **Google Generative AI** (AI Reports)
+- **Nodemailer** (Email)
+- **Vercel** (Deployment)
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## ⚙️ Setup Instructions
 
-## Deploy on Vercel
+1. **Clone the repository:**
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+   ```bash
+   git clone <your-repo-url>
+   cd projecthub
+   ```
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+2. **Install dependencies:**
+
+   ```bash
+   pnpm install
+   # or
+   npm install
+   # or
+   yarn install
+   ```
+
+3. **Configure environment variables:**
+
+   - Copy `.env.example` to `.env.local` and fill in required values (Supabase, Google API keys, etc).
+
+4. **Run the development server:**
+
+   ```bash
+   pnpm dev
+   # or
+   npm run dev
+   # or
+   yarn dev
+   ```
+
+5. **Open [http://localhost:3000](http://localhost:3000) in your browser.** 🌐
+
+---
+
+For more details, see the [Next.js documentation](https://nextjs.org/docs/app/building-your-application/deploying).
